@@ -22,3 +22,25 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# node dependencies
+client/node_modules/
+server/node_modules/
+
+# build output
+client/dist/
+
+# environment files
+.env
+.env.*
+
+# logs
+*.log
+
+# editor / OS
+.vscode/
+.DS_Store
+Thumbs.db
+
+package-lock.json
+package.json
