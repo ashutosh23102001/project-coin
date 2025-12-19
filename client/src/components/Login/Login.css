@@ -1,0 +1,221 @@
+/* ================================
+   Overlay
+================================ */
+.popup-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.8);
+  z-index: 999;
+}
+
+/* ================================
+   Main Container
+================================ */
+.popup-container {
+  display: flex;
+  width: 850px;
+  max-width: 95%;
+  height: 450px;
+  background: #ffffff00;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  font-family: "Segoe UI", sans-serif;
+  position: relative;
+}
+
+.login-status {
+  background-color: red;
+  font-size: 14px;
+  margin-bottom: 10px;
+  color: white;
+  margin-left: 20%;
+  margin-bottom: 10px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  padding-left: 5px;   
+    padding-right: 5px;
+}
+.form.action {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px;
+  padding-bottom: 20px;
+}   
+/* ================================
+   Left Side (Form)
+================================ */
+.left-side {
+  flex: 1;
+  padding: 40px 30px;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.left-side h2 {
+  color: #6200ea;
+  margin-bottom: 30px;
+  margin-left: 50px;
+  margin-top: -50px;
+}
+
+/* Inputs */
+.input-group {
+  display: flex;
+  align-items: center;
+  background: #f9f9f9;
+  border-radius: 25px;
+  padding: 10px 20px;
+  margin-bottom: 18px;
+  box-shadow: 0 0 15px rgba(98, 0, 234, 0.15);
+  transition: 0.3s;
+}
+
+.input-group input {
+  flex: 1;
+  border: none;
+  outline: none;
+  padding: 10px;
+  font-size: 16px;
+  font-style: normal !important;
+}
+
+.icon {
+  margin-right: 10px;
+  color: #6200ea;
+  font-style: normal !important; /* FIXES ITALIC ICONS */
+}
+
+/* Icons */
+.user-icon::before { content: "👤"; }
+.lock-icon::before { content: "🔒"; }
+
+/* Login Button - Centered */
+.login-btn {
+  width: 200px;
+  margin: 20px auto 0 auto;
+  padding: 12px 0;
+  border-radius: 30px;
+  border: none;
+  background: linear-gradient(90deg, #6a00ff, #9400ff);
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 7px 20px rgba(149, 0, 255, 0.6);
+  transition: 0.3s;
+}
+
+.login-btn:hover {
+  box-shadow: 0 10px 30px rgba(148, 0, 255, 0.8);
+}
+
+/* ================================
+   Right Side
+================================ */
+.right-side {
+  flex: 1;
+  background: linear-gradient(135deg, #6a00ff, #9400ff);
+  color: white;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+}
+
+.center-content h1 {
+  font-size: 2.4rem;
+  margin-bottom: 16px;
+}
+
+.center-content p {
+  max-width: 320px;
+  margin: 0 auto 30px auto;
+}
+
+/* Signup Button - Centered */
+.signup-btn {
+  padding: 10px 25px;
+  background: transparent;
+  border: 1px solid #fff;
+  border-radius: 25px;
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.signup-btn:hover {
+  background: #fff;
+  color: #6a00ff;
+}
+
+/* ================================
+   Close Button
+================================ */
+.popup-close-btn {
+  position: absolute;
+  top: 12px;
+  right: 15px;
+  font-size: 2rem;
+  cursor: pointer;
+  color: #3338;
+  background: transparent;
+  border: none;
+}
+
+.popup-close-btn:hover {
+  color: #000;
+}
+
+/* ================================
+   RESPONSIVE STYLES
+================================ */
+
+/* Tablet */
+@media (max-width: 1024px) {
+  .popup-container {
+    width: 700px;
+    height: auto;
+  }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .popup-container {
+    flex-direction: column;
+    height: auto;
+  }
+
+  .left-side,
+  .right-side {
+    width: 100%;
+    padding: 30px 20px;
+  }
+
+  .center-content h1 {
+    font-size: 2rem;
+  }
+
+  .login-btn,
+  .signup-btn {
+    width: 100%;
+    border-radius: 35px;
+  }
+}
+
+/* Small Mobile */
+@media (max-width: 480px) {
+  .center-content h1 {
+    font-size: 1.7rem;
+  }
+
+  .input-group input {
+    font-size: 14px;
+  }
+}

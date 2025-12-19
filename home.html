@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Platform UI</title>
+    <style>
+        /* --- 1. GLOBAL STYLES & RESET --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', Arial, sans-serif;
+        }
+
+        body {
+            background-color: #0f0f0f; /* Dark Background */
+            color: #ffffff;
+        }
+
+        a { text-decoration: none; color: white; }
+
+        /* --- 2. NAVBAR --- */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 24px;
+            height: 56px;
+            position: sticky;
+            top: 0;
+            background-color: #0f0f0f;
+            z-index: 100;
+            border-bottom: 1px solid #2d2d2d;
+        }
+
+        .nav-left { display: flex; align-items: center; gap: 15px; }
+        .menu-icon { font-size: 20px; cursor: pointer; }
+        .logo { font-weight: bold; letter-spacing: -1px; font-size: 1.2rem; display: flex; align-items: center; gap: 5px; }
+        .logo span { color: #ff0000; }
+
+        .nav-center { flex: 1; max-width: 600px; display: flex; margin: 0 20px; }
+        .search-box {
+            width: 100%;
+            background-color: #121212;
+            border: 1px solid #303030;
+            border-radius: 40px 0 0 40px;
+            padding: 8px 16px;
+            color: white;
+            outline: none;
+        }
+        .search-btn {
+            background-color: #222;
+            border: 1px solid #303030;
+            border-left: none;
+            padding: 0 20px;
+            border-radius: 0 40px 40px 0;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .nav-right { display: flex; gap: 15px; align-items: center; }
+        .user-icon { width: 32px; height: 32px; background-color: purple; border-radius: 50%; text-align: center; line-height: 32px; font-size: 14px;}
+
+        /* --- 3. CAROUSEL (HERO SECTION) --- */
+        .carousel-container {
+            position: relative;
+            width: 95%;
+            margin: 20px auto;
+            height: 300px;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+        }
+
+        .carousel-slide {
+            display: none;
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+        
+        /* Activate the slide */
+        .carousel-slide.active { display: block; animation: fadeEffect 1s; }
+
+        .carousel-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.6; /* Darken image slightly */
+        }
+
+        .carousel-caption {
+            position: absolute;
+            bottom: 40px;
+            left: 40px;
+            max-width: 500px;
+        }
+        .carousel-caption h2 { font-size: 2.5rem; margin-bottom: 10px; text-shadow: 2px 2px 4px #000; }
+        .carousel-caption p { font-size: 1.1rem; color: #ddd; text-shadow: 1px 1px 2px #000; }
+        .carousel-btn {
+            margin-top: 15px;
+            padding: 10px 20px;
+            background-color: white;
+            color: black;
+            border: none;
+            border-radius: 24px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* Carousel Navigation Buttons */
+        .prev, .next {
+            cursor: pointer;
+            position: absolute;
+            top: 50%;
+            width: auto;
+            margin-top: -22px;
+            padding: 16px;
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+            transition: 0.6s ease;
+            border-radius: 0 3px 3px 0;
+            user-select: none;
+            background-color: rgba(0,0,0,0.4);
+        }
+        .next { right: 0; border-radius: 3px 0 0 3px; }
+        .prev:hover, .next:hover { background-color: rgba(0,0,0,0.8); }
+
+        @keyframes fadeEffect { from {opacity: .4} to {opacity: 1} }
+
+        /* --- 4. VIDEO GRID LAYOUT --- */
+        .main-content {
+            padding: 24px;
+            max-width: 1800px;
+            margin: 0 auto;
+        }
+
+        .video-grid {
+            display: grid;
+            /* Auto-fit creates columns based on minimum width */
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); 
+            gap: 20px;
+            row-gap: 40px;
+        }
+
+        /* --- 5. CARD COMPONENT --- */
+        .video-card {
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        /* Thumbnail Area */
+        .thumbnail-container {
+            position: relative;
+            width: 100%;
+            padding-top: 56.25%; /* 16:9 Aspect Ratio */
+            border-radius: 12px;
+            overflow: hidden;
+            background-color: #222;
+        }
+        
+        .thumbnail-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .duration {
+            position: absolute;
+            bottom: 8px;
+            right: 8px;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 2px 4px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        /* Card Info Area */
+        .video-info {
+            display: flex;
+            margin-top: 12px;
+            gap: 12px;
+        }
+
+        .channel-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            object-fit: cover;
+            background-color: #333;
+        }
+
+        .video-details {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .video-title {
+            font-size: 16px;
+            font-weight: 600;
+            line-height: 1.4rem;
+            margin-bottom: 6px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2; /* Limit to 2 lines */
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .channel-name, .video-meta {
+            font-size: 14px;
+            color: #aaa;
+            line-height: 1.2rem;
+        }
+        
+        .channel-name:hover { color: #fff; }
+
+        /* Special "New to you" Card Style (from screenshot) */
+        .special-card {
+            background: linear-gradient(135deg, #1f1f1f 0%, #2a2a2a 100%);
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 20px;
+            height: 100%;
+            min-height: 280px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+        .special-btn {
+            background-color: #3ea6ff;
+            color: black;
+            padding: 8px 16px;
+            border-radius: 18px;
+            margin-top: 15px;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 600px) {
+            .navbar { padding: 0 10px; }
+            .nav-center { display: none; } /* Hide search on mobile for simplicity */
+            .carousel-container { height: 200px; width: 100%; margin: 0; border-radius: 0;}
+            .main-content { padding: 10px; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="nav-left">
+            <div class="menu-icon">☰</div>
+            <div class="logo"><span>▶</span> StreamTube</div>
+        </div>
+        <div class="nav-center">
+            <input type="text" class="search-box" placeholder="Search">
+            <button class="search-btn">🔍</button>
+        </div>
+        <div class="nav-right">
+            <span>🎥</span>
+            <span>🔔</span>
+            <div class="user-icon">U</div>
+        </div>
+    </nav>
+
+    <section class="carousel-container">
+        <div class="carousel-slide active">
+            <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=2070&auto=format&fit=crop" alt="Tech">
+            <div class="carousel-caption">
+                <h2>Future of Tech 2025</h2>
+                <p>Explore the latest in React, AI, and Web Development.</p>
+                <button class="carousel-btn">Watch Now</button>
+            </div>
+        </div>
+        <div class="carousel-slide">
+            <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?q=80&w=2070&auto=format&fit=crop" alt="Music">
+            <div class="carousel-caption">
+                <h2>Top Music Hits</h2>
+                <p>Listen to the trending tracks from around the world.</p>
+                <button class="carousel-btn">Listen</button>
+            </div>
+        </div>
+        <div class="carousel-slide">
+            <img src="https://images.unsplash.com/photo-1536440136628-849c177e76a1?q=80&w=2025&auto=format&fit=crop" alt="Movies">
+            <div class="carousel-caption">
+                <h2>New Movie Trailers</h2>
+                <p>Catch up on the latest teasers and trailers.</p>
+                <button class="carousel-btn">View All</button>
+            </div>
+        </div>
+
+        <a class="prev" onclick="changeSlide(-1)">&#10094;</a>
+        <a class="next" onclick="changeSlide(1)">&#10095;</a>
+    </section>
+
+    <main class="main-content">
+        <div class="video-grid">
+
+            <div class="video-card">
+                <div class="thumbnail-container">
+                    <img src="https://images.unsplash.com/photo-1633356122544-f134324a6cee?q=80&w=1000&auto=format&fit=crop" class="thumbnail-image" alt="React">
+                    <span class="duration">18:21</span>
+                </div>
+                <div class="video-info">
+                    <img src="https://i.pravatar.cc/150?img=1" class="channel-avatar" alt="Avatar">
+                    <div class="video-details">
+                        <div class="video-title">Build a Customizable Card Component in ReactJS - Beginner Friendly</div>
+                        <div class="channel-name">Code Complete</div>
+                        <div class="video-meta">42K views • 2 years ago</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="video-card">
+                <div class="thumbnail-container">
+                    <img src="https://images.unsplash.com/photo-1535905557558-afc4877a26fc?q=80&w=1000&auto=format&fit=crop" class="thumbnail-image" alt="Cartoon">
+                    <span class="duration">10:18</span>
+                </div>
+                <div class="video-info">
+                    <img src="https://i.pravatar.cc/150?img=2" class="channel-avatar" alt="Avatar">
+                    <div class="video-details">
+                        <div class="video-title">EXPOSED Indian Parents | Pets & Babies | Ft. Childhood</div>
+                        <div class="channel-name">HardToonz</div>
+                        <div class="video-meta">2.8M views • 5 days ago</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="video-card">
+                <div class="thumbnail-container">
+                    <img src="https://images.unsplash.com/photo-1493225255756-d9584f8606e9?q=80&w=1000&auto=format&fit=crop" class="thumbnail-image" alt="Song">
+                    <span class="duration">3:18</span>
+                </div>
+                <div class="video-info">
+                    <img src="https://i.pravatar.cc/150?img=3" class="channel-avatar" alt="Avatar">
+                    <div class="video-details">
+                        <div class="video-title">Fa9la - Rehman Dakait Full Song & Dance Video | Baloch Music</div>
+                        <div class="channel-name">Zair Wania Films</div>
+                        <div class="video-meta">5.3M views • 4 days ago</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="special-card">
+                <h3 style="margin-bottom:10px;">Looking for something different?</h3>
+                <p style="color:#aaa; font-size: 14px;">Get video recommendations beyond what you usually watch</p>
+                <button class="special-btn">New to you</button>
+            </div>
+
+             <div class="video-card">
+                <div class="thumbnail-container">
+                    <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=1000&auto=format&fit=crop" class="thumbnail-image" alt="Game">
+                    <span class="duration">5:07</span>
+                </div>
+                <div class="video-info">
+                    <img src="https://i.pravatar.cc/150?img=8" class="channel-avatar" alt="Avatar">
+                    <div class="video-details">
+                        <div class="video-title">AVATAR 3 FIRE AND ASH : 5 Minute Trailer (4K ULTRA HD)</div>
+                        <div class="channel-name">FilmSpot Trailer</div>
+                        <div class="video-meta">229K views • 2 months ago</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="video-card">
+                <div class="thumbnail-container">
+                    <img src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=1000&auto=format&fit=crop" class="thumbnail-image" alt="Hacking">
+                    <span class="duration">6:51</span>
+                </div>
+                <div class="video-info">
+                    <img src="https://i.pravatar.cc/150?img=12" class="channel-avatar" alt="Avatar">
+                    <div class="video-details">
+                        <div class="video-title">React & Next.js Devs ALERT: 2 NEW Server Vulnerabilities Found</div>
+                        <div class="channel-name">Thapa Technical</div>
+                        <div class="video-meta">1.6K views • 5 hours ago</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        let slideIndex = 1;
+        
+        function changeSlide(n) {
+            showSlides(slideIndex += n);
+        }
+
+        function showSlides(n) {
+            let i;
+            let slides = document.getElementsByClassName("carousel-slide");
+            if (n > slides.length) {slideIndex = 1}
+            if (n < 1) {slideIndex = slides.length}
+            
+            for (i = 0; i < slides.length; i++) {
+                slides[i].style.display = "none";  
+                slides[i].classList.remove("active");
+            }
+            
+            slides[slideIndex-1].style.display = "block";  
+            slides[slideIndex-1].classList.add("active");
+        }
+        
+        // Auto-scroll every 5 seconds
+        setInterval(() => {
+            changeSlide(1);
+        }, 5000);
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,200 @@
+
+
+/* --- Carousel.js Styles --- */
+.carousel-container {
+    position: relative;
+    width: 73%;
+    margin: 40px auto;
+    height: 450px;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+    transition: all 0.5s ease-in-out;
+}
+
+.carousel-slide {
+    width: 100%;
+    height: 100%;
+    position: absolute; /* Use absolute for overlaying slides */
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
+}
+
+.carousel-slide.active { 
+    opacity: 1; 
+    z-index: 20;
+}
+
+.carousel-slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.6; 
+}
+
+.carousel-caption {
+    position: absolute;
+    bottom: 40px;
+    left: 40px;
+    max-width: 500px;
+    z-index: 30;
+}
+.carousel-caption h2 { font-size: 2.5rem; margin-bottom: 10px; text-shadow: 2px 2px 4px #000; }
+.carousel-caption p { font-size: 1.1rem; color: #ddd; text-shadow: 1px 1px 2px #000; }
+.carousel-btn {
+    margin-top: 15px;
+    padding: 10px 20px;
+    background-color: white;
+    color: black;
+    border: none;
+    border-radius: 24px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+/* Carousel Navigation Buttons */
+.prev, .next {
+    cursor: pointer;
+    position: absolute;
+    top: 50%;
+    width: auto;
+    margin-top: -22px;
+    padding: 16px;
+    color: white;
+    font-weight: bold;
+    font-size: 18px;
+    transition: 0.6s ease;
+    user-select: none;
+    background-color: rgba(0,0,0,0.4);
+    z-index: 40;
+}
+.next { right: 0; border-radius: 3px 0 0 3px; }
+.prev { border-radius: 0 3px 3px 0; }
+.prev:hover, .next:hover { background-color: rgba(0,0,0,0.8); }
+
+/* --- VideoCard.js and Grid Styles --- */
+.main-content {
+    padding: 24px;
+    max-width: 1050px;
+    margin: -50px auto;
+}
+
+.video-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); 
+    gap: 20px;
+    row-gap: 40px;
+}
+
+.video-card {
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.thumbnail-container {
+    position: relative;
+    width: 100%;
+    padding-top: 56.25%; 
+    border-radius: 12px;
+    overflow: hidden;
+    background-color: #222;
+}
+
+.thumbnail-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.duration {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 2px 4px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.video-info {
+    display: flex;
+    margin-top: 12px;
+    gap: 12px;
+}
+
+.channel-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    object-fit: cover;
+    background-color: #333;
+}
+
+.video-details {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.video-title {
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.4rem;
+    margin-bottom: 6px;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.channel-name, .video-meta {
+    font-size: 14px;
+    color: var(--text-muted);
+    line-height: 1.2rem;
+}
+
+.channel-name:hover { color: var(--text-light); }
+
+/* Special Card */
+.special-card-wrapper {
+    /* Ensures special card takes up grid space */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.special-card {
+    background: linear-gradient(135deg, #1f1f1f 0%, #2a2a2a 100%);
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 20px;
+    height: 100%;
+    min-height: 280px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+}
+.special-btn {
+    background-color: #3ea6ff;
+    color: black;
+    padding: 8px 16px;
+    border-radius: 18px;
+    margin-top: 15px;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 600px) {
+    .navbar { padding: 0 10px; }
+    .nav-center { display: none; } 
+    .carousel-container { height: 200px; width: 100%; margin: 0; border-radius: 0;}
+    .main-content { padding: 10px; }
+}

@@ -1,0 +1,184 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: sans-serif;
+}
+
+.navbar {
+
+  width: 100%;
+  background: linear-gradient(90deg, #6a11cb, #b92bff);
+  padding: 0px 40px;
+  height: 60px;
+  z-index: 9999;  /* highest layer */
+  position: fixed;
+  top: 0;
+}
+
+.nav-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+      height: 60px;
+
+}
+
+.logo {
+  color: white;
+  font-size: 22px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo-icon {
+  width: 100px;
+  height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: 30px;
+}
+
+.nav-links li {
+  color: white;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.nav-links li:hover {
+  opacity: 0.8;
+}
+/* Make dropdown relative */
+.dropdown {
+  position: relative;
+  cursor: pointer;
+}
+
+/* Dropdown menu container */
+.dropdown-menu { position: absolute;
+  top: 100%;      /* place menu directly touching the parent */
+  left: 0;
+  margin-top: 0;  /* remove any space between <li> and menu */
+  background: rgb(255, 255, 255);
+  border-radius: 6px;
+  padding: 10px 0;
+  list-style: none;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+  min-width: 150px;
+   position: absolute;
+  z-index: 99999;
+}
+
+/* Dropdown items */
+.dropdown-menu li {
+  padding: 8px 16px;
+}
+
+.dropdown-menu li a {
+  text-decoration: none;
+  color: rgb(12, 12, 12);
+  font-size: 14px;
+}
+
+.dropdown-menu li:hover {
+  background: #f5f5f5;
+}
+.nav-links {
+  position: relative; 
+  color:white/* required for child hover */
+}
+a{
+  color: white ;
+  text-decoration: none;
+}
+span{
+  height: 40px;
+  width: 40px;
+}
+svg{
+  height: 40px;
+  width: 40px;
+}
+
+/* ============================= */
+/* ACCOUNT DROPDOWN (INSTAGRAM) */
+/* ============================= */
+
+.account-area {
+  position: relative;
+  cursor: pointer;
+}
+
+/* Dropdown box */
+.account-dropdown {
+  position: absolute;
+  top: 52px;
+  right: 0;
+  background: white;
+  border-radius: 6px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+  min-width: 180px;
+  z-index: 99999;
+  animation: fadeIn 0.15s ease-in-out;
+}
+
+/* Arrow */
+.dropdown-arrow {
+  position: absolute;
+  top: -8px;
+  right: 18px;
+  width: 14px;
+  height: 14px;
+  background: white;
+  transform: rotate(45deg);
+}
+
+/* List reset */
+.account-dropdown ul {
+  list-style: none;
+  padding: 8px 0;
+  margin: 0;
+}
+
+/* Items */
+.account-dropdown li {
+  padding: 12px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #222;
+  cursor: pointer;
+  transition: background 0.2s;
+  text-transform: uppercase;
+}
+
+.account-dropdown li:hover {
+  background: #f5f5f5;
+}
+
+/* Profile image */
+.profile-pic {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #fff;
+}
+
+/* Fade animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

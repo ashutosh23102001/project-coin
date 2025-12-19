@@ -1,0 +1,39 @@
+.progress-page {
+  padding: 20px;
+  width: 100%;
+  
+}
+
+.input-section {
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 5px;
+  font-weight: bold;
+  color: #fff;
+  margin-left: 20px;
+}
+
+.bottom-progress-container {
+  width: 100%;
+  background-color: #1e1e1e;
+  height: 30px;
+  border-radius: 50px;
+  position: relative;
+  overflow: hidden;
+}
+
+.bottom-progress-bar {
+  height: 100%;
+  background-color: #4caf50;
+  width: 0%;
+  transition: width 0.3s ease;
+}
+
+.bottom-progress-text {
+  position: absolute;
+  width: 100%;
+  text-align: center;
+  line-height: 30px;
+  color: white;
+  font-weight: bold;
+}
