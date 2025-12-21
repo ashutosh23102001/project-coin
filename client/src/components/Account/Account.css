@@ -1,0 +1,97 @@
+/* Page background */
+.account-page {
+  min-height: 95vh;
+  background: #f4f6f8;
+  display: flex;
+  justify-content: center;
+  padding: 40px 20px;
+  font-family: "Segoe UI", sans-serif;
+  margin-top: 55px;
+}
+
+/* Main card */
+.account-page form {
+  background: #ffffff;
+  width: 100%;
+  max-width: 900px;
+  padding: 30px 40px;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+}
+
+/* Title */
+.account-page h2 {
+  width: 100%;
+  max-width: 900px;
+  margin-bottom: 20px;
+  font-size: 26px;
+  font-weight: 600;
+  color: #333;
+}
+
+/* Labels */
+.account-page label {
+  display: block;
+  margin-top: 18px;
+  margin-bottom: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #555;
+}
+
+/* Inputs */
+.account-page input {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  font-size: 14px;
+  outline: none;
+  transition: all 0.2s ease;
+  background: #fafafa;
+}
+
+.account-page input:focus {
+  border-color: #5b7cff;
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(91, 124, 255, 0.15);
+}
+
+/* Save / Update button */
+.account-page button {
+  margin-top: 25px;
+  padding: 10px 22px;
+  border-radius: 20px;
+  border: none;
+  background: #5b7cff;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  float: right;
+  transition: background 0.3s ease;
+}
+
+.account-page button:hover {
+  background: #4866e6;
+}
+
+/* Message */
+.account-page p {
+  clear: both;
+  margin-top: 18px;
+  font-size: 14px;
+  color: #2e7d32;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .account-page form {
+    padding: 25px 20px;
+  }
+
+  .account-page button {
+    width: 100%;
+    float: none;
+  }
+}

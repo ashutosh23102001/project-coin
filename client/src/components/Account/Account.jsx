@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import api from "../../API/axios";
 import "./Account.css";
+import Navbar from "../Navbar/Navbar";
 
 const Account = () => {
   const [form, setForm] = useState({
@@ -31,6 +32,8 @@ const Account = () => {
   };
 
   return (
+    <>
+    <Navbar />
     <div className="account-page">
       <h2>My Account</h2>
 
@@ -53,6 +56,7 @@ const Account = () => {
         {msg && <p>{msg}</p>}
       </form>
     </div>
+    </>
   );
 };
 
