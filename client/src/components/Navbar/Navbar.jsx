@@ -172,8 +172,7 @@ const Navbar = () => {
             )}
           </li>
 
-          <li>Infos</li>
-          {!user && <li><Link to="/register">Signup</Link></li>}
+          <li><Link to="/register">Signup</Link></li>
         </ul>
 
         {/* ACCOUNT */}

@@ -28,7 +28,7 @@
 .cover {
   position: relative;
   margin-top: 15px;
-  height: 360px;
+  height: 300px;
   width: 100%;
   border-radius: 16px;
   background-size: cover;
@@ -68,7 +68,7 @@
   grid-template-columns: 260px 1fr;
   gap: 30px;
 
-  margin-top: -120px;
+  margin-top: -20px;
   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
 }
 
@@ -233,7 +233,7 @@
 .cover-btn {
   position: absolute;
   right: 20px; /* ✅ right corner */
-  bottom: 125px; /* ✅ bottom corner */
+  bottom: 30px; /* ✅ bottom corner */
   background-color: #000;
   color: #fff;
   border: none;
