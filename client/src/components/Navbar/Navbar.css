@@ -126,7 +126,8 @@ svg{
   box-shadow: 0 8px 30px rgba(0,0,0,0.2);
   min-width: 180px;
   z-index: 99999;
-  animation: fadeIn 0.15s ease-in-out;
+  animation: fadeIn 0.30s ease-in;
+  animation: fadeIn 0.80s ease-out;
 }
 
 /* Arrow */

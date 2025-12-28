@@ -1,75 +1,95 @@
+
 // import React, { useEffect, useState } from "react";
 // import api from "../../API/axios";
-// import "./Account.css";
+
 // import Navbar from "../Navbar/Navbar";
+// import Cover from "./subcomp/Cover";
+// import ProfileSidebar from "./subcomp/ProfileSidebar";
+// import Tabs from "./subcomp/Tabs";
+// import AccountSettings from "./subcomp/AccountSettings";
+// import CompanySettings from "./subcomp/CompanySettings";
+// import AddressSettings from "./subcomp/Address";
+// import LeftAd from "../side-ad/Left_ad";
+// import RightAd from "../side-ad/Right_ad";
+
+// import "./Account.css";
 
 // const Account = () => {
-//   const [form, setForm] = useState({
-//     username: "",
-//     email: ""
-//   });
-
-//   const [msg, setMsg] = useState("");
+//   const [activeTab, setActiveTab] = useState("account");
+//   const [user, setUser] = useState(null);
+//   const [loading, setLoading] = useState(true); // ✅ INSIDE component
 
 //   useEffect(() => {
-//     api.get("/account").then(res => {
-//       setForm(res.data);
-//     });
+//     api
+//       .get("/account")
+//       .then((res) => {
+//         setUser(res.data);
+//       })
+//       .catch(() => {
+//         console.log("Not logged in");
+//       })
+//       .finally(() => {
+//         setLoading(false);
+//       });
 //   }, []);
 
-//   const handleChange = (e) => {
-//     setForm({ ...form, [e.target.name]: e.target.value });
-//   };
-
-//   const handleSubmit = async (e) => {
-//     e.preventDefault();
-//     try {
-//       const res = await api.put("/account", form);
-//       setMsg(res.data.message);
-//     } catch (err) {
-//       setMsg(err.response?.data?.message || "Error");
-//     }
-//   };
+//   if (loading) {
+//     return <div className="loading">Loading...</div>;
+//   }
 
 //   return (
 //     <>
-//     <Navbar />
-//     <div className="account-page">
-//       <h2>My Account</h2>
+//       <Navbar />
 
-//       <form onSubmit={handleSubmit}>
-//         <label>Username</label>
-//         <input
-//           name="username"
-//           value={form.username}
-//           onChange={handleChange}
-//         />
+//       <div className="account-page-bg">
+//         <LeftAd />
 
-//         <label>Email</label>
-//         <input
-//           name="email"
-//           value={form.email}
-//           onChange={handleChange}
-//         />
+//         <div className="account-wrapper">
+//           <div className="account-container">
+//             <Cover user={user} setUser={setUser} />
 
-//         <button type="submit">Update</button>
-//         {msg && <p>{msg}</p>}
-//       </form>
-//     </div>
+//             <div className="account-card">
+//               <ProfileSidebar user={user} setUser={setUser} />
+
+//               <div className="account-content">
+//                 <Tabs
+//                   activeTab={activeTab}
+//                   setActiveTab={setActiveTab}
+//                 />
+
+//                 {activeTab === "account" && (
+//                   <AccountSettings
+//                     user={user}
+//                     setUser={setUser}
+//                   />
+//                 )}
+
+//                 {activeTab === "company" && <CompanySettings />}
+//                 {activeTab === "Address" && <AddressSettings />}
+//               </div>
+//             </div>
+//           </div>
+//         </div>
+
+//         <RightAd />
+//       </div>
 //     </>
 //   );
 // };
 
-// export default Account; // 🔥 THIS WAS MISSING
-import React, { useState } from "react";
+// export default Account;
+
+
+import React, { useEffect, useState } from "react";
+import api from "../../API/axios";
+
 import Navbar from "../Navbar/Navbar";
 import Cover from "./subcomp/Cover";
 import ProfileSidebar from "./subcomp/ProfileSidebar";
 import Tabs from "./subcomp/Tabs";
 import AccountSettings from "./subcomp/AccountSettings";
 import CompanySettings from "./subcomp/CompanySettings";
-
-// ✅ ADS (same as coin.jsx)
+import AddressSettings from "./subcomp/Address";
 import LeftAd from "../side-ad/Left_ad";
 import RightAd from "../side-ad/Right_ad";
 
@@ -77,42 +97,62 @@ import "./Account.css";
 
 const Account = () => {
   const [activeTab, setActiveTab] = useState("account");
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    api
+      .get("/account")
+      .then((res) => {
+        setUser(res.data);
+      })
+      .catch(() => {
+        console.log("Not logged in");
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) {
+    return <div className="loading">Loading...</div>;
+  }
 
   return (
     <>
       <Navbar />
 
-      {/* PAGE BACKGROUND */}
       <div className="account-page-bg">
-
-        {/* LEFT AD */}
         <LeftAd />
 
-        {/* CENTER CONTENT */}
         <div className="account-wrapper">
-  <div className="account-container">
+          <div className="account-container">
+            <Cover user={user} setUser={setUser} />
 
-    {/* COVER */}
-    <Cover />
+            <div className="account-card">
+              <ProfileSidebar user={user} setUser={setUser} />
 
-    {/* WHITE CARD */}
-    <div className="account-card">
-      <ProfileSidebar />
+              <div className="account-content">
+                <Tabs
+                  activeTab={activeTab}
+                  setActiveTab={setActiveTab}
+                />
 
-      <div className="account-content">
-        <Tabs activeTab={activeTab} setActiveTab={setActiveTab} />
+                {activeTab === "account" && (
+                  <AccountSettings
+                    user={user}
+                    setUser={setUser}
+                  />
+                )}
 
-        {activeTab === "account" && <AccountSettings />}
-        {activeTab === "company" && <CompanySettings />}
-      </div>
-    </div>
+                {activeTab === "company" && <CompanySettings />}
+                {activeTab === "Address" && <AddressSettings />}
+              </div>
+            </div>
+          </div>
+        </div>
 
-  </div>
-</div>
-
-        {/* RIGHT AD */}
         <RightAd />
-
       </div>
     </>
   );

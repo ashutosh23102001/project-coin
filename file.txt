@@ -1,0 +1,63 @@
+  const [username, setUsername] = useState(user?.username || "");
+  const [usernameLoading, setUsernameLoading] = useState(false);
+
+
+      {/* USERNAME */}
+      <label>Username</label>
+      <input
+        type="text"
+        value={username}
+        onChange={(e) => setUsername(e.target.value)}
+      />
+
+      <button
+        type="button"
+        onClick={handleUsernameUpdate}
+        disabled={usernameLoading}
+        style={{ marginBottom: "15px" }}
+      >
+        {usernameLoading ? "Updating..." : "Update Username"}
+      </button>
+
+
+
+
+
+
+  // =======================
+  // UPDATE USERNAME ONLY
+  // =======================
+  const handleUsernameUpdate = async () => {
+    setError("");
+    setSuccess("");
+    setUsernameLoading(true);
+
+    try {
+      const res = await api.put("/account/username", { username });
+
+      // 🔁 update parent + UI
+      setUser((prev) => ({ ...prev, username: res.data.username }));
+      setSuccess("Username updated successfully");
+    } catch (err) {
+      setError(err.response?.data?.message || "Username not available");
+    } finally {
+      setUsernameLoading(false);
+    }
+  };
+
+// server.js query
+
+      // 🔎 Check username uniqueness (if changed)
+      if (username && username !== user.username) {
+        const checkSql = "SELECT id FROM users WHERE username=?";
+        const [existing] = await new Promise((resolve, reject) => {
+          db.query(checkSql, [username], (e, r) => {
+            if (e) reject(e);
+            else resolve(r);
+          });
+        });
+
+        if (existing) {
+          return res.status(409).json({ message: "Username already exists" });
+        }
+      }

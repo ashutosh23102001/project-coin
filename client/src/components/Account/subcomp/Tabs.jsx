@@ -1,21 +1,28 @@
-const Tabs = ({ activeTab, setActiveTab }) => {
-  return (
-    <div className="tabs">
-      <button
-        className={activeTab === "account" ? "active" : ""}
-        onClick={() => setActiveTab("account")}
-      >
-        Account Settings
-      </button>
+const Tabs = ({ activeTab, setActiveTab }) => (
+  <div className="tabs">
+    <button
+      className={activeTab === "account" ? "active" : ""}
+      onClick={() => setActiveTab("account")}
+    >
+      Account Settings
+    </button>
 
-      <button
-        className={activeTab === "company" ? "active" : ""}
-        onClick={() => setActiveTab("company")}
-      >
-        Company Settings
-      </button>
-    </div>
-  );
-};
+    <button
+      className={activeTab === "company" ? "active" : ""}
+      onClick={() => setActiveTab("company")}
+    >
+      Personal Settings
+    </button>
+
+
+    <button
+      className={activeTab === "Address" ? "active" : ""}
+      onClick={() => setActiveTab("Address")}
+    >
+      Contact Details
+    </button>
+
+  </div>
+);
 
 export default Tabs;
