@@ -14,8 +14,10 @@ router.put("/", (req, res) => {
   }
 
   const userId = req.session.user.id;
+  const username = req.session.user.username;
 
   const {
+  
     first_name = "",
     middle_name = null,
     last_name = "",
@@ -37,6 +39,7 @@ router.put("/", (req, res) => {
       const updateSql = `
         UPDATE users_info
         SET
+          username = ?,
           first_name = ?,
           middle_name = ?,
           last_name = ?,
@@ -48,12 +51,14 @@ router.put("/", (req, res) => {
       db.query(
         updateSql,
         [
+          username,
           first_name,
           middle_name,
           last_name,
           date_of_birth,
           gender,
-          userId
+          userId,
+          
         ],
         (err) => {
           if (err) {
@@ -72,14 +77,15 @@ router.put("/", (req, res) => {
     else {
       const insertSql = `
         INSERT INTO users_info
-        (user_id, first_name, middle_name, last_name, date_of_birth, gender)
-        VALUES (?, ?, ?, ?, ?, ?)
+        (user_id, username, first_name, middle_name, last_name, date_of_birth, gender)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
       `;
 
       db.query(
         insertSql,
         [
           userId,
+          username,
           first_name,
           middle_name,
           last_name,
