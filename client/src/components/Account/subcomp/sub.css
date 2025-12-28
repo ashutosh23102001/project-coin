@@ -1,23 +1,44 @@
+/* Main row */
+.dob-gender-row {
+  display: flex;
+  gap: 40px;
+  margin-bottom: 25px;
+}
 
-/* =========================
-   GENDER RADIO BUTTONS
-========================= */
+/* Both columns */
+.dob-col,
+.gender-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* DOB input */
+.dob-col input {
+  margin-top: 6px;
+  max-width: 260px;
+}
+
+/* Gender radios */
 .gender-group {
   display: flex;
-  gap: 100px;
-  margin-top: 10px;
+  gap: 50px;
+  margin-top: -10px;
 }
 
 .gender-option {
   display: flex;
   align-items: center;
-  gap: 0px;
-  font-size: 14px;
-  cursor: pointer;
+  gap: 6px;
 }
 
-.gender-option input[type="radio"] {
-  accent-color: #6eff5b; /* matches tab highlight */
-  cursor: pointer;
+/* Mobile */
+@media (max-width: 768px) {
+  .dob-gender-row {
+    flex-direction: column;
+  }
 
+  .dob-col input {
+    max-width: 100%;
+  }
 }

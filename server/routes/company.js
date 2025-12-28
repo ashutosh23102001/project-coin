@@ -1,92 +1,104 @@
 const express = require("express");
-const multer = require("multer");
 const db = require("../db");
 
 const router = express.Router();
 
-const storage = multer.diskStorage({
-  destination: "uploads/",
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + "_" + file.originalname);
+/*
+=================================
+ UPSERT PERSONAL DETAILS (SAFE)
+=================================
+*/
+router.put("/", (req, res) => {
+  if (!req.session.user) {
+    return res.status(401).json({ message: "Unauthorized" });
   }
-});
 
-const upload = multer({ storage });
+  const userId = req.session.user.id;
 
-// =======================
-// UPDATE USERS_INFO
-// =======================
-router.put(
-  "/",
-  upload.fields([
-    { name: "profile_pic", maxCount: 1 },
-    { name: "cover_pic", maxCount: 1 }
-  ]),
-  (req, res) => {
-    if (!req.session.user) {
-      return res.status(401).json({ message: "Unauthorized" });
+  const {
+    first_name = "",
+    middle_name = null,
+    last_name = "",
+    date_of_birth = null,
+    gender = null
+  } = req.body;
+
+  /* Check if record exists */
+  const checkSql = "SELECT user_id FROM users_info WHERE user_id = ?";
+
+  db.query(checkSql, [userId], (err, rows) => {
+    if (err) {
+      console.error("CHECK ERROR:", err);
+      return res.status(500).json({ message: "Database error" });
     }
 
-    const username = req.session.user.username;
-    const {
-      first_name,
-      middle_name,
-      last_name,
-      date_of_birth,
-      gender,
-      email,
-      phone_number,
-      address
-    } = req.body;
+    /* UPDATE */
+    if (rows.length > 0) {
+      const updateSql = `
+        UPDATE users_info
+        SET
+          first_name = ?,
+          middle_name = ?,
+          last_name = ?,
+          date_of_birth = ?,
+          gender = ?
+        WHERE user_id = ?
+      `;
 
-    const profilePicUrl = req.files.profile_pic
-      ? `/uploads/${req.files.profile_pic[0].filename}`
-      : null;
-
-    const coverPicUrl = req.files.cover_pic
-      ? `/uploads/${req.files.cover_pic[0].filename}`
-      : null;
-
-    const sql = `
-      UPDATE users_info SET
-        first_name=?, middle_name=?, last_name=?,
-        date_of_birth=?, gender=?, email=?,
-        phone_number=?, address=?,
-        profile_pic_url=COALESCE(?, profile_pic_url),
-        cover_pic_url=COALESCE(?, cover_pic_url),
-        updated_at=NOW()
-      WHERE username=?
-    `;
-
-    db.query(
-      sql,
-      [
-        first_name,
-        middle_name,
-        last_name,
-        date_of_birth,
-        gender,
-        email,
-        phone_number,
-        address,
-        profilePicUrl,
-        coverPicUrl,
-        username
-      ],
-      (err) => {
-        if (err) return res.status(500).json(err);
-
-        res.json({
-          message: "Company details updated",
-          data: {
-            ...req.body,
-            profile_pic_url: profilePicUrl,
-            cover_pic_url: coverPicUrl
+      db.query(
+        updateSql,
+        [
+          first_name,
+          middle_name,
+          last_name,
+          date_of_birth,
+          gender,
+          userId
+        ],
+        (err) => {
+          if (err) {
+            console.error("UPDATE ERROR:", err);
+            return res.status(500).json({ message: "Update failed" });
           }
-        });
-      }
-    );
-  }
-);
+
+          return res.json({
+            message: "Personal details updated successfully"
+          });
+        }
+      );
+    }
+
+    /* INSERT */
+    else {
+      const insertSql = `
+        INSERT INTO users_info
+        (user_id, first_name, middle_name, last_name, date_of_birth, gender)
+        VALUES (?, ?, ?, ?, ?, ?)
+      `;
+
+      db.query(
+        insertSql,
+        [
+          userId,
+          first_name,
+          middle_name,
+          last_name,
+          date_of_birth,
+          gender
+        ],
+        (err) => {
+          if (err) {
+            console.error("INSERT ERROR:", err);
+            return res.status(500).json({ message: "Insert failed" });
+          }
+
+          return res.json({
+            message: "Personal details saved successfully"
+          });
+        }
+      );
+    }
+  });
+});
 
 module.exports = router;

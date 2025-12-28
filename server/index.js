@@ -9,6 +9,7 @@ const cookieParser = require("cookie-parser");
 const loginRoutes = require("./routes/login");
 const accountRoutes = require("./routes/account");
 const clickRoutes = require("./routes/clicks"); // ✅ ADDED
+const companyRoutes = require("./routes/company");
 
 
 const app = express();
@@ -33,7 +34,9 @@ app.use(
     saveUninitialized: false,
     cookie: {
       httpOnly: true,
-      secure: false
+      secure: false,
+      sameSite: "lax", // ✅ ADD THIS
+
     }
   })
 );
@@ -50,6 +53,7 @@ app.get("/api/auth/me", (req, res) => {
 app.use("/api", loginRoutes);
 app.use("/api/account", accountRoutes); // ✅ FIXED
 app.use("/api", clickRoutes); // ✅ IMPORTANT FIX
+app.use("/api/company", companyRoutes);
 
 
 /* ============ START SERVER ============ */
