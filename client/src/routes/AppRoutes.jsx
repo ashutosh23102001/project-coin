@@ -5,6 +5,9 @@ import Coin from "../components/coin/coin";
 import Register from "../components/Register/Register";
 import ProtectedRoute from "./ProtectedRoute";
 import Account from "../components/Account/Account";
+import LinkShortener from "../components/Shortner/LinkShortener";
+import AdPage from "../components/Shortner/AdPage"; // ✅ FIXED PATH
+
 
 const AppRoutes = () => {
   return (
@@ -14,6 +17,9 @@ const AppRoutes = () => {
       <Route path="/register" element={<Register />} />
       <Route path="/" element={<Dashboard />} />
       <Route path="/home" element={<Dashboard />} />
+      <Route path="/shortener" element={<LinkShortener />} />
+      <Route path="/ad/:code" element={<AdPage />} />
+
 
       {/* PROTECTED */}
       <Route element={<ProtectedRoute />}>

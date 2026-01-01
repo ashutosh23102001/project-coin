@@ -10,6 +10,7 @@ const loginRoutes = require("./routes/login");
 const accountRoutes = require("./routes/account");
 const clickRoutes = require("./routes/clicks"); // ✅ ADDED
 const companyRoutes = require("./routes/company");
+const shortenerRoutes = require("./routes/shortener");
 
 
 const app = express();
@@ -54,6 +55,7 @@ app.use("/api", loginRoutes);
 app.use("/api/account", accountRoutes); // ✅ FIXED
 app.use("/api", clickRoutes); // ✅ IMPORTANT FIX
 app.use("/api/company", companyRoutes);
+app.use("/api", shortenerRoutes);   // ✅ IMPORTANT
 
 
 /* ============ START SERVER ============ */

@@ -7,7 +7,7 @@ import Cover from "./subcomp/Cover";
 import ProfileSidebar from "./subcomp/ProfileSidebar";
 import Tabs from "./subcomp/Tabs";
 import AccountSettings from "./subcomp/AccountSettings";
-import CompanySettings from "./subcomp/CompanySettings";
+import PersonalSettings from "./subcomp/PersonalSettings";
 import AddressSettings from "./subcomp/Address";
 import LeftAd from "../side-ad/Left_ad";
 import RightAd from "../side-ad/Right_ad";
@@ -64,7 +64,7 @@ const Account = () => {
                   />
                 )}
 
-                {activeTab === "company" && <CompanySettings />}
+                {activeTab === "company" && <PersonalSettings />}
                 {activeTab === "Address" && <AddressSettings />}
               </div>
             </div>

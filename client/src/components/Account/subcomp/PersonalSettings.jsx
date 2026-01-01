@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import api from "../../../API/axios";
 import "./sub.css";
 
-const CompanySettings = ({ company }) => {
+const PersonalSettings = ({ company }) => {
   const [form, setForm] = useState({
     first_name: "",
     middle_name: "",
@@ -130,4 +130,4 @@ const CompanySettings = ({ company }) => {
   );
 };
 
-export default CompanySettings;
+export default PersonalSettings;
