@@ -65,7 +65,6 @@ app.use("/api", shortenerRoutes);   // ✅ IMPORTANT
 app.use("/api", addressRoutes);
 app.use("/api", emailOtpRoutes); // ✅ OTP ENDPOINTS
 
-
 /* ============ START SERVER ============ */
 const PORT = 3002;
 app.listen(PORT, () => {

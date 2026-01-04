@@ -46,8 +46,8 @@ import Coin from "../components/coin/coin";
 import ProtectedRoute from "./ProtectedRoute";
 import Account from "../components/Account/Account";
 
-import LinkShortener from "../components/Shortner/LinkShortener";
-import AdPage from "../components/Shortner/AdPage";
+// import LinkShortener from "../components/Shortner/LinkShortener";
+// import AdPage from "../components/Shortner/AdPage";
 
 const AppRoutes = () => {
   return (
@@ -57,8 +57,8 @@ const AppRoutes = () => {
       <Route path="/home" element={<Dashboard />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
-      <Route path="/shortener" element={<LinkShortener />} />
-      <Route path="/ad/:code" element={<AdPage />} />
+      {/* <Route path="/shortener" element={<LinkShortener />} />
+      <Route path="/ad/:code" element={<AdPage />} /> */}
 
       {/* PROTECTED */}
       <Route element={<ProtectedRoute />}>

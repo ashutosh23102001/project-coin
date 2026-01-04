@@ -16,8 +16,8 @@ const Tabs = ({ activeTab, setActiveTab }) => (
 
 
     <button
-      className={activeTab === "Address" ? "active" : ""}
-      onClick={() => setActiveTab("Address")}
+      className={activeTab === "Contact" ? "active" : ""}
+      onClick={() => setActiveTab("Contact")}
     >
       Contact Details
     </button>

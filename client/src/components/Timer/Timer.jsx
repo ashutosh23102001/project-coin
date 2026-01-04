@@ -12,6 +12,6 @@ const Timer = ({ seconds }) => {
       ⏳ {formatTime(seconds)}
     </span>
   );
-};
+};  
 
 export default Timer;

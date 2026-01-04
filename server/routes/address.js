@@ -1,65 +1,4 @@
-// const express = require("express");
-// const db = require("../db");
 
-// const router = express.Router();
-
-// // =======================
-// // UPDATE ADDRESS DETAILS
-// // =======================
-// router.put("/", (req, res) => {
-//   if (!req.session.user) {
-//     return res.status(401).json({ message: "Unauthorized" });
-//   }
-
-//   const username = req.session.user.username;
-
-//   const {
-//     email,
-//     phone_number,
-//     address_line1,
-//     address_line2,
-//     city,
-//     state,
-//     pincode
-//   } = req.body;
-
-//   const sql = `
-//     UPDATE users_info SET
-//       email = ?,
-//       phone_number = ?,
-//       address_line1 = ?,
-//       address_line2 = ?,
-//       city = ?,
-//       state = ?,
-//       pincode = ?,
-//       updated_at = NOW()
-//     WHERE username = ?
-//   `;
-
-//   db.query(
-//     sql,
-//     [
-//       email,
-//       phone_number,
-//       address_line1,
-//       address_line2,
-//       city,
-//       state,
-//       pincode,
-//       username
-//     ],
-//     (err) => {
-//       if (err) return res.status(500).json(err);
-
-//       res.json({
-//         message: "Address details updated",
-//         data: req.body
-//       });
-//     }
-//   );
-// });
-
-// module.exports = router;
 
 const express = require("express");
 const db = require("../db");
@@ -70,54 +9,73 @@ const router = express.Router();
    UPDATE ADDRESS DETAILS
 ============================ */
 router.put("/update-address", (req, res) => {
-  if (!req.session.user) {
+  /* ❌ FIX: session check was OK but keep strict */
+  if (!req.session || !req.session.user) {
     return res.status(401).json({ message: "Unauthorized" });
   }
 
-  const username = req.session.user.username;
+  /* ✅ CORRECT: use user_id instead of username (safer & indexed) */
+  const userId = req.session.user.id;
 
-  /* 🔴 FIELD NAMES FIXED */
+  /* ============================
+     📥 DATA FROM FRONTEND
+  ============================ */
   const {
-    email,
-    phone,            // from frontend
-    address_line1,      // 🔴 NEW
-    address_line2,            // 🔴 from frontend
-    city,
-    state,
-    pincode
+    address_line1,   // ✅ ADDED
+    address_line2,   // ✅ ADDED (nullable)
+    city,            // ✅ ADDED
+    state,           // ✅ ADDED
+    pincode          // ✅ ADDED
   } = req.body;
 
+  /* ============================
+     🛠 VALIDATION
+  ============================ */
+  if (!address_line1 || !city || !state || !pincode) {
+    return res.status(400).json({
+      message: "Address Line 1, City, State and Pincode are required"
+    });
+  }
+
+  /* ============================
+     🧠 SQL QUERY
+  ============================ */
   const sql = `
     UPDATE users_info SET
-      email = ?,
-      phone_number = ?,  
-      address_line1 = ?,   -- 🔴 NEW
-      address_line2 = ?,    -- 🔴 corrected
-      city = ?,
-      state = ?,
-      pincode = ?,
+      address_line1 = ?,        -- ✅ ADDED
+      address_line2 = ?,        -- ✅ ADDED
+      city = ?,                 -- ✅ ADDED
+      state = ?,                -- ✅ ADDED
+      pincode = ?,              -- ✅ ADDED
       updated_at = NOW()
-    WHERE username = ?
+    WHERE user_id = ?
   `;
 
+  /* ============================
+     🚀 EXECUTION
+  ============================ */
   db.query(
     sql,
     [
-      email,
-      phone,
       address_line1,
-      address_line2 || null,
+      address_line2 || null,   // ✅ NULL SAFE
       city,
       state,
       pincode,
-      username
+      userId                   // ✅ CORRECT WHERE CONDITION
     ],
     (err, result) => {
       if (err) {
-        console.error("DB Error:", err);
-        return res.status(500).json({ message: "DB Error" });
+        console.error("❌ DB Error (update-address):", err);
+        return res.status(500).json({ message: "Database error" });
       }
 
+      /* ❌ FIX: handle no rows updated */
+      if (result.affectedRows === 0) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      /* ✅ SUCCESS */
       res.json({
         message: "Address details updated successfully"
       });
