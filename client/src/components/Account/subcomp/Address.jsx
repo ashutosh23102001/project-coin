@@ -1,10 +1,17 @@
-import React, { useEffect, useState } from "react";
-import api from "../../../API/axios";
 
-const AddressSettings = ({ data, setData }) => {
+import React, { useState } from "react";
+import api from "../../../API/axios";
+import INDIAN_STATES from "../../../constants/indianStates";
+import "./sub.css";
+
+const isValidPincode = /^[1-9][0-9]{5}$/;
+
+const AddressDetails = () => {
   const [form, setForm] = useState({
     email: "",
-    phone_number: "",
+    phone: "",
+    emailOtp: "",
+    phoneOtp: "",
     address_line1: "",
     address_line2: "",
     city: "",
@@ -12,102 +19,212 @@ const AddressSettings = ({ data, setData }) => {
     pincode: ""
   });
 
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
+  const [emailOtpSent, setEmailOtpSent] = useState(false);
+  const [phoneOtpSent, setPhoneOtpSent] = useState(false);
+  const [emailVerified, setEmailVerified] = useState(false);
 
-  useEffect(() => {
-    if (data) {
-      setForm({
-        email: data.email || "",
-        phone_number: data.phone_number || "",
-        address_line1: data.address_line1 || "",
-        address_line2: data.address_line2 || "",
-        city: data.city || "",
-        state: data.state || "",
-        pincode: data.pincode || ""
-      });
-    }
-  }, [data]);
-
-  const handleChange = (e) => {
+  const handleChange = e =>
     setForm({ ...form, [e.target.name]: e.target.value });
+const sendEmailOtp = async () => {
+  try {
+    await api.post("/send-email-otp", { email: form.email });
+    setEmailOtpSent(true);
+    alert("OTP sent to email");
+  } catch (err) {
+    alert(err.response?.data?.message || "Failed to send OTP");
+  }
+};
+
+const verifyEmailOtp = async () => {
+  try {
+    await api.post("/verify-email-otp", {
+      email: form.email,
+      otp: form.emailOtp
+    });
+
+    setEmailVerified(true);     // ✅ MARK VERIFIED
+    setEmailOtpSent(false);    // ✅ HIDE OTP INPUT
+    alert("Email verified");
+  } catch (err) {
+    alert(err.response?.data?.message || "OTP verification failed");
+  }
+};
+
+
+  /* -------- PHONE OTP -------- */
+  const sendPhoneOtp = async () => {
+    await api.post("/send-phone-otp", { phone: form.phone });
+    setPhoneOtpSent(true);
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError("");
-    setSuccess("");
-
-    try {
-      const res = await api.put("/address", form);
-      setData(res.data.data);
-      setSuccess("Address details updated successfully");
-    } catch (err) {
-      setError(err.response?.data?.message || "Update failed");
-    }
+  const verifyPhoneOtp = async () => {
+    await api.post("/verify-phone-otp", {
+      phone: form.phone,
+      otp: form.phoneOtp
+    });
+    alert("Phone verified");
   };
+
+  /* 🔴 SUBMIT HANDLER */
+const handleSubmit = async e => {
+  e.preventDefault();
+
+  if (!isValidPincode.test(form.pincode)) {
+    alert("Please enter a valid 6-digit Indian pincode");
+    return;
+  }
+
+  try {
+    await api.put("/update-address", {
+      email: form.email,
+      phone: form.phone, 
+          // 🔴 MATCH BACKEND
+      address_line1: form.address_line1,
+      address_line2: form.address_line2,
+      city: form.city,
+      state: form.state,
+      pincode: form.pincode
+    });
+
+    alert("Address updated successfully");
+  } catch (err) {
+    alert("Failed to update address");
+  }
+};
 
   return (
     <form className="settings-form" onSubmit={handleSubmit}>
       <h3>Address Details</h3>
+{/* ================= EMAIL ================= */}
+<label>Email</label>
 
-      {error && <p style={{ color: "red" }}>{error}</p>}
-      {success && <p style={{ color: "green" }}>{success}</p>}
+<div className="otp-row">
+  <input
+    name="email"
+    value={form.email}
+    onChange={handleChange}
+    disabled={emailVerified}   // ✅ lock email after verified
+  />
 
-      <label>Email</label>
-      <input
-        type="email"
-        name="email"
-        value={form.email}
-        onChange={handleChange}
-        required
-      />
+  {/* SEND OTP BUTTON */}
+  {!emailOtpSent && !emailVerified && (
+    <button
+      type="button"
+      className="otp-btn"
+      onClick={sendEmailOtp}
+    >
+      Send OTP
+    </button>
+  )}
+</div>
 
+{/* OTP INPUT + VERIFY BUTTON */}
+{emailOtpSent && !emailVerified && (
+  <div className="otp-row otp-verify">
+    <input
+      name="emailOtp"
+      placeholder="Enter OTP"
+      value={form.emailOtp}
+      onChange={handleChange}
+    />
+    <button
+      type="button"
+      className="verify-btn"
+      onClick={verifyEmailOtp}
+    >
+      Verify
+    </button>
+  </div>
+)}
+
+{/* VERIFIED TEXT */}
+{emailVerified && (
+  <div className="verified-text">
+    ✔ Email Verified
+  </div>
+)}
+
+
+
+      {/* ================= PHONE ================= */}
       <label>Phone Number</label>
-      <input
-        type="tel"
-        name="phone_number"
-        value={form.phone_number}
-        onChange={handleChange}
-      />
+      <div className="otp-row">
+        <input name="phone" value={form.phone} onChange={handleChange} />
+        {!phoneOtpSent && (
+          <button type="button" className="otp-btn" onClick={sendPhoneOtp}>
+            Send OTP
+          </button>
+        )}
+      </div>
 
-      <label>Address line 1</label>
-      <input
-        name="address_line1"
-        value={form.address_line1}
-        onChange={handleChange}
-        required
-      />
+      {phoneOtpSent && (
+        <div className="otp-row otp-verify">
+          <input
+            name="phoneOtp"
+            placeholder="Enter OTP"
+            value={form.phoneOtp}
+            onChange={handleChange}
+          />
+          <button type="button" className="verify-btn" onClick={verifyPhoneOtp}>
+            Verify
+          </button>
+        </div>
+      )}
 
-      <label>Address line 2 (optional)</label>
-      <input
-        name="address_line2"
-        value={form.address_line2}
-        onChange={handleChange}
-      />
+      {/* ---------- ADDRESS LINE 1 + LINE 2 ---------- */}
+<div className="address-row">
+  <div className="address-col">
+    <label>Address Line 1</label>
+    <input
+      name="address_line1"
+      value={form.address_line1}
+      onChange={handleChange}
+      placeholder="House no, Street, Area"
+    />
+  </div>
 
-      <label>City</label>
-      <input
-        name="city"
-        value={form.city}
-        onChange={handleChange}
-        required
-      />
+  <div className="address-col">
+    <label>Address Line 2</label>
+    <input
+      name="address_line2"
+      value={form.address_line2}
+      onChange={handleChange}
+      placeholder="Landmark (optional)"
+    />
+  </div>
+</div>
 
-      <label>State</label>
-      <input
-        name="state"
-        value={form.state}
-        onChange={handleChange}
-        required
-      />
 
+
+
+      {/* ---------- CITY + STATE ---------- */}
+      <div className="city-state-row">
+        <div className="city-col">
+          <label>City</label>
+          <input name="city" value={form.city} onChange={handleChange} />
+        </div>
+
+        <div className="state-col">
+          <label>State</label>
+          <select name="state" value={form.state} onChange={handleChange}>
+            <option value="">Select State</option>
+            {INDIAN_STATES.map(state => (
+              <option key={state} value={state}>
+                {state}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+
+      {/* ---------- PINCODE ---------- */}
       <label>Pincode</label>
       <input
         name="pincode"
         value={form.pincode}
         onChange={handleChange}
-        required
+        maxLength={6}
+        placeholder="Enter 6-digit pincode"
       />
 
       <button type="submit">Update</button>
@@ -115,4 +232,4 @@ const AddressSettings = ({ data, setData }) => {
   );
 };
 
-export default AddressSettings;
+export default AddressDetails;

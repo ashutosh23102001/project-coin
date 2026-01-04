@@ -46,7 +46,7 @@ const Navbar = () => {
             Services ▾
             {servicesOpen && (
               <ul className="dropdown-menu">
-                <li><Link to="/shortener">Link shortner</Link></li>
+                <li><Link to="/">Link shortner</Link></li>
               </ul>
             )}
           </li>

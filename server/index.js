@@ -1,4 +1,5 @@
 // //cd server > npm init >enter >enter > enter> check dependiencies > npm install express mysql cors 
+require("dotenv").config();
 
 
 const express = require("express");
@@ -11,6 +12,11 @@ const accountRoutes = require("./routes/account");
 const clickRoutes = require("./routes/clicks"); // ✅ ADDED
 const companyRoutes = require("./routes/company");
 const shortenerRoutes = require("./routes/shortener");
+const addressRoutes = require("./routes/address");
+const emailOtpRoutes = require("./routes/emailOtp"); // ✅ OTP ROUTE ONLY HERE
+
+
+
 
 
 const app = express();
@@ -54,8 +60,10 @@ app.get("/api/auth/me", (req, res) => {
 app.use("/api", loginRoutes);
 app.use("/api/account", accountRoutes); // ✅ FIXED
 app.use("/api", clickRoutes); // ✅ IMPORTANT FIX
-app.use("/api/company", companyRoutes);
+app.use("/api/company", companyRoutes);     // ✅ Personal Settings
 app.use("/api", shortenerRoutes);   // ✅ IMPORTANT
+app.use("/api", addressRoutes);
+app.use("/api", emailOtpRoutes); // ✅ OTP ENDPOINTS
 
 
 /* ============ START SERVER ============ */
