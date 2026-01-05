@@ -56,10 +56,6 @@ const Address = () => {
     setError("");
     setSuccess("");
 
-    // if (!form.address_line1 || !form.city || !form.state || !form.pincode) {
-    //   setError("All required fields must be filled");
-    //   return;
-    // }
 try {
       setLoading(true);
       const res = await api.put("/update-address", form);
