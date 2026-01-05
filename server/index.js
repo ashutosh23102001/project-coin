@@ -64,6 +64,7 @@ app.use("/api/company", companyRoutes);     // ✅ Personal Settings
 app.use("/api", shortenerRoutes);   // ✅ IMPORTANT
 app.use("/api", addressRoutes);
 app.use("/api", emailOtpRoutes); // ✅ OTP ENDPOINTS
+app.use("/api", require("./routes/profile"));
 
 /* ============ START SERVER ============ */
 const PORT = 3002;

@@ -93,11 +93,10 @@ const sendOtp = async () => {
             onClick={sendOtp}
             disabled={sendingOtp} // ✅ DISABLE BUTTON
           >
-            {sendingOtp ? "Sending..." : "Send OTP"}
+            {sendingOtp ?  <Loader /> : "Send OTP"}
           </button>
         )}
       </div>
-      {sendingOtp && <Loader />} {/* ✅ SHOW LOADER */}
 
       {otpSent && (
         <div className="otp-row">
@@ -120,3 +119,4 @@ const sendOtp = async () => {
 };
 
 export default EmailVerification;
+

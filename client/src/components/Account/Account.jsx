@@ -16,12 +16,45 @@ import RightAd from "../side-ad/Right_ad";
 import "./Account.css";
 
 const Account = () => {
+  /* =========================
+     STATE
+  ========================= */
   const [activeTab, setActiveTab] = useState("account");
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
+  /* =========================
+     FETCH PROFILE + ACCOUNT
+  ========================= */
   useEffect(() => {
-    api.get("/account").then(res => setUser(res.data));
+    const fetchUserData = async () => {
+      try {
+        const [profileRes, accountRes] = await Promise.all([
+          api.get("/profile"), // name, username, pic
+          api.get("/account")  // email, phone, etc
+        ]);
+
+        /* ✅ MERGE BOTH RESPONSES */
+        setUser({
+          ...profileRes.data,
+          ...accountRes.data
+        });
+      } catch (err) {
+        console.error("❌ Failed to load user data", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUserData();
   }, []);
+
+  /* =========================
+     LOADING STATE
+  ========================= */
+  if (loading) {
+    return <div style={{ padding: 40 }}>Loading account...</div>;
+  }
 
   return (
     <>
@@ -35,7 +68,7 @@ const Account = () => {
             <Cover user={user} setUser={setUser} />
 
             <div className="account-card">
-              <ProfileSidebar user={user} setUser={setUser} />
+              <ProfileSidebar user={user} />
 
               <div className="account-content">
                 <Tabs
@@ -50,14 +83,25 @@ const Account = () => {
                   />
                 )}
 
-                {activeTab === "company" && <PersonalSettings />}
-                {activeTab === "Contact" && <Contact />}
+                {activeTab === "company" && (
+                  <PersonalSettings
+                    user={user}
+                    setUser={setUser}
+                  />
+                )}
+
+                {activeTab === "Contact" && (
+                  <Contact
+                    user={user}
+                    setUser={setUser}
+                  />
+                )}
               </div>
             </div>
           </div>
         </div>
 
-        {/* <RightAd /> */}
+        <RightAd />
       </div>
     </>
   );

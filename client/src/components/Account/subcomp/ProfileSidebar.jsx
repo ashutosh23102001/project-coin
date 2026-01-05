@@ -1,7 +1,43 @@
 
+// import React from "react";
+// import Loader from "../../Loader/Loader";
+
+// const ProfileSidebar = ({ user }) => {
+//   return (
+//     <div className="profile-sidebar">
+//       <div className="profile-img-wrapper">
+//         <img
+//           src={user?.profile_pic_url || "https://i.pravatar.cc/150"}
+//           alt="profile"
+//         />
+//       </div>
+
+//       <h3>{user?.username || <Loader />}</h3>
+//       <p>My Company</p>
+
+//       <div className="profile-stats">
+//         <div><strong>32</strong><span>Applied</span></div>
+//         <div><strong>26</strong><span>Won</span></div>
+//         <div><strong>6</strong><span>Active</span></div>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default ProfileSidebar;
+
+
 import React from "react";
 
 const ProfileSidebar = ({ user }) => {
+  const fullName = [
+    user?.first_name,
+    user?.middle_name,
+    user?.last_name
+  ]
+    .filter(Boolean) // removes null / empty
+    .join(" ");
+
   return (
     <div className="profile-sidebar">
       <div className="profile-img-wrapper">
@@ -12,12 +48,23 @@ const ProfileSidebar = ({ user }) => {
       </div>
 
       <h3>{user?.username || "Loading..."}</h3>
-      <p>My Company</p>
+
+      {/* ✅ FULL NAME FROM DB */}
+      <p>{fullName || "—"}</p>
 
       <div className="profile-stats">
-        <div><strong>32</strong><span>Applied</span></div>
-        <div><strong>26</strong><span>Won</span></div>
-        <div><strong>6</strong><span>Active</span></div>
+        <div>
+          <strong>32</strong>
+          <span>Applied</span>
+        </div>
+        <div>
+          <strong>26</strong>
+          <span>Won</span>
+        </div>
+        <div>
+          <strong>6</strong>
+          <span>Active</span>
+        </div>
       </div>
     </div>
   );
