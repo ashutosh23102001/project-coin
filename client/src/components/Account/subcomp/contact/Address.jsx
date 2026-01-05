@@ -1,6 +1,6 @@
 
 
-import React, { useState } from "react";
+import React, { useState ,useEffect  } from "react";
 import api from "../../../../API/axios";
 import INDIAN_STATES from "../../../../constants/indianStates";
 import Loader from "../../../Loader/Loader"; // ✅ ADDED
@@ -18,9 +18,29 @@ const Address = () => {
     pincode: ""
   });
 
+    const [isEditing, setIsEditing] = useState(false); // ✅ ADDED
+
   const [loading, setLoading] = useState(false); // ✅ ADDED
   const [success, setSuccess] = useState("");   // ✅ ADDED
   const [error, setError] = useState("");       // ✅ ADDED
+
+
+
+  /* ============================
+     🔹 FETCH ADDRESS ON LOAD
+  ============================ */
+  useEffect(() => {
+    api
+      .get("/address") // ✅ ADDED
+      .then(res => {
+        setForm(res.data);
+      })
+      .catch(() => {
+        setError("Failed to load address");
+      });
+  }, []);
+
+
 
   /* ============================
      HANDLE CHANGE
@@ -36,21 +56,19 @@ const Address = () => {
     setError("");
     setSuccess("");
 
-    if (!form.address_line1 || !form.city || !form.state || !form.pincode) {
-      setError("All required fields must be filled");
-      return;
-    }
-
-    try {
-      setLoading(true); // ✅ SHOW LOADER
-
+    // if (!form.address_line1 || !form.city || !form.state || !form.pincode) {
+    //   setError("All required fields must be filled");
+    //   return;
+    // }
+try {
+      setLoading(true);
       const res = await api.put("/update-address", form);
-
-      setSuccess(res.data.message || "Address updated successfully");
+      setSuccess(res.data.message);
+      setIsEditing(false); // ✅ DISABLE AFTER SAVE
     } catch (err) {
-      setError(err.response?.data?.message || "Failed to update address");
+      setError(err.response?.data?.message || "Update failed");
     } finally {
-      setLoading(false); // ✅ HIDE LOADER
+      setLoading(false);
     }
   };
 
@@ -68,6 +86,8 @@ const Address = () => {
         name="address_line1"
         value={form.address_line1}
         onChange={handleChange}
+                disabled={!isEditing}   // ✅ ADDED
+
       />
 
       {/* ================= ADDRESS LINE 2 ================= */}
@@ -76,6 +96,8 @@ const Address = () => {
         name="address_line2"
         value={form.address_line2}
         onChange={handleChange}
+                disabled={!isEditing}   // ✅ ADDED
+
       />
 
       {/* ================= CITY + STATE + PINCODE ================= */}
@@ -87,6 +109,8 @@ const Address = () => {
             name="city"
             value={form.city}
             onChange={handleChange}
+                    disabled={!isEditing}   // ✅ ADDED
+
           />
 
           <label>Pincode</label>
@@ -96,6 +120,9 @@ const Address = () => {
               maxLength={6}
               value={form.pincode}
               onChange={handleChange}
+
+                      disabled={!isEditing}   // ✅ ADDED
+
             />
 
             {/* ✅ SAVE BUTTON NEXT TO PINCODE */}
@@ -110,6 +137,8 @@ const Address = () => {
             name="state"
             value={form.state}
             onChange={handleChange}
+                    disabled={!isEditing}   // ✅ ADDED
+
           >
             <option value="">Select State</option>
             {INDIAN_STATES.map((s) => (
@@ -118,14 +147,27 @@ const Address = () => {
               </option>
             ))}
           </select>
-           <button
-              type="button"
-              className="verify-btn"
-              onClick={handleSave}
-              disabled={loading}
-            >
-              {loading ? <Loader /> : "Save"}
-            </button>
+           {!isEditing ? (
+  /* ================= EDIT MODE BUTTON ================= */
+  <button
+    type="button"
+    className="verify-btn"
+    onClick={() => setIsEditing(true)}   // ✅ ENABLE EDITING
+  >
+    Edit
+  </button>
+) : (
+  /* ================= SAVE MODE BUTTON ================= */
+  <button
+    type="button"
+    className="verify-btn"
+    onClick={handleSave}                 // ✅ SAVE DATA
+    disabled={loading}
+  >
+    {loading ? <Loader /> : "Save"}
+  </button>
+)}
+
         </div>
       </div>
 

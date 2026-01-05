@@ -5,6 +5,50 @@ const db = require("../db");
 
 const router = express.Router();
 
+
+
+/* =====================================================
+   🔹 GET ADDRESS (FETCH USING SESSION USER ID)
+===================================================== */
+router.get("/address", (req, res) => {
+  if (!req.session || !req.session.user) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+
+  const userId = req.session.user.id; // ✅ SESSION USER ID
+
+  const sql = `
+    SELECT 
+      address_line1,
+      address_line2,
+      city,
+      state,
+      pincode
+    FROM users_info
+    WHERE user_id = ?
+  `;
+
+  db.query(sql, [userId], (err, rows) => {
+    if (err) {
+      console.error("❌ DB Error (fetch-address):", err);
+      return res.status(500).json({ message: "Database error" });
+    }
+
+    if (!rows.length) {
+      return res.json({
+        address_line1: "",
+        address_line2: "",
+        city: "",
+        state: "",
+        pincode: ""
+      });
+    }
+
+    res.json(rows[0]); // ✅ SEND EXISTING DATA
+  });
+});
+
+
 /* ============================
    UPDATE ADDRESS DETAILS
 ============================ */
