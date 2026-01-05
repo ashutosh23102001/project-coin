@@ -14,6 +14,8 @@ const companyRoutes = require("./routes/company");
 const shortenerRoutes = require("./routes/shortener");
 const addressRoutes = require("./routes/address");
 const emailOtpRoutes = require("./routes/emailOtp"); // ✅ OTP ROUTE ONLY HERE
+const profilePicRoute = require("./routes/profilePic");
+const path = require("path");
 
 
 
@@ -23,6 +25,7 @@ const app = express();
 
 /* ============ MIDDLEWARE ============ */
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 app.use(
   cors({
@@ -65,6 +68,11 @@ app.use("/api", shortenerRoutes);   // ✅ IMPORTANT
 app.use("/api", addressRoutes);
 app.use("/api", emailOtpRoutes); // ✅ OTP ENDPOINTS
 app.use("/api", require("./routes/profile"));
+app.use("/api", profilePicRoute);
+// app.use("/uploads", express.static("uploads"));
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+app.use("/api", require("./routes/profile"));          // profile data
+
 
 /* ============ START SERVER ============ */
 const PORT = 3002;
