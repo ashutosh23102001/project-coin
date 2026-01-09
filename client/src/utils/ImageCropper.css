@@ -1,0 +1,40 @@
+.cropper-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  z-index: 9999;              /* 🔴 VERY IMPORTANT */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cropper-container {
+  position: relative;
+  width: 90vw;
+  max-width: 900px;
+  height: 400px;              /* 🔴 REQUIRED */
+  background: #000;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.cropper-actions {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  display: flex;
+  gap: 10px;
+  z-index: 10000;
+}
+
+.cropper-actions button {
+  padding: 8px 14px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+}
+
+.cropper-actions button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

@@ -110,6 +110,10 @@
 // export default Account;
 
 
+// last 
+
+
+
 import React, { useEffect, useState } from "react";
 import api from "../../API/axios";
 
@@ -142,7 +146,7 @@ const Account = () => {
       <Navbar />
 
       <div className="account-page-bg">
-        <LeftAd />
+        {/* <LeftAd /> */}
 
         <div className="account-wrapper">
           <div className="account-container">
@@ -169,7 +173,7 @@ const Account = () => {
           </div>
         </div>
 
-        <RightAd />
+        {/* <RightAd /> */}
       </div>
     </>
   );

@@ -42,7 +42,7 @@ import Login from "../components/Login/Login";
 import Register from "../components/Register/Register";
 import Dashboard from "../components/Dashboard/Dashboard";
 import Coin from "../components/coin/coin";
-
+import ForgotPassword from "../components/ForgotPassword/ForgotPassword";
 import ProtectedRoute from "./ProtectedRoute";
 import Account from "../components/Account/Account";
 
@@ -57,6 +57,7 @@ const AppRoutes = () => {
       <Route path="/home" element={<Dashboard />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
+      <Route path="/forgot-password" element={<ForgotPassword />} />
       {/* <Route path="/shortener" element={<LinkShortener />} />
       <Route path="/ad/:code" element={<AdPage />} /> */}
 

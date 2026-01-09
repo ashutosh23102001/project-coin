@@ -1,5 +1,3 @@
-
-
 import React, { useState } from "react";
 import "./Login.css";
 import { Link, useNavigate } from "react-router-dom";
@@ -25,7 +23,7 @@ const Login = () => {
     try {
       const res = await api.post("/login", {
         Username: Username.trim(),
-        password
+        password,
       });
 
       login(res.data.user);
@@ -40,20 +38,18 @@ const Login = () => {
   return (
     <div className="popup-overlay">
       <div className="popup-container">
-
         {/* LEFT SIDE */}
         <div className="left-side login-white-side">
           <h2>Login to your account</h2>
 
           {/* ERROR MESSAGE */}
           {error && (
-            <p style={{ color: "red", marginBottom: "10px" }}>
-              {error}
-            </p>
+            <p style={{ color: "red", marginBottom: "10px" }}>{error}</p>
           )}
 
           <form onSubmit={handleSubmit}>
             <div className="input-group">
+              <span className="icon user-icon"></span>
               <input
                 type="text"
                 placeholder="Username"
@@ -64,6 +60,7 @@ const Login = () => {
             </div>
 
             <div className="input-group">
+              <span className="icon lock-icon"></span>
               <input
                 type="password"
                 placeholder="Password"
@@ -72,7 +69,17 @@ const Login = () => {
                 required
               />
             </div>
+            {/* Remember & Forgot */}
+            <div className="login-options">
+              <label className="remember-me">
+                <input type="checkbox" />
+                <span>Remember me</span>
+              </label>
 
+              <Link to="/forgot-password" className="forgot-link">
+                Forgot password?
+              </Link>
+            </div>
             <button
               type="submit"
               className="create-account-btn"
@@ -80,16 +87,23 @@ const Login = () => {
             >
               {loading ? "LOGGING IN..." : "LOGIN"}
             </button>
+
+            {/* Register text */}
+            <p className="register-text">
+              Don’t have an account? <Link to="/register">Register</Link>
+            </p>
           </form>
         </div>
 
         {/* RIGHT SIDE */}
+        <Link to="/">
+          <button className="popup-close-btn">&times;</button>
+        </Link>
         <div className="right-side login-colorful-side">
           <Link to="/register">
             <button className="signup-btn">Sign Up</button>
           </Link>
         </div>
-
       </div>
     </div>
   );
