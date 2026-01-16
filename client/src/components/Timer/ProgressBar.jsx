@@ -13,9 +13,7 @@ const ProgressBar = ({ count }) => {
   return (
     <div className="progress-page">
       {/* Show count/max in top-left */}
-      <div className="input-section">
-        {count}/{max}
-      </div>
+      
 
       <div className="bottom-progress-container">
         <div

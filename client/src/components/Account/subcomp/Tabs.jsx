@@ -21,6 +21,13 @@ const Tabs = ({ activeTab, setActiveTab }) => (
     >
       Contact Details
     </button>
+    
+    <button
+      className={activeTab === "Earn" ? "active" : ""}
+      onClick={() => setActiveTab("Earn")}
+    >
+      Earning Details
+    </button>
 
   </div>
 );

@@ -19,6 +19,7 @@ const path = require("path");
 const forgotPasswordRoutes = require("./routes/forgotPassword");
 const coverRoute = require("./routes/cover");
 
+const pointsRoutes = require("./routes/points");
 
 
 
@@ -69,12 +70,13 @@ app.use("/api/company", companyRoutes);     // ✅ Personal Settings
 app.use("/api", shortenerRoutes);   // ✅ IMPORTANT
 app.use("/api", addressRoutes);
 app.use("/api", emailOtpRoutes); // ✅ OTP ENDPOINTS  
-app.use("/api", require("./routes/profile"));
+
 app.use("/api", profilePicRoute);
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use("/api", require("./routes/profile"));          // profile data
 app.use("/api", forgotPasswordRoutes);
 app.use("/api", coverRoute);
+app.use("/api", pointsRoutes);
 
 
 

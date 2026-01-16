@@ -175,6 +175,10 @@ const Navbar = () => {
           `${import.meta.env.VITE_IMAGE_URL}${res.data.profile_pic_url}`
         );
       }
+    })
+     .catch(err => {
+      console.warn("Profile not found, using default avatar");
+      setProfilePic(null); // VERY IMPORTANT
     });
   }, [user]);
 

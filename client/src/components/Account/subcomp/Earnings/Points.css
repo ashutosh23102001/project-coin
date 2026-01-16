@@ -1,0 +1,35 @@
+.points-wrapper {
+  max-width: 520px;
+  margin: 30px auto;
+  padding: 20px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+}
+
+.points-wrapper h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.points-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.points-table th,
+.points-table td {
+  padding: 12px;
+  border-bottom: 1px solid #eee;
+  text-align: left;
+}
+
+.points-table th {
+  background: #f5f7ff;
+  font-weight: 600;
+}
+
+.total-row td {
+  font-weight: 700;
+  background: #eef1ff;
+}
