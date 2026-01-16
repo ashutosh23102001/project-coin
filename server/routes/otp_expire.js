@@ -1,11 +1,14 @@
-// otp_expire.js
-const db = require("./db"); // adjust path if needed
+// server/otp_expire.js
 
-// ⏱ Run every 1 minute
+const express = require("express");
+const db = require("../db");
+
+const router = express.Router();
+// ⏱ Run every 30 seconds (safe + accurate)
 setInterval(() => {
   const sql = `
     DELETE FROM email_otps
-    WHERE created_at < (NOW() - INTERVAL 2 MINUTE)
+    WHERE expires_at <= NOW()
   `;
 
   db.query(sql, (err, result) => {
@@ -15,4 +18,4 @@ setInterval(() => {
       console.log(`🧹 Deleted ${result.affectedRows} expired OTP(s)`);
     }
   });
-}, 60 * 1000); // every 60 seconds
+}, 30 * 1000); // every 30 seconds

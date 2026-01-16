@@ -1,0 +1,67 @@
+/* PAGE LAYOUT */
+.ad-page {
+  display: flex;
+  align-items: center;
+  min-height: calc(100vh);
+  background-color: #000;
+  padding: 20px;
+}
+
+/* LEFT & RIGHT ADS (FIXED SPACE) */
+.ad-side {
+  width: 160px;           /* EXACT ad width */
+  display: flex;
+  justify-content: center;
+  flex-shrink: 0;         /* prevents overlap */
+}
+
+/* CENTER AREA */
+.ad-center-wrapper {
+  flex: 1;                /* takes remaining space */
+  display: flex;
+  justify-content: center;
+}
+
+/* RED AD BOX */
+.ad-center-box {
+  width: 900px;
+  height: 600px;
+    margin-left :17%;
+  margin-bottom: 10px;
+  background-color: #850c0cff;
+  color: #fffafaff;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  text-align: center;
+  border-radius: 15px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+/* TEXT */
+.ad-center-box h1 {
+  font-size: 32px;
+  margin-bottom: 10px;
+}
+
+.ad-center-box p {
+  font-size: 18px;
+  margin: 6px 0;
+}
+
+.ad-center-box .highlight {
+  color: #ffd700;
+  font-weight: bold;
+}
+
+/* RESPONSIVE */
+@media (max-width: 1200px) {
+  .ad-center-box {
+    width: 100%;
+    height: auto;
+    padding: 40px 20px;
+  }
+}

@@ -78,7 +78,7 @@ const Register = () => {
             <div className="terms-checkbox">
               <input type="checkbox" id="terms" required />
               <label htmlFor="terms">
-                I read and agree to Terms & Conditions
+                I read and agree to <a href="/terms-and-conditions">Terms & Conditions</a>
               </label>
             </div>
 

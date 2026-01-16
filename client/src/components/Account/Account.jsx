@@ -146,7 +146,7 @@ const Account = () => {
       <Navbar />
 
       <div className="account-page-bg">
-        {/* <LeftAd /> */}
+        <LeftAd />
 
         <div className="account-wrapper">
           <div className="account-container">
@@ -173,7 +173,7 @@ const Account = () => {
           </div>
         </div>
 
-        {/* <RightAd /> */}
+        <RightAd />
       </div>
     </>
   );

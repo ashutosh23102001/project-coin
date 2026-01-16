@@ -45,6 +45,9 @@ import Coin from "../components/coin/coin";
 import ForgotPassword from "../components/ForgotPassword/ForgotPassword";
 import ProtectedRoute from "./ProtectedRoute";
 import Account from "../components/Account/Account";
+import Ad from "../components/side-ad/ad_page";
+import PrivacyPolicy from "../components/Footer/PrivacyPolicy";
+import TermsAndConditions from "../components/Footer/TermsAndConditions";
 
 // import LinkShortener from "../components/Shortner/LinkShortener";
 // import AdPage from "../components/Shortner/AdPage";
@@ -53,6 +56,10 @@ const AppRoutes = () => {
   return (
     <Routes>
       {/* PUBLIC */}
+      <Route path="/ad" element={<Ad />} />
+      <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+      <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
+
       <Route path="/" element={<Dashboard />} />
       <Route path="/home" element={<Dashboard />} />
       <Route path="/login" element={<Login />} />

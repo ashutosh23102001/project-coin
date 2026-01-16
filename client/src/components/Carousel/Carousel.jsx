@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import easyTaskImg from "../assets/easytask.png?q=80&w=2070&auto=format&fit=crop";
 
 const carouselData = [
     { 
@@ -21,6 +22,16 @@ const carouselData = [
         title: "New Movie Trailers", 
         caption: "Catch up on the latest teasers and trailers.", 
         button: "View All" 
+        
+    },
+    
+    { 
+        id: 4, 
+        img: easyTaskImg,
+        title: "Easy task", 
+        caption: "Simple tasks, Big Rewards", 
+        button: "View All" 
+        
     },
 ];
 

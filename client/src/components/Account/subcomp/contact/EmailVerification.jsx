@@ -2,121 +2,157 @@
 import React, { useEffect, useState } from "react";
 import api from "../../../../API/axios";
 import "../sub.css";
-import Loader from "../../../Loader/Loader"; // ✅ ADDED
+import Loader from "../../../Loader/Loader";
+import Timer from "../../../Timer/Timer";
 
-
+/* =====================================================
+   📧 EMAIL VERIFICATION COMPONENT
+===================================================== */
 const EmailVerification = ({ email, setEmail }) => {
-  const [editMode, setEditMode] = useState(false);
+  /* ================= STATE ================= */
+  const [editMode, setEditMode] = useState(false);      // 🔧 default false
   const [otpSent, setOtpSent] = useState(false);
   const [verified, setVerified] = useState(false);
   const [otp, setOtp] = useState("");
-  const [emailFetched, setEmailFetched] = useState(false); // ✅ ADDED
-  const [sendingOtp, setSendingOtp] = useState(false); // ✅ ADDED
+  const [emailFetched, setEmailFetched] = useState(false);
+  const [sendingOtp, setSendingOtp] = useState(false);
+  const [resendingOtp, setResendingOtp] = useState(false); // 🔧 NEW
+  const [timeLeft, setTimeLeft] = useState(0);
 
-  /* ================= FETCH EMAIL (ONCE ONLY) ================= */
+  /* ================= FETCH EMAIL (LOCKED INITIALLY) ================= */
   useEffect(() => {
-    if (emailFetched) return; // ✅ PREVENT LOOP
+    if (emailFetched) return;
 
     api
       .get("/get-email")
       .then(res => {
         setEmail(res.data.email || "");
-        setEmailFetched(true); // ✅ MARK FETCHED
-      })
-      .catch(err => {
-        console.error(
-          "❌ Email fetch failed",
-          err.response?.status,
-          err.response?.data
-        );
         setEmailFetched(true);
-      });
+        setEditMode(false); // 🔧 email locked initially
+      })
+      .catch(() => setEmailFetched(true));
   }, [emailFetched, setEmail]);
+
+  /* ================= OTP TIMER ================= */
+  useEffect(() => {
+    if (!otpSent || timeLeft <= 0) return;
+
+    const interval = setInterval(() => {
+      setTimeLeft(t => t - 1);
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [otpSent, timeLeft]);
 
   /* ================= EDIT ================= */
   const onEdit = () => {
     setEditMode(true);
-    setVerified(false);
     setOtpSent(false);
+    setVerified(false);
     setOtp("");
+    setTimeLeft(0);
   };
 
-const sendOtp = async () => {
-    if (!email) {
-      alert("Please enter email");
-      return;
-    }
+  /* ================= SEND OTP ================= */
+  const sendOtp = async () => {
+    if (!email) return alert("Enter email");
 
     try {
-      setSendingOtp(true);        // ✅ START LOADER
+      setSendingOtp(true);
       await api.post("/send-email-otp", { email });
+
       setOtpSent(true);
-    } catch (err) {
+      setEditMode(false);        // 🔒 lock email
+      setTimeLeft(60);
+    } catch {
       alert("Failed to send OTP");
     } finally {
-      setSendingOtp(false);       // ✅ STOP LOADER
+      setSendingOtp(false);
     }
   };
 
+  /* ================= RESEND OTP ================= */
+  const resendOtp = async () => {
+    try {
+      setResendingOtp(true);
+      await api.post("/send-email-otp", { email });
+      setTimeLeft(60);
+      setOtp("");
+    } catch {
+      alert("Failed to resend OTP");
+    } finally {
+      setResendingOtp(false);
+    }
+  };
 
   /* ================= VERIFY OTP ================= */
   const verifyOtp = async () => {
-    await api.post("/verify-email-otp", { email, otp });
-
-    setVerified(true);
-    setEditMode(false);
-    setOtpSent(false);
-    setOtp("");
+    try {
+      await api.post("/verify-email-otp", { email, otp });
+      setVerified(true);
+      setOtpSent(false);
+      setOtp("");
+    } catch (err) {
+      alert(err.response?.data?.message || "OTP verification failed");
+    }
   };
 
   return (
-    <section className="email">
+    <section className="email-section">
       <label>Email</label>
 
+      {/* ================= EMAIL ROW ================= */}
       <div className="otp-row">
         <input
           value={email}
-          onChange={e => setEmail(e.target.value)} // ✅ NOW WORKS
-          disabled={!editMode || sendingOtp} // ✅ DISABLE WHILE LOADING
+          onChange={e => setEmail(e.target.value)}
+          disabled={!editMode}        // 🔧 locked by default
         />
 
         {!editMode && (
-          <button type="button" onClick={onEdit}>
+          <button className="otp-btn" onClick={onEdit}>
             Edit
           </button>
         )}
 
-           {editMode && !otpSent && (
-          <button
-            type="button"
-            className="otp-btn"
-            onClick={sendOtp}
-            disabled={sendingOtp} // ✅ DISABLE BUTTON
-          >
-            {sendingOtp ?  <Loader /> : "Send OTP"}
+        {editMode && !otpSent && (
+          <button className="otp-btn" onClick={sendOtp} disabled={sendingOtp}>
+            {sendingOtp ? <Loader /> : "Send OTP"}
           </button>
         )}
       </div>
 
+      {/* ================= OTP ROW (SAME HEIGHT, SAME LINE) ================= */}
       {otpSent && (
-        <div className="otp-row">
+        <div className="otp-row fixed-height-row">
           <input
             placeholder="Enter OTP"
             value={otp}
             onChange={e => setOtp(e.target.value)}
           />
-          <button type="button" onClick={verifyOtp}>
+
+          <button className="verify-btn" onClick={verifyOtp}>
             Verify
           </button>
+
+          {/* 🔧 Timer / Resend / Loader — fixed width */}
+          <div className="timer-slot">
+            {timeLeft > 0 ? (
+              <Timer seconds={timeLeft} />
+            ) : resendingOtp ? (
+              <Loader />
+            ) : (
+              <button className="otp-btn" onClick={resendOtp}>
+                Resend
+              </button>
+            )}
+          </div>
         </div>
       )}
 
-      {verified && !editMode && (
-        <p className="verified-text">✔ Email Verified</p>
-      )}
+      {verified && <p className="verified-text">✔ Email Verified</p>}
     </section>
   );
 };
 
 export default EmailVerification;
-

@@ -85,11 +85,12 @@ const Footer = () => {
 
             {/* BOTTOM SECTION: Copyright and Policy */}
             <div className="footer-bottom">
-                <span>Copyright &copy; 2021 learningrobo</span>
+                <div className="made-with">Copyright &copy; 2021</div>
                 <div className="made-with">
-                    <a href="#privacy">Privacy policy</a>
-                    <span>Made with <span style={{ color: 'red' }}>&hearts;</span> by Learning Robo</span>
+                    <a href="/privacy-policy">Privacy policy</a>
+                    
                 </div>
+                <div className="made-with"><a href="/terms-and-conditions">Terms & Conditions</a></div>
             </div>
         </footer>
     );

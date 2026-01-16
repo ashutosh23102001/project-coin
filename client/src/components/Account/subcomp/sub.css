@@ -6,6 +6,32 @@
     border: 1px solid #ddd;
 }
 
+/* ======================================
+   FIX HEIGHT JUMP (TIMER / RESEND)
+====================================== */
+.fixed-height-row {
+  align-items: center;
+}
+
+/* Fixed width so timer doesn't change layout */
+.timer-slot {
+  min-width: 90px;
+  height: 42px;               /* 🔧 SAME AS INPUT */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Ensure all inputs match height */
+.otp-row input {
+  height: 42px;
+}
+
+/* Ensure loader doesn't break height */
+.timer-slot .loader,
+.otp-row .loader {
+  height: 24px;
+}
 
 
 

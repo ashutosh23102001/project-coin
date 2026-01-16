@@ -17,7 +17,7 @@ router.post("/forgot-password/get-email", (req, res) => {
     (err, rows) => {
       if (err) return res.status(500).json({ message: "DB error" });
       if (!rows.length || !rows[0].email)
-        return res.status(404).json({ message: "Email not found" });
+        return res.status(404).json({ message: "Email not found , Contact to customer support" });
 
       res.json({ email: rows[0].email });
     }

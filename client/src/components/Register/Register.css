@@ -10,7 +10,10 @@
   background: rgba(0, 0, 0, 0.3);
   z-index: 999;
 }
-
+.popup-container a{
+color: #9400ff;
+    text-decoration: none;  font-weight: bold;
+}
 /* ================================
    Main Container
 ================================ */
