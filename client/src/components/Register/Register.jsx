@@ -1,18 +1,29 @@
-// import React, { useState } from "react";
+
+// import React, { useState, useEffect } from "react";
 // import "./Register.css";
 // import { Link, useNavigate } from "react-router-dom";
 // import api from "../../API/axios";
-
+// import { FaArrowsDownToPeople } from "react-icons/fa6";
+// import { ToastContainer, toast } from "react-toastify";
+// import "react-toastify/dist/ReactToastify.css";
 // const Register = () => {
 //   const navigate = useNavigate();
 
-//   const [Username, setUsername] = useState("");
+//   /* ================= STATE ================= */
+//   const [username, setUsername] = useState("");          // ✅ lowercase
 //   const [password, setPassword] = useState("");
+//   const [referralCode, setReferralCode] = useState("");
 //   const [error, setError] = useState("");
 //   const [loading, setLoading] = useState(false);
 
-  
+//   /* ================= READ REF FROM URL ================= */
+//   useEffect(() => {
+//     const params = new URLSearchParams(window.location.search);
+//     const ref = params.get("ref");
+//     if (ref) setReferralCode(ref);
+//   }, []);
 
+//   /* ================= REGISTER ================= */
 //   const createUser = async (e) => {
 //     e.preventDefault();
 //     if (loading) return;
@@ -22,8 +33,9 @@
 
 //     try {
 //       await api.post("/register", {
-//         Username: Username.trim(),
-//         Password: password
+//         username: username.trim(),        // ✅ FIXED
+//         password,
+//         referralCode: referralCode || null
 //       });
 
 //       alert("✅ User registered successfully");
@@ -47,25 +59,24 @@
 //         <div className="left-side">
 //           <h2>Create new account</h2>
 
-//           {/* ERROR MESSAGE */}
-//           {error && <p style={{ color: "red", marginBottom: "10px" }}>{error}</p>}
+//           {error && <p style={{ color: "red" }}>{error}</p>}
 
 //           <form onSubmit={createUser}>
-            // <div className="input-group">
-            //   <i className="icon user-icon" />
-            //   <input
-            //     type="text"
-            //     placeholder="Username"
-            //     value={Username}
-            //     onChange={(e) => setUsername(e.target.value)}
-            //     required
-            //   />
-            // </div>
-
-            
-
+//             {/* USERNAME */}
 //             <div className="input-group">
-//               <i className="icon lock-icon" />
+//               <i className="icon user-icon"></i>
+//               <input
+//                 type="text"
+//                 placeholder="Username"
+//                 value={username}                
+//                 onChange={(e) => setUsername(e.target.value)}
+//                 required
+//               />
+//             </div>
+
+//             {/* PASSWORD */}
+//             <div className="input-group">
+//               <i className="icon lock-icon"></i>
 //               <input
 //                 type="password"
 //                 placeholder="Password"
@@ -75,10 +86,20 @@
 //               />
 //             </div>
 
+//             {/* REFERRAL */}
+//             <div className="input-group">
+//               <FaArrowsDownToPeople />
+//               <input
+//                 placeholder="Referral Code (optional)"
+//                 value={referralCode}
+//                 onChange={(e) => setReferralCode(e.target.value)}
+//               />
+//             </div>
+
 //             <div className="terms-checkbox">
-//               <input type="checkbox" id="terms" required />
-//               <label htmlFor="terms">
-//                 I read and agree to <a href="/terms-and-conditions">Terms & Conditions</a>
+//               <input type="checkbox" required />
+//               <label>
+//                 I agree to <a href="/terms-and-conditions">Terms & Conditions</a>
 //               </label>
 //             </div>
 
@@ -95,20 +116,14 @@
 //         {/* RIGHT SIDE */}
 //         <div className="right-side">
 //           <Link to="/">
-//             <button className="popup-close-btn">&times;</button>
+//             <button className="popup-close-btn">×</button>
 //           </Link>
 
-//           <h1>Hello World!</h1>
-//           <p>
-//             Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-//           </p>
-
-//           <button className="learn-more-btn">Learn More</button>
+//           <h1>Welcome!</h1>
+//           <p>Create account & earn rewards</p>
 
 //           <Link to="/login">
-//             <button className="login-page-btn">
-//               Login Page
-//             </button>
+//             <button className="login-page-btn">Login</button>
 //           </Link>
 //         </div>
 
@@ -118,21 +133,25 @@
 // };
 
 // export default Register;
-
 import React, { useState, useEffect } from "react";
 import "./Register.css";
 import { Link, useNavigate } from "react-router-dom";
 import api from "../../API/axios";
 import { FaArrowsDownToPeople } from "react-icons/fa6";
 
+/* =====================================================
+   🔧 CORRECTION 1: Toastify imports (already present)
+===================================================== */
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 const Register = () => {
   const navigate = useNavigate();
 
   /* ================= STATE ================= */
-  const [username, setUsername] = useState("");          // ✅ lowercase
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [referralCode, setReferralCode] = useState("");
-  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
   /* ================= READ REF FROM URL ================= */
@@ -147,23 +166,61 @@ const Register = () => {
     e.preventDefault();
     if (loading) return;
 
-    setError("");
+    if (!username.trim() || !password) {
+      toast.warn("⚠️ Username and password are required", {
+        position: "top-center",
+      });
+      return;
+    }
+
     setLoading(true);
 
     try {
-      await api.post("/register", {
-        username: username.trim(),        // ✅ FIXED
+      /* =================================================
+         🔧 CORRECTION 2:
+         - READ RESPONSE instead of assuming success
+      ================================================= */
+      const res = await api.post("/register", {
+        username: username.trim(),
         password,
-        referralCode: referralCode || null
+        referralCode: referralCode || null,
       });
 
-      alert("✅ User registered successfully");
-      navigate("/login");
+      /* =================================================
+         🔧 CORRECTION 3:
+         - STOP if backend says success=false
+      ================================================= */
+      if (!res.data?.success) {
+        toast.error(res.data?.message || "❌ Registration failed", {
+          position: "top-center",
+        });
+        return; // ⛔ STOP — NO REDIRECT
+      }
+
+      /* ================= REAL SUCCESS ================= */
+      toast.success("✅ Account created successfully!", {
+        position: "top-center",
+        autoClose: 2000,
+      });
+
+      setTimeout(() => {
+        navigate("/login");
+      }, 2000);
+
     } catch (err) {
+      /* =================================================
+         🔧 CORRECTION 4:
+         - HANDLE DATABASE / HTTP ERRORS
+      ================================================= */
       if (err.response?.status === 409) {
-        setError("Username already exists");
+        toast.error("❌ Username already exists", {
+          position: "top-center",
+        });
       } else {
-        setError(err.response?.data?.message || "Registration failed");
+        toast.error(
+          err.response?.data?.message || "❌ Registration failed",
+          { position: "top-center" }
+        );
       }
     } finally {
       setLoading(false);
@@ -172,28 +229,33 @@ const Register = () => {
 
   return (
     <div className="popup-overlay">
-      <div className="popup-container">
+      {/* =================================================
+         🔧 CORRECTION 5:
+         - ToastContainer (already present)
+         - marginTop preserved
+      ================================================= */}
+      <ToastContainer
+        position="top-center"
+        style={{ marginTop: "60px" }}
+      />
 
+      <div className="popup-container">
         {/* LEFT SIDE */}
         <div className="left-side">
           <h2>Create new account</h2>
 
-          {error && <p style={{ color: "red" }}>{error}</p>}
-
           <form onSubmit={createUser}>
-            {/* USERNAME */}
             <div className="input-group">
               <i className="icon user-icon"></i>
               <input
                 type="text"
                 placeholder="Username"
-                value={username}                
+                value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 required
               />
             </div>
 
-            {/* PASSWORD */}
             <div className="input-group">
               <i className="icon lock-icon"></i>
               <input
@@ -205,7 +267,6 @@ const Register = () => {
               />
             </div>
 
-            {/* REFERRAL */}
             <div className="input-group">
               <FaArrowsDownToPeople />
               <input
@@ -218,7 +279,8 @@ const Register = () => {
             <div className="terms-checkbox">
               <input type="checkbox" required />
               <label>
-                I agree to <a href="/terms-and-conditions">Terms & Conditions</a>
+                I agree to{" "}
+                <a href="/terms-and-conditions">Terms & Conditions</a>
               </label>
             </div>
 
@@ -245,7 +307,6 @@ const Register = () => {
             <button className="login-page-btn">Login</button>
           </Link>
         </div>
-
       </div>
     </div>
   );
