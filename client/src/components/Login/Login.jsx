@@ -1,8 +1,11 @@
-import React, { useState } from "react";
+import React, { useState ,useEffect} from "react";
 import "./Login.css";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate ,useLocation } from "react-router-dom";
 import api from "../../API/axios";
 import { useAuth } from "../../context/AuthContext";
+
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Login = () => {
   const [Username, setUsername] = useState("");
@@ -12,6 +15,21 @@ const Login = () => {
 
   const { login } = useAuth();
   const navigate = useNavigate();
+    const location = useLocation();
+
+ useEffect(() => {
+    if (location.state?.showLoginToast) {
+      toast.warn(" Please login first to access this page", {
+        position: "top-center",
+        autoClose: 2500,
+        theme: "light",
+        marginTop: "50px",
+
+      });
+    }
+  }, []);
+
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -27,7 +45,9 @@ const Login = () => {
       });
 
       login(res.data.user);
-      navigate("/home");
+      const redirectTo = location.state?.from?.pathname || "/home";
+
+      navigate(redirectTo, { replace: true });
     } catch (err) {
       setError(err.response?.data?.message || "Login failed");
     } finally {
@@ -37,6 +57,8 @@ const Login = () => {
 
   return (
     <div className="popup-overlay">
+          <ToastContainer  style={{ marginTop: "60px" }}/>
+
       <div className="popup-container">
         {/* LEFT SIDE */}
         <div className="left-side login-white-side">
