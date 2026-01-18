@@ -110,3 +110,18 @@
   color: #fff;
   font-size: 12px;
 }
+.profile-bottom-card {
+  background: linear-gradient(90deg, #7220c9, #b92bff);
+  border-radius: 14px;
+  padding: 14px;
+  margin-top: 20px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+  color: white;
+}
+.refer{
+  background-color: #0f0e0e00;
+  border: none;
+  color: white;
+  width: 100%;
+  height: 100%;
+}

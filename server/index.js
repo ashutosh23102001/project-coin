@@ -9,16 +9,16 @@ const cookieParser = require("cookie-parser");
 
 const loginRoutes = require("./routes/login");
 const accountRoutes = require("./routes/account");
-const clickRoutes = require("./routes/clicks"); // ✅ ADDED
+const clickRoutes = require("./routes/clicks"); 
 const companyRoutes = require("./routes/company");
 const shortenerRoutes = require("./routes/shortener");
 const addressRoutes = require("./routes/address");
-const emailOtpRoutes = require("./routes/emailOtp"); // ✅ OTP ROUTE ONLY HERE
+const emailOtpRoutes = require("./routes/emailOtp");
 const profilePicRoute = require("./routes/profilePic");
 const path = require("path");
 const forgotPasswordRoutes = require("./routes/forgotPassword");
 const coverRoute = require("./routes/cover");
-
+const referralRoutes = require("./routes/referral");
 const pointsRoutes = require("./routes/points");
 
 
@@ -77,7 +77,7 @@ app.use("/api", require("./routes/profile"));          // profile data
 app.use("/api", forgotPasswordRoutes);
 app.use("/api", coverRoute);
 app.use("/api", pointsRoutes);
-
+app.use("/api", referralRoutes);
 
 
 app.use(

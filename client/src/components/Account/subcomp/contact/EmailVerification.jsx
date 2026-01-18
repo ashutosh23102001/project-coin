@@ -1,91 +1,77 @@
 
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import api from "../../../../API/axios";
-import "../sub.css";
 import Loader from "../../../Loader/Loader";
 import Timer from "../../../Timer/Timer";
+import "../sub.css";
 
-/* =====================================================
-   📧 EMAIL VERIFICATION COMPONENT
-===================================================== */
 const EmailVerification = ({ email, setEmail }) => {
-  /* ================= STATE ================= */
-  const [editMode, setEditMode] = useState(false);      // 🔧 default false
+  const [editMode, setEditMode] = useState(false);
   const [otpSent, setOtpSent] = useState(false);
   const [verified, setVerified] = useState(false);
   const [otp, setOtp] = useState("");
-  const [emailFetched, setEmailFetched] = useState(false);
   const [sendingOtp, setSendingOtp] = useState(false);
-  const [resendingOtp, setResendingOtp] = useState(false); // 🔧 NEW
+  const [resendingOtp, setResendingOtp] = useState(false);
   const [timeLeft, setTimeLeft] = useState(0);
+  const [emailFetched, setEmailFetched] = useState(false); // ✅ ADD
 
-  /* ================= FETCH EMAIL (LOCKED INITIALLY) ================= */
+  /* ================= FETCH EMAIL ONCE ================= */
   useEffect(() => {
-    if (emailFetched) return;
+    if (emailFetched) return; // 🔒 prevent overwrite
 
-    api
-      .get("/get-email")
+    api.get("/get-email")
       .then(res => {
         setEmail(res.data.email || "");
         setEmailFetched(true);
-        setEditMode(false); // 🔧 email locked initially
+        setEditMode(false);
       })
       .catch(() => setEmailFetched(true));
   }, [emailFetched, setEmail]);
 
-  /* ================= OTP TIMER ================= */
+  /* ================= TIMER ================= */
   useEffect(() => {
     if (!otpSent || timeLeft <= 0) return;
-
-    const interval = setInterval(() => {
-      setTimeLeft(t => t - 1);
-    }, 1000);
-
-    return () => clearInterval(interval);
+    const t = setInterval(() => setTimeLeft(v => v - 1), 1000);
+    return () => clearInterval(t);
   }, [otpSent, timeLeft]);
 
-  /* ================= EDIT ================= */
   const onEdit = () => {
     setEditMode(true);
-    setOtpSent(false);
     setVerified(false);
     setOtp("");
+    setOtpSent(false);
     setTimeLeft(0);
   };
 
-  /* ================= SEND OTP ================= */
   const sendOtp = async () => {
     if (!email) return alert("Enter email");
 
     try {
       setSendingOtp(true);
       await api.post("/send-email-otp", { email });
-
       setOtpSent(true);
-      setEditMode(false);        // 🔒 lock email
+      setEditMode(false);
       setTimeLeft(60);
-    } catch {
-      alert("Failed to send OTP");
+    } catch (err) {
+      alert(err.response?.data?.message || "Failed to send OTP");
     } finally {
       setSendingOtp(false);
     }
   };
 
-  /* ================= RESEND OTP ================= */
   const resendOtp = async () => {
     try {
       setResendingOtp(true);
       await api.post("/send-email-otp", { email });
       setTimeLeft(60);
       setOtp("");
-    } catch {
-      alert("Failed to resend OTP");
+    } catch (err) {
+      alert(err.response?.data?.message || "Failed to resend OTP");
     } finally {
       setResendingOtp(false);
     }
   };
 
-  /* ================= VERIFY OTP ================= */
   const verifyOtp = async () => {
     try {
       await api.post("/verify-email-otp", { email, otp });
@@ -101,12 +87,11 @@ const EmailVerification = ({ email, setEmail }) => {
     <section className="email-section">
       <label>Email</label>
 
-      {/* ================= EMAIL ROW ================= */}
       <div className="otp-row">
         <input
-          value={email}
+          value={email ?? ""}  
           onChange={e => setEmail(e.target.value)}
-          disabled={!editMode}        // 🔧 locked by default
+          disabled={!editMode}
         />
 
         {!editMode && (
@@ -122,7 +107,6 @@ const EmailVerification = ({ email, setEmail }) => {
         )}
       </div>
 
-      {/* ================= OTP ROW (SAME HEIGHT, SAME LINE) ================= */}
       {otpSent && (
         <div className="otp-row fixed-height-row">
           <input
@@ -135,7 +119,6 @@ const EmailVerification = ({ email, setEmail }) => {
             Verify
           </button>
 
-          {/* 🔧 Timer / Resend / Loader — fixed width */}
           <div className="timer-slot">
             {timeLeft > 0 ? (
               <Timer seconds={timeLeft} />

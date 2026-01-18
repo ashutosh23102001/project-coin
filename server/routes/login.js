@@ -63,43 +63,124 @@ router.post("/logout", (req, res) => {
 });
 
 
-router.post("/register", async (req, res) => {
-  const { Username, Password } = req.body;
+// router.post("/register", async (req, res) => {
+//   const { Username, Password } = req.body;
 
-  if (!Username || !Password) {
-    return res.status(400).json({ message: "All fields are required" });
-  }
+//   if (!Username || !Password) {
+//     return res.status(400).json({ message: "All fields are required" });
+//   }
 
-  if (Password.length < 6) {
-    return res
-      .status(400)
-      .json({ message: "Password must be at least 6 characters" });
-  }
+//   if (Password.length < 6) {
+//     return res
+//       .status(400)
+//       .json({ message: "Password must be at least 6 characters" });
+//   }
 
-  db.query(
-    "SELECT id FROM users WHERE username=?",
-    [Username],
-    async (err, result) => {
-      if (err) return res.status(500).json(err);
+//   db.query(
+//     "SELECT id FROM users WHERE username=?",
+//     [Username],
+//     async (err, result) => {
+//       if (err) return res.status(500).json(err);
 
-      if (result.length > 0) {
-        return res
-          .status(409)
-          .json({ message: "Username already exists" });
-      }
+//       if (result.length > 0) {
+//         return res
+//           .status(409)
+//           .json({ message: "Username already exists" });
+//       }
 
-      const hashedPassword = await bcrypt.hash(Password, 10);
+//       const hashedPassword = await bcrypt.hash(Password, 10);
 
-      db.query(
-        "INSERT INTO users (username, password) VALUES (?, ?)",
-        [Username, hashedPassword],
-        (err) => {
-          if (err) return res.status(500).json(err);
-          res.json({ message: "User registered successfully" });
-        }
-      );
-    }
+//       db.query(
+//         "INSERT INTO users (username, password) VALUES (?, ?)",
+//         [Username, hashedPassword],
+//         (err) => {
+//           if (err) return res.status(500).json(err);
+//           res.json({ message: "User registered successfully" });
+//         }
+//       );
+//     }
+//   );
+// });
+
+function generateCode(username) {
+  return (
+    username.slice(0, 3).toUpperCase() +
+    Math.random().toString(36).substring(2, 6).toUpperCase()
   );
+}
+
+/* ======================
+   REGISTER WITH REFERRAL
+====================== */
+router.post("/register", async (req, res) => {
+  try {
+    const { username, password, referralCode } = req.body;
+
+    if (!username || !password) {
+      return res.status(400).json({ message: "All fields required" });
+    }
+
+    if (password.length < 6) {
+      return res.status(400).json({
+        message: "Password must be at least 6 characters"
+      });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const myReferralCode = generateCode(username);
+
+    // 1️⃣ CREATE USER
+    db.query(
+      `INSERT INTO users (username, password, referral_code)
+       VALUES (?, ?, ?)`,
+      [username, hashedPassword, myReferralCode],
+      (err) => {
+        if (err) {
+          if (err.code === "ER_DUP_ENTRY") {
+            return res
+              .status(409)
+              .json({ message: "Username already exists" });
+          }
+          console.error("Register error:", err);
+          return res.status(500).json({ message: "Server error" });
+        }
+
+        // 2️⃣ HANDLE REFERRAL (IF PROVIDED)
+        if (referralCode) {
+          db.query(
+            `SELECT username FROM users WHERE referral_code = ?`,
+            [referralCode],
+            (err, rows) => {
+              if (!rows || !rows.length) return;
+
+              const referrer = rows[0].username;
+
+              // save referral
+              db.query(
+                `INSERT INTO referrals (referrer_username, referred_username)
+                 VALUES (?, ?)`,
+                [referrer, username]
+              );
+
+              // 🎁 reward referrer
+              db.query(
+                `INSERT INTO click_counter (username, clicks_added)
+                 VALUES (?, 20)`,
+                [referrer]
+              );
+            }
+          );
+        }
+
+        res.json({ success: true });
+      }
+    );
+  } catch (error) {
+    console.error("Register crash:", error);
+    res.status(500).json({ message: "Server crash" });
+  }
 });
+
+
 
 module.exports = router;

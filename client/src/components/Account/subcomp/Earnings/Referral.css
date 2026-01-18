@@ -1,0 +1,132 @@
+/* .referral-card {
+  background: #121212;
+  color: white;
+  padding: 25px;
+  border-radius: 15px;
+  width: 350px;
+  text-align: center;
+}
+
+.ref-code {
+  font-size: 20px;
+  background: #000;
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 8px;
+}
+
+input {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 10px;
+}
+
+button {
+  background: #00b7ff;
+  border: none;
+  padding: 8px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.stats {
+  margin-top: 15px;
+  font-size: 14px;
+} */
+
+
+.referral-wrapper {
+  background: #ffffff;
+  padding: 30px;
+  border-radius: 14px;
+  width: 100%;
+  max-width: 600px;
+  margin: auto;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+}
+
+.referral-title {
+  text-align: center;
+  margin-bottom: 25px;
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.ref-box {
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+.label {
+  display: block;
+  font-size: 13px;
+  color: #777;
+}
+
+.code {
+  font-size: 20px;
+  letter-spacing: 2px;
+  color: #6a2de8;
+}
+
+.ref-link-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 15px;
+}
+
+.ref-link-row input {
+  flex: 1;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  font-size: 13px;
+}
+
+.copy-btn {
+  background: #6a2de8;
+  border: none;
+  padding: 10px 12px;
+  border-radius: 8px;
+  color: white;
+  cursor: pointer;
+}
+
+.copy-btn:hover {
+  opacity: 0.9;
+}
+
+.total-box {
+  margin: 15px 0;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.ref-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.ref-table th,
+.ref-table td {
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+  text-align: left;
+  font-size: 14px;
+}
+
+.ref-table th {
+  background: #f6f6f6;
+}
+.copy-btn {
+  transition: transform 0.25s ease-in-out;
+}
+
+.copy-btn.copied {
+  transform: scale(1.2);
+}
+
+/* OPTIONAL: hover polish */
+.copy-btn:hover {
+  opacity: 0.95;
+}
