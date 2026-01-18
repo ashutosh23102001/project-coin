@@ -1,5 +1,6 @@
 
-// import React, { useEffect, useState } from "react";
+
+// import React, { useEffect, useRef, useState } from "react";
 // import "./Navbar.css";
 // import logo from "../assets/coin.png";
 // import { Link, useNavigate } from "react-router-dom";
@@ -13,13 +14,16 @@
 // const Navbar = () => {
 //   const navigate = useNavigate();
 
-//   /* ================= DROPDOWNS ================= */
+//   /* ================= STATES ================= */
 //   const [servicesOpen, setServicesOpen] = useState(false);
 //   const [tasksOpen, setTasksOpen] = useState(false);
 //   const [accountOpen, setAccountOpen] = useState(false);
 
-//   /* ================= PROFILE PIC ================= */
 //   const [profilePic, setProfilePic] = useState(null);
+
+//   const servicesTimer = useRef(null);
+//   const tasksTimer = useRef(null);
+//   const accountTimer = useRef(null);
 
 //   const { user, logout } = useAuth();
 
@@ -27,19 +31,27 @@
 //   useEffect(() => {
 //     if (!user) return;
 
-//     api
-//       .get("/profile")
-//       .then(res => {
-//         if (res.data?.profile_pic_url) {
-//           setProfilePic(
-//             `${import.meta.env.VITE_IMAGE_URL}${res.data.profile_pic_url}`
-//           );
-//         }
-//       })
-//       .catch(err => {
-//         console.error("Profile fetch failed", err);
-//       });
+//     api.get("/profile").then(res => {
+//       if (res.data?.profile_pic_url) {
+//         setProfilePic(
+//           `${import.meta.env.VITE_IMAGE_URL}${res.data.profile_pic_url}`
+//         );
+//       }
+//     })
+//      .catch(err => {
+//       console.warn("Profile not found, using default avatar");
+//       setProfilePic(null); // VERY IMPORTANT
+//     });
 //   }, [user]);
+
+//   /* ================= TIMER HELPERS ================= */
+//   const startCloseTimer = (setter, ref) => {
+//     ref.current = setTimeout(() => setter(false), 500);
+//   };
+
+//   const cancelCloseTimer = ref => {
+//     if (ref.current) clearTimeout(ref.current);
+//   };
 
 //   /* ================= LOGOUT ================= */
 //   const handleLogout = async () => {
@@ -52,27 +64,35 @@
 //     <nav className="navbar">
 //       <div className="nav-container">
 
-//         {/* ================= LOGO ================= */}
+//         {/* LOGO */}
 //         <div className="logo">
 //           <img src={logo} alt="logo" className="logo-icon" />
 //         </div>
 
-//         {/* ================= NAV LINKS ================= */}
+//         {/* NAV LINKS */}
 //         <ul className="nav-links">
 //           <li><Link to="/">Home</Link></li>
 
 //           {/* SERVICES */}
 //           <li
 //             className="dropdown"
-//             onMouseEnter={() => setServicesOpen(true)}
-//             onMouseLeave={() => setServicesOpen(false)}
-//             onClick={() => setServicesOpen(!servicesOpen)}
+//             onMouseEnter={() => {
+//               cancelCloseTimer(servicesTimer);
+//               setServicesOpen(true);
+//             }}
+//             onMouseLeave={() =>
+//               startCloseTimer(setServicesOpen, servicesTimer)
+//             }
+//             onClick={() => setServicesOpen(true)}
 //           >
 //             Services ▾
 //             {servicesOpen && (
-//               <ul className="dropdown-menu">
-//                 <li><Link to="/">Link shortner</Link></li>
-//               </ul>
+//               <div className="account-dropdown menu-dropdown">
+//                 <span className="dropdown-arrow left" />
+//                 <ul>
+//                   <li><Link to="/">Link shortner</Link></li>
+//                 </ul>
+//               </div>
 //             )}
 //           </li>
 
@@ -81,27 +101,40 @@
 //           {/* SIMPLE TASK */}
 //           <li
 //             className="dropdown"
-//             onMouseEnter={() => setTasksOpen(true)}
-//             onMouseLeave={() => setTasksOpen(false)}
-//             onClick={() => setTasksOpen(!tasksOpen)}
+//             onMouseEnter={() => {
+//               cancelCloseTimer(tasksTimer);
+//               setTasksOpen(true);
+//             }}
+//             onMouseLeave={() =>
+//               startCloseTimer(setTasksOpen, tasksTimer)
+//             }
+//             onClick={() => setTasksOpen(true)}
 //           >
 //             Simple task ▾
 //             {tasksOpen && (
-//               <ul className="dropdown-menu">
-//                 <li><Link to="/coin">Coin</Link></li>
-//               </ul>
+//               <div className="account-dropdown menu-dropdown">
+//                 <span className="dropdown-arrow left" />
+//                 <ul>
+//                   <li><Link to="/coin">Coin</Link></li>
+//                 </ul>
+//               </div>
 //             )}
 //           </li>
 
-//           <li><Link to="/register">Signup</Link></li>
+//           <li onClick={handleLogout}><Link to="/register">Signup</Link></li>
 //         </ul>
 
-//         {/* ================= ACCOUNT ================= */}
+//         {/* ACCOUNT */}
 //         <div
 //           className="account-area"
-//           onMouseEnter={() => setAccountOpen(true)}
-//           onMouseLeave={() => setAccountOpen(false)}
-//           onClick={() => setAccountOpen(!accountOpen)}
+//           onMouseEnter={() => {
+//             cancelCloseTimer(accountTimer);
+//             setAccountOpen(true);
+//           }}
+//           onMouseLeave={() =>
+//             startCloseTimer(setAccountOpen, accountTimer)
+//           }
+//           onClick={() => setAccountOpen(true)}
 //         >
 //           {!user ? (
 //             <Link to="/login">
@@ -109,12 +142,8 @@
 //             </Link>
 //           ) : (
 //             <>
-//               {/* ✅ PROFILE PIC FROM DB */}
 //               <img
-//                 src={
-//                   profilePic ||
-//                   "https://i.pravatar.cc/40?img=3"
-//                 }
+//                 src={profilePic || "https://i.pravatar.cc/40"}
 //                 alt="profile"
 //                 className="profile-pic"
 //               />
@@ -138,6 +167,8 @@
 // };
 
 // export default Navbar;
+
+
 import React, { useEffect, useRef, useState } from "react";
 import "./Navbar.css";
 import logo from "../assets/coin.png";
@@ -169,17 +200,17 @@ const Navbar = () => {
   useEffect(() => {
     if (!user) return;
 
-    api.get("/profile").then(res => {
-      if (res.data?.profile_pic_url) {
-        setProfilePic(
-          `${import.meta.env.VITE_IMAGE_URL}${res.data.profile_pic_url}`
-        );
-      }
-    })
-     .catch(err => {
-      console.warn("Profile not found, using default avatar");
-      setProfilePic(null); // VERY IMPORTANT
-    });
+    api.get("/profile")
+      .then(res => {
+        if (res.data?.profile_pic_url) {
+          setProfilePic(
+            `${import.meta.env.VITE_IMAGE_URL}${res.data.profile_pic_url}`
+          );
+        }
+      })
+      .catch(() => {
+        setProfilePic(null); 
+      });
   }, [user]);
 
   /* ================= TIMER HELPERS ================= */
@@ -191,11 +222,15 @@ const Navbar = () => {
     if (ref.current) clearTimeout(ref.current);
   };
 
-  /* ================= LOGOUT ================= */
-  const handleLogout = async () => {
-    await api.post("/logout");
-    logout();
-    navigate("/login");
+  const logoutAndRedirect = async (path) => {
+    try {
+      await api.post("/logout");
+    } catch (err) {
+      console.warn("Logout API failed");
+    } finally {
+      logout();         
+      navigate(path);    
+    }
   };
 
   return (
@@ -207,7 +242,6 @@ const Navbar = () => {
           <img src={logo} alt="logo" className="logo-icon" />
         </div>
 
-        {/* NAV LINKS */}
         <ul className="nav-links">
           <li><Link to="/">Home</Link></li>
 
@@ -221,7 +255,6 @@ const Navbar = () => {
             onMouseLeave={() =>
               startCloseTimer(setServicesOpen, servicesTimer)
             }
-            onClick={() => setServicesOpen(true)}
           >
             Services ▾
             {servicesOpen && (
@@ -236,7 +269,6 @@ const Navbar = () => {
 
           <li>Games</li>
 
-          {/* SIMPLE TASK */}
           <li
             className="dropdown"
             onMouseEnter={() => {
@@ -246,7 +278,6 @@ const Navbar = () => {
             onMouseLeave={() =>
               startCloseTimer(setTasksOpen, tasksTimer)
             }
-            onClick={() => setTasksOpen(true)}
           >
             Simple task ▾
             {tasksOpen && (
@@ -259,10 +290,15 @@ const Navbar = () => {
             )}
           </li>
 
-          <li><Link to="/register">Signup</Link></li>
+          <li
+            className="clickable"
+            onClick={() => logoutAndRedirect("/register")}
+          >
+            Signup
+          </li>
         </ul>
 
-        {/* ACCOUNT */}
+        {/* ================= ACCOUNT AREA ================= */}
         <div
           className="account-area"
           onMouseEnter={() => {
@@ -272,7 +308,6 @@ const Navbar = () => {
           onMouseLeave={() =>
             startCloseTimer(setAccountOpen, accountTimer)
           }
-          onClick={() => setAccountOpen(true)}
         >
           {!user ? (
             <Link to="/login">
@@ -290,8 +325,15 @@ const Navbar = () => {
                 <div className="account-dropdown">
                   <span className="dropdown-arrow" />
                   <ul>
-                    <li onClick={() => navigate("/account")}>Account</li>
-                    <li onClick={handleLogout}>Log out</li>
+                    <li onClick={() => navigate("/account")}>
+                      Account
+                    </li>
+
+                    <li
+                      onClick={() => logoutAndRedirect("/login")}
+                    >
+                      Log out
+                    </li>
                   </ul>
                 </div>
               )}

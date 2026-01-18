@@ -63,44 +63,6 @@ router.post("/logout", (req, res) => {
 });
 
 
-// router.post("/register", async (req, res) => {
-//   const { Username, Password } = req.body;
-
-//   if (!Username || !Password) {
-//     return res.status(400).json({ message: "All fields are required" });
-//   }
-
-//   if (Password.length < 6) {
-//     return res
-//       .status(400)
-//       .json({ message: "Password must be at least 6 characters" });
-//   }
-
-//   db.query(
-//     "SELECT id FROM users WHERE username=?",
-//     [Username],
-//     async (err, result) => {
-//       if (err) return res.status(500).json(err);
-
-//       if (result.length > 0) {
-//         return res
-//           .status(409)
-//           .json({ message: "Username already exists" });
-//       }
-
-//       const hashedPassword = await bcrypt.hash(Password, 10);
-
-//       db.query(
-//         "INSERT INTO users (username, password) VALUES (?, ?)",
-//         [Username, hashedPassword],
-//         (err) => {
-//           if (err) return res.status(500).json(err);
-//           res.json({ message: "User registered successfully" });
-//         }
-//       );
-//     }
-//   );
-// });
 
 function generateCode(username) {
   return (
