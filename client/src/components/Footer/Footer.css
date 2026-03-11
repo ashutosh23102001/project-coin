@@ -16,6 +16,7 @@
 .footer-container {
   width: 70%;
   margin: 50px auto 0;
+  margin-bottom: 120px;
   background-color: var(--footer-bg);
   color: var(--text-light);
   padding: 40px 60px 20px;

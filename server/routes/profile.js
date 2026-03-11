@@ -35,7 +35,7 @@ router.get("/profile", (req, res) => {
     }
 
     if (!rows.length) {
-      return res.status(404).json({ message: "User not found" });
+      return res.status(404).json({ message: "User not found only message" });
     }
 
     res.json(rows[0]);

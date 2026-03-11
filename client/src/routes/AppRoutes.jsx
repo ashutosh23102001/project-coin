@@ -60,10 +60,6 @@ import Ad from "../components/side-ad/ad_page";
 import PrivacyPolicy from "../components/Footer/PrivacyPolicy";
 import TermsAndConditions from "../components/Footer/TermsAndConditions";
 
-/* =====================================================
-   🔧 CORRECTION 4:
-   - Import DashboardLayout correctly
-===================================================== */
 import DashboardLayout from "../components/Dashboard/DashboardLayout";
 
 const AppRoutes = () => {
@@ -78,12 +74,6 @@ const AppRoutes = () => {
       <Route path="/" element={<Dashboard />} />
       <Route path="/home" element={<Dashboard />} />
 
-      {/* =====================================================
-         🔧 CORRECTION 5 (MOST IMPORTANT):
-         - Login/Register MUST be NESTED inside DashboardLayout
-         - Otherwise Outlet will NOT work
-         - This enables dashboard blur
-      ===================================================== */}
       <Route element={<DashboardLayout />}>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />

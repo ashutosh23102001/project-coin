@@ -20,6 +20,7 @@ const forgotPasswordRoutes = require("./routes/forgotPassword");
 const coverRoute = require("./routes/cover");
 const referralRoutes = require("./routes/referral");
 const pointsRoutes = require("./routes/points");
+const profileRoute = require("./routes/profile"); // ⭐ FIX
 
 
 
@@ -32,7 +33,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: "https://dcoin.infinityfreeapp.com/",
     credentials: true
   })
 );
@@ -62,6 +63,9 @@ app.get("/api/auth/me", (req, res) => {
   });
 });
 
+app.use("/uploads", express.static(path.join(__dirname, "uploads"))); // ⭐ FIX ONLY ONCE
+
+
 /* ============ ROUTES ============ */
 app.use("/api", loginRoutes);
 app.use("/api/account", accountRoutes); // ✅ FIXED
@@ -70,6 +74,7 @@ app.use("/api/company", companyRoutes);     // ✅ Personal Settings
 app.use("/api", shortenerRoutes);   // ✅ IMPORTANT
 app.use("/api", addressRoutes);
 app.use("/api", emailOtpRoutes); // ✅ OTP ENDPOINTS  
+app.use("/api", profileRoute); // ⭐ FIX
 
 app.use("/api", profilePicRoute);
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
@@ -80,13 +85,9 @@ app.use("/api", pointsRoutes);
 app.use("/api", referralRoutes);
 
 
-app.use(
-  "/uploads",
-  express.static(path.join(__dirname, "uploads"))
-);
 
 /* ============ START SERVER ============ */
-const PORT = 3002;
+const PORT = process.env.PORT || 3002;
 app.listen(PORT, () => {
-  console.log("✅ Server running on http://localhost:" + PORT);
+  console.log("✅ Server running on https://dcoin.infinityfreeapp.com" + PORT);
 });

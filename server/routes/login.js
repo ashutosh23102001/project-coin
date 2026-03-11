@@ -186,6 +186,16 @@ router.post("/login", async (req, res) => {
   );
 });
 
+
+// // /* ================= LOGOUT ================= */
+router.post("/logout", (req, res) => {
+  req.session.destroy(() => {
+    res.clearCookie("dcoin.sid");
+    res.json({ message: "Logged out successfully" });
+  });
+});
+
+
 /* ======================
    REGISTER WITH REFERRAL
 ====================== */

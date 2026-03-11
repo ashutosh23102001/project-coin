@@ -28,7 +28,7 @@ router.post("/shorten", (req, res) => {
         [url, code],
         () => {
           res.json({
-            shortUrl: `http://localhost:5173/ad/${code}` // ✅ OPEN AD PAGE
+            shortUrl: `https://dcoin.infinityfreeapp.com/ad/${code}` // ✅ OPEN AD PAGE
           });
         }
       );
