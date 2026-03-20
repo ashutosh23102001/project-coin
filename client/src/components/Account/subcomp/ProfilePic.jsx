@@ -44,7 +44,7 @@ const ProfilePic = ({ user, setUser }) => {
       <img
         src={
           user?.profile_pic_url
-            ? `http://localhost:3002${user.profile_pic_url}`
+            ? `https://dcoin.infinityfreeapp.com${user.profile_pic_url}`
             : "https://i.pravatar.cc/150"
         }
         alt="profile"
