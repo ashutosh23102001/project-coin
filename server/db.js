@@ -21,7 +21,17 @@ require("dotenv").config();
 const mysql = require('mysql2');
 
 // This pulls the long URI you just pasted into Render
-const pool = mysql.createPool(process.env.DATABASE_URL);
+const pool = mysql.createPool({
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: AVNS_g4O3vGABMmUN8wMRMJI,
+  database: process.env.DB_NAME,
+  port: 21240,
+  ssl: {
+    rejectUnauthorized: true
+  }});
+
+
 
 pool.getConnection((err, connection) => {
     if (err) {
