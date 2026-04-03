@@ -1,10 +1,10 @@
 const mysql = require("mysql");
 
 const db = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "",
-  database: "dcoin"
+  host: "mysql-2b095c31-ashutosh23102001-73c6.f.aivencloud.com",
+  user: "avnadmin",
+  password: "<redacted>",
+  database: "defaultdb"
 });
 
 db.connect((err) => {

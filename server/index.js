@@ -87,7 +87,7 @@ app.use("/api", referralRoutes);
 
 
 /* ============ START SERVER ============ */
-const PORT = process.env.PORT || 3002;
+const PORT = process.env.PORT || 21240;
 app.listen(PORT, () => {
     console.log("✅ Server running on http://localhost:" + PORT);
 });
