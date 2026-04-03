@@ -33,7 +33,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(
   cors({
-  origin: "https://dcoin.infinityfreeapp.com",
+  origin: "http://localhost:5173",
     credentials: true
   })
 );
@@ -87,7 +87,7 @@ app.use("/api", referralRoutes);
 
 
 /* ============ START SERVER ============ */
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, "0.0.0.0",() => {
-  console.log("✅ Server running on https://dcoin.infinityfreeapp.com" + PORT);
+const PORT = process.env.PORT || 3002;
+app.listen(PORT, () => {
+    console.log("✅ Server running on http://localhost:" + PORT);
 });
