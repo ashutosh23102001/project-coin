@@ -1,18 +1,30 @@
-const mysql = require("mysql");
+// const mysql = require("mysql");
 
-const db = mysql.createConnection({
-  host: "mysql-2b095c31-ashutosh23102001-73c6.f.aivencloud.com",
-  user: "avnadmin",
-  password: "<redacted>",
-  database: "dcoin"
-});
+// const db = mysql.createConnection({
+//   host: "localhost",
+//   user: "root",
+//   password: "",
+//   database: "dcoin"
+// });
 
-db.connect((err) => {
+// db.connect((err) => {
+//   if (err) {
+//     console.error("❌ Database error:", err);
+//   } else {
+//     console.log("✅ Database connected");
+//   }
+// });
+
+// module.exports = db;
+const mysql = require('mysql2');
+
+// Use the URI from Render's environment variable
+const connection = mysql.createConnection(process.env.DATABASE_URL);
+
+connection.connect((err) => {
   if (err) {
-    console.error("❌ Database error:", err);
-  } else {
-    console.log("✅ Database connected");
+    console.error('Aiven Connection Error: ' + err.message);
+    return;
   }
+  console.log('Connected to Aiven MySQL (dcoin)!');
 });
-
-module.exports = db;
