@@ -186,7 +186,9 @@ app.use(cookieParser());
 /* ============ CORS (Vercel Frontend) ============ */
 app.use(
   cors({
-    origin: "https://project-coin-ashutosh23102001s-projects.vercel.app",
+    origin: ["https://project-coin-ashutosh23102001s-projects.vercel.app",
+          "https://project-coin-zfh8.vercel.app"],
+
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })
