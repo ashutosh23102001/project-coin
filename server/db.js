@@ -16,28 +16,31 @@
 // });
 
 // module.exports = db;
-require("dotenv").config();
 
+
+// after deplyment changes
+
+require("dotenv").config();
 const mysql = require('mysql2');
 
-// This pulls the long URI you just pasted into Render
+// ⭐ FIX: Using a single Connection String is much safer for Aiven
 const pool = mysql.createPool({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-  port: 21240,
+  uri: process.env.DATABASE_URL, // This contains host, user, password, and port
   ssl: {
-    rejectUnauthorized: true
-  }});
-
-
+    rejectUnauthorized: false // ⭐ FIX: Required for Aiven + Render to talk securely
+  },
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0
+});
 
 pool.getConnection((err, connection) => {
     if (err) {
-        console.error("❌ Database connection failed:", err.message);
+        console.error("❌ Aiven Connection Failed:", err.message);
     } else {
-        console.log("✅ Successfully connected to Aiven MySQL!");
+        console.log("✅ Successfully connected to Aiven MySQL (defaultdb)!");
         connection.release();
     }
 });
+
+module.exports = pool.promise();
