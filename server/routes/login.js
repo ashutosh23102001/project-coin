@@ -147,44 +147,86 @@
 
 // module.exports = router;
 
+// part...
 
-const express = require("express");
-const bcrypt = require("bcryptjs");
-const db = require("../db");
+// const express = require("express");
+// const bcrypt = require("bcryptjs");
+// const db = require("../db");
 
-const router = express.Router();
+// const router = express.Router();
 
-/* ======================
-   LOGIN
-====================== */
+// /* ======================
+//    LOGIN
+// ====================== */
+// router.post("/login", async (req, res) => {
+//   const { Username, password } = req.body;
+
+//   db.query(
+//     "SELECT * FROM users WHERE username=?",
+//     [Username],
+//     async (err, rows) => {
+//       if (err) return res.status(500).json({ message: "DB error" });
+
+//       if (!rows.length)
+//         return res.status(401).json({ message: "Invalid login" });
+
+//       const ok = await bcrypt.compare(password, rows[0].password);
+//       if (!ok)
+//         return res.status(401).json({ message: "Invalid login" });
+
+//       req.session.user = {
+//         id: rows[0].id,
+//         username: rows[0].username,
+//       };
+
+//       res.json({
+//         message: "Login successful",
+//         user: req.session.user,
+//       });
+//     }
+//   );
+// });
+
+
 router.post("/login", async (req, res) => {
-  const { Username, password } = req.body;
+  try {
+    const { username, password } = req.body;
 
-  db.query(
-    "SELECT * FROM users WHERE username=?",
-    [Username],
-    async (err, rows) => {
-      if (err) return res.status(500).json({ message: "DB error" });
+    const [rows] = await db.query(
+      "SELECT * FROM users WHERE username = ?",
+      [username]
+    );
 
-      if (!rows.length)
-        return res.status(401).json({ message: "Invalid login" });
-
-      const ok = await bcrypt.compare(password, rows[0].password);
-      if (!ok)
-        return res.status(401).json({ message: "Invalid login" });
-
-      req.session.user = {
-        id: rows[0].id,
-        username: rows[0].username,
-      };
-
-      res.json({
-        message: "Login successful",
-        user: req.session.user,
-      });
+    if (rows.length === 0) {
+      return res.status(401).json({ message: "User not found" });
     }
-  );
+
+    const user = rows[0];
+
+    // If using plain password
+    if (user.password !== password) {
+      return res.status(401).json({ message: "Wrong password" });
+    }
+
+    // ✅ IMPORTANT: set session
+    req.session.user = {
+      id: user.id,
+      username: user.username,
+    };
+
+    // ✅ IMPORTANT: ALWAYS send response
+    res.json({ success: true, user });
+
+  } catch (err) {
+    console.error("LOGIN ERROR:", err);
+    res.status(500).json({ message: "Server error" });
+  }
 });
+
+
+
+
+
 
 
 // // /* ================= LOGOUT ================= */
