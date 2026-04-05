@@ -186,15 +186,22 @@
 //     }
 //   );
 // });
-
+const express = require("express");
+const router = express.Router();
+const db = require("../db"); // ✅ IMPORTANT
 
 router.post("/login", async (req, res) => {
   try {
-    const { username, password } = req.body;
+    // ✅ FIX: match frontend field
+    const { Username, password } = req.body;
+
+    if (!Username || !password) {
+      return res.status(400).json({ message: "All fields required" });
+    }
 
     const [rows] = await db.query(
       "SELECT * FROM users WHERE username = ?",
-      [username]
+      [Username]
     );
 
     if (rows.length === 0) {
@@ -203,19 +210,25 @@ router.post("/login", async (req, res) => {
 
     const user = rows[0];
 
-    // If using plain password
+    // ⚠️ Plain password check (later use bcrypt)
     if (user.password !== password) {
       return res.status(401).json({ message: "Wrong password" });
     }
 
-    // ✅ IMPORTANT: set session
+    // ✅ SESSION SAVE
     req.session.user = {
       id: user.id,
       username: user.username,
     };
 
-    // ✅ IMPORTANT: ALWAYS send response
-    res.json({ success: true, user });
+    // ✅ RESPONSE
+    res.json({
+      success: true,
+      user: {
+        id: user.id,
+        username: user.username,
+      },
+    });
 
   } catch (err) {
     console.error("LOGIN ERROR:", err);
@@ -223,6 +236,7 @@ router.post("/login", async (req, res) => {
   }
 });
 
+module.exports = router; // ✅ VERY IMPORTANT
 
 
 
