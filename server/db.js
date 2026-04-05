@@ -19,28 +19,35 @@
 
 
 // after deplyment changes
-
 require("dotenv").config();
 const mysql = require('mysql2');
 
-// ⭐ FIX: Using a single Connection String is much safer for Aiven
+/**
+ * ⭐ FIX 1: Use 'uri' (or 'connectionString' in some versions) 
+ * ⭐ FIX 2: Explicitly define SSL for Aiven Cloud
+ */
 const pool = mysql.createPool({
-  uri: process.env.DATABASE_URL, // This contains host, user, password, and port
+  uri: process.env.DATABASE_URL, // ⭐ CORRECTION: Ensure this is defined in Render Environment
   ssl: {
-    rejectUnauthorized: false // ⭐ FIX: Required for Aiven + Render to talk securely
+    rejectUnauthorized: false   // ⭐ CORRECTION: Required for Render to talk to Aiven
   },
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0
 });
 
+// Test connection on startup
 pool.getConnection((err, connection) => {
     if (err) {
         console.error("❌ Aiven Connection Failed:", err.message);
     } else {
         console.log("✅ Successfully connected to Aiven MySQL (defaultdb)!");
-        connection.release();
+        connection.release(); 
     }
 });
 
+/**
+ * ⭐ FIX 3: Export as .promise() 
+ * This allows you to use 'await db.query()' in your routes
+ */
 module.exports = pool.promise();
