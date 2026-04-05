@@ -152,6 +152,112 @@
 
 // all fix 
 
+// require("dotenv").config();
+
+// const express = require("express");
+// const cors = require("cors");
+// const session = require("express-session");
+// const cookieParser = require("cookie-parser");
+// const mysql = require("mysql2");
+// const path = require("path");
+
+// /* ============ ROUTES ============ */
+// const loginRoutes = require("./routes/login");
+// const accountRoutes = require("./routes/account");
+// const clickRoutes = require("./routes/clicks");
+// const companyRoutes = require("./routes/company");
+// const shortenerRoutes = require("./routes/shortener");
+// const addressRoutes = require("./routes/address");
+// const emailOtpRoutes = require("./routes/emailOtp");
+// const profilePicRoute = require("./routes/profilePic");
+// const forgotPasswordRoutes = require("./routes/forgotPassword");
+// const coverRoute = require("./routes/cover");
+// const referralRoutes = require("./routes/referral");
+// const pointsRoutes = require("./routes/points");
+// const profileRoute = require("./routes/profile");
+
+// const app = express();
+
+// /* ============ MIDDLEWARE ============ */
+// app.use(express.json());
+// app.use(express.urlencoded({ extended: true }));
+// app.use(cookieParser());
+
+// /* ============ CORS (Vercel Frontend) ============ */
+// app.use(
+//   cors({
+//     origin: ["https://project-coin-ashutosh23102001s-projects.vercel.app",
+//           "https://project-coin-zfh8.vercel.app"],
+
+//     methods: ["GET", "POST", "PUT", "DELETE"],
+//     credentials: true,
+//   })
+// );
+
+// /* ============ DATABASE (Aiven MySQL) ============ */
+// const db = mysql.createPool(process.env.DATABASE_URL);
+
+// /* ============ START SERVER ============ */
+// const PORT = process.env.PORT || 3000;
+
+// app.listen(PORT, () => {
+//   console.log(`✅ Server running on port ${PORT}`);
+// });
+
+
+// /* ============ SESSION (FIXED) ============ */
+// app.set("trust proxy", 1);
+
+// app.use(
+//   session({
+//     name: "dcoin.sid",
+//     secret: process.env.SESSION_SECRET, // 🔥 IMPORTANT
+//     resave: false,
+//     saveUninitialized: false,
+//     cookie: {
+//       httpOnly: true,
+//       secure: true,       // ✅ required for HTTPS
+//       sameSite: "none",   // ✅ required for Vercel + Render
+//     },
+//   })
+// );
+
+// /* ============ AUTH CHECK ============ */
+// app.get("/api/auth/me", (req, res) => {
+//   res.json({
+//     loggedIn: !!req.session.user,
+//     user: req.session.user || null,
+//   });
+// });
+
+
+
+// /* ============ STATIC FILES ============ */
+// app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+
+// /* ============ ROUTES (ALL CONNECTED) ============ */
+// app.use("/api", loginRoutes);
+// app.use("/api/account", accountRoutes);
+// app.use("/api", clickRoutes);
+// app.use("/api/company", companyRoutes);
+// app.use("/api", shortenerRoutes);
+// app.use("/api", addressRoutes);
+// app.use("/api", emailOtpRoutes);
+// app.use("/api", profileRoute);
+// app.use("/api", profilePicRoute);
+// app.use("/api", forgotPasswordRoutes);
+// app.use("/api", coverRoute);
+// app.use("/api", pointsRoutes);
+// app.use("/api", referralRoutes);
+
+// /* ============ ROOT CHECK ============ */
+// app.get("/", (req, res) => {
+//   res.send("🚀 API running: https://project-coin.onrender.com/api");
+// });
+
+
+// try 
+
 require("dotenv").config();
 
 const express = require("express");
@@ -178,49 +284,65 @@ const profileRoute = require("./routes/profile");
 
 const app = express();
 
-/* ============ MIDDLEWARE ============ */
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser());
+/* ============ TRUST PROXY (IMPORTANT FOR RENDER) ============ */
+app.set("trust proxy", 1);
 
-/* ============ CORS (Vercel Frontend) ============ */
+/* ============ CORS (FIRST) ============ */
 app.use(
   cors({
-    origin: ["https://project-coin-ashutosh23102001s-projects.vercel.app",
-          "https://project-coin-zfh8.vercel.app"],
-
+    origin: [
+      "https://project-coin-ashutosh23102001s-projects.vercel.app",
+      "https://project-coin-zfh8.vercel.app",
+    ],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })
 );
 
-/* ============ DATABASE (Aiven MySQL) ============ */
-const db = mysql.createPool(process.env.DATABASE_URL);
+/* ============ MIDDLEWARE ============ */
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
-/* ============ START SERVER ============ */
-const PORT = process.env.PORT || 3000;
-
-app.listen(PORT, () => {
-  console.log(`✅ Server running on port ${PORT}`);
-});
-
-
-/* ============ SESSION (FIXED) ============ */
-app.set("trust proxy", 1);
-
+/* ============ SESSION ============ */
 app.use(
   session({
     name: "dcoin.sid",
-    secret: process.env.SESSION_SECRET, // 🔥 IMPORTANT
+    secret: process.env.SESSION_SECRET, // 🔥 must be in Render env
     resave: false,
     saveUninitialized: false,
     cookie: {
       httpOnly: true,
-      secure: true,       // ✅ required for HTTPS
-      sameSite: "none",   // ✅ required for Vercel + Render
+      secure: true,     // HTTPS (Render)
+      sameSite: "none", // Vercel ↔ Render
     },
   })
 );
+
+/* ============ DATABASE (FIXED) ============ */
+const db = mysql.createPool({
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+  port: process.env.DB_PORT,
+  ssl: {
+    rejectUnauthorized: false,
+  },
+});
+
+// Test DB
+db.getConnection((err, conn) => {
+  if (err) {
+    console.error("❌ DB ERROR:", err.message);
+  } else {
+    console.log("✅ DB CONNECTED");
+    conn.release();
+  }
+});
+
+/* ============ STATIC FILES ============ */
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 /* ============ AUTH CHECK ============ */
 app.get("/api/auth/me", (req, res) => {
@@ -230,12 +352,7 @@ app.get("/api/auth/me", (req, res) => {
   });
 });
 
-
-
-/* ============ STATIC FILES ============ */
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
-
-/* ============ ROUTES (ALL CONNECTED) ============ */
+/* ============ ROUTES ============ */
 app.use("/api", loginRoutes);
 app.use("/api/account", accountRoutes);
 app.use("/api", clickRoutes);
@@ -253,4 +370,11 @@ app.use("/api", referralRoutes);
 /* ============ ROOT CHECK ============ */
 app.get("/", (req, res) => {
   res.send("🚀 API running: https://project-coin.onrender.com/api");
+});
+
+/* ============ START SERVER (LAST) ============ */
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => {
+  console.log(`✅ Server running on port ${PORT}`);
 });
