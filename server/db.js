@@ -34,7 +34,7 @@ const pool = mysql.createPool({
   port: process.env.DB_PORT,
   uri: process.env.DATABASE_URL, // ⭐ CORRECTION: Ensure this is defined in Render Environment
   ssl: {
-    rejectUnauthorized: false   // ⭐ CORRECTION: Required for Render to talk to Aiven
+    rejectUnauthorized: true   // ⭐ CORRECTION: Required for Render to talk to Aiven
   },
   waitForConnections: true,
   connectionLimit: 10,
