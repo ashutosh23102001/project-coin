@@ -27,6 +27,11 @@ const mysql = require('mysql2');
  * ⭐ FIX 2: Explicitly define SSL for Aiven Cloud
  */
 const pool = mysql.createPool({
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+  port: process.env.DB_PORT,
   uri: process.env.DATABASE_URL, // ⭐ CORRECTION: Ensure this is defined in Render Environment
   ssl: {
     rejectUnauthorized: false   // ⭐ CORRECTION: Required for Render to talk to Aiven
