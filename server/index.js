@@ -105,47 +105,147 @@
 
 // after deplyment changes 
 
+// require("dotenv").config();
+// const express = require("express");
+// const session = require("express-session"); // ⭐ FIX: Make sure this line exists!
+// const cors = require("cors");
+// const mysql = require('mysql2'); 
+// // ... other imports
+
+// const app = express();
+
+// /* ============ MIDDLEWARE ============ */
+// app.use(express.json());
+
+// // ⭐ FIX: Use your MAIN Vercel domain (not the long git-preview one)
+// app.use(
+//   cors({
+//     origin: "https://project-coin-ashutosh23102001s-projects.vercel.app", 
+//     methods: ['GET', 'POST', 'PUT', 'DELETE'],
+//     credentials: true
+//   })
+// );
+
+// // ⭐ FIX: Use createPool instead of createConnection for better stability on Render
+// const db = mysql.createPool(process.env.DATABASE_URL); 
+
+// // ... rest of your session and routes code
+
+// /* ============ START SERVER ============ */
+// // ⭐ FIX: Render assigns its own port, don't force 21240 here
+// const PORT = process.env.PORT || 3002; 
+// app.listen(PORT, () => {
+//     console.log(`✅ Server running on port ${PORT}`);
+// });
+
+// app.use(
+//   session({
+//     // ... other settings
+//     cookie: {
+//       httpOnly: true,
+//       secure: true, // ⭐ FIX: Must be true for HTTPS (Render/Vercel)
+//       sameSite: "none", // ⭐ FIX: Allows cookies across different domains
+//     },
+//     proxy: true // ⭐ FIX: Required for Render's load balancer
+//   })
+// );
+
+// all fix 
+
 require("dotenv").config();
+
 const express = require("express");
-const session = require("express-session"); // ⭐ FIX: Make sure this line exists!
 const cors = require("cors");
-const mysql = require('mysql2'); 
-// ... other imports
+const session = require("express-session");
+const cookieParser = require("cookie-parser");
+const mysql = require("mysql2");
+const path = require("path");
+
+/* ============ ROUTES ============ */
+const loginRoutes = require("./routes/login");
+const accountRoutes = require("./routes/account");
+const clickRoutes = require("./routes/clicks");
+const companyRoutes = require("./routes/company");
+const shortenerRoutes = require("./routes/shortener");
+const addressRoutes = require("./routes/address");
+const emailOtpRoutes = require("./routes/emailOtp");
+const profilePicRoute = require("./routes/profilePic");
+const forgotPasswordRoutes = require("./routes/forgotPassword");
+const coverRoute = require("./routes/cover");
+const referralRoutes = require("./routes/referral");
+const pointsRoutes = require("./routes/points");
+const profileRoute = require("./routes/profile");
 
 const app = express();
 
 /* ============ MIDDLEWARE ============ */
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
-// ⭐ FIX: Use your MAIN Vercel domain (not the long git-preview one)
+/* ============ CORS (Vercel Frontend) ============ */
 app.use(
   cors({
-    origin: "https://project-coin-ashutosh23102001s-projects.vercel.app", 
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    credentials: true
+    origin: "https://project-coin-ashutosh23102001s-projects.vercel.app",
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
   })
 );
 
-// ⭐ FIX: Use createPool instead of createConnection for better stability on Render
-const db = mysql.createPool(process.env.DATABASE_URL); 
+/* ============ DATABASE (Aiven MySQL) ============ */
+const db = mysql.createPool(process.env.DATABASE_URL);
 
-// ... rest of your session and routes code
-
-/* ============ START SERVER ============ */
-// ⭐ FIX: Render assigns its own port, don't force 21240 here
-const PORT = process.env.PORT || 3002; 
-app.listen(PORT, () => {
-    console.log(`✅ Server running on port ${PORT}`);
-});
+/* ============ SESSION (FIXED) ============ */
+app.set("trust proxy", 1);
 
 app.use(
   session({
-    // ... other settings
+    name: "dcoin.sid",
+    secret: process.env.SESSION_SECRET, // 🔥 IMPORTANT
+    resave: false,
+    saveUninitialized: false,
     cookie: {
       httpOnly: true,
-      secure: true, // ⭐ FIX: Must be true for HTTPS (Render/Vercel)
-      sameSite: "none", // ⭐ FIX: Allows cookies across different domains
+      secure: true,       // ✅ required for HTTPS
+      sameSite: "none",   // ✅ required for Vercel + Render
     },
-    proxy: true // ⭐ FIX: Required for Render's load balancer
   })
 );
+
+/* ============ AUTH CHECK ============ */
+app.get("/api/auth/me", (req, res) => {
+  res.json({
+    loggedIn: !!req.session.user,
+    user: req.session.user || null,
+  });
+});
+
+/* ============ STATIC FILES ============ */
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+
+/* ============ ROUTES (ALL CONNECTED) ============ */
+app.use("/api", loginRoutes);
+app.use("/api/account", accountRoutes);
+app.use("/api", clickRoutes);
+app.use("/api/company", companyRoutes);
+app.use("/api", shortenerRoutes);
+app.use("/api", addressRoutes);
+app.use("/api", emailOtpRoutes);
+app.use("/api", profileRoute);
+app.use("/api", profilePicRoute);
+app.use("/api", forgotPasswordRoutes);
+app.use("/api", coverRoute);
+app.use("/api", pointsRoutes);
+app.use("/api", referralRoutes);
+
+/* ============ ROOT CHECK ============ */
+app.get("/", (req, res) => {
+  res.send("🚀 API running: https://project-coin.onrender.com/api");
+});
+
+/* ============ START SERVER ============ */
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => {
+  console.log(`✅ Server running on port ${PORT}`);
+});
