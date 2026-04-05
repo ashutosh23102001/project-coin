@@ -187,32 +187,40 @@
 //   );
 // });
 const express = require("express");
-const router = express.Router();
-const db = require("../db"); // ✅ IMPORTANT
+const bcrypt = require("bcryptjs");
+const db = require("../db");
 
+const router = express.Router();
+
+/* ======================
+   LOGIN (FINAL FIXED)
+====================== */
 router.post("/login", async (req, res) => {
   try {
-    // ✅ FIX: match frontend field
     const { Username, password } = req.body;
 
+    // ✅ VALIDATION
     if (!Username || !password) {
       return res.status(400).json({ message: "All fields required" });
     }
 
+    // ✅ FETCH USER
     const [rows] = await db.query(
       "SELECT * FROM users WHERE username = ?",
       [Username]
     );
 
     if (rows.length === 0) {
-      return res.status(401).json({ message: "User not found" });
+      return res.status(401).json({ message: "Invalid login" });
     }
 
     const user = rows[0];
 
-    // ⚠️ Plain password check (later use bcrypt)
-    if (user.password !== password) {
-      return res.status(401).json({ message: "Wrong password" });
+    // ✅ PASSWORD CHECK (bcrypt)
+    const isMatch = await bcrypt.compare(password, user.password);
+
+    if (!isMatch) {
+      return res.status(401).json({ message: "Invalid login" });
     }
 
     // ✅ SESSION SAVE
@@ -224,10 +232,8 @@ router.post("/login", async (req, res) => {
     // ✅ RESPONSE
     res.json({
       success: true,
-      user: {
-        id: user.id,
-        username: user.username,
-      },
+      message: "Login successful",
+      user: req.session.user,
     });
 
   } catch (err) {
@@ -235,10 +241,6 @@ router.post("/login", async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 });
-
-module.exports = router; // ✅ VERY IMPORTANT
-
-
 
 
 
