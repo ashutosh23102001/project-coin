@@ -1,6 +1,142 @@
-import React, { useState ,useEffect} from "react";
+// import React, { useState ,useEffect} from "react";
+// import "./Login.css";
+// import { Link, useNavigate ,useLocation } from "react-router-dom";
+// import api from "../../API/axios";
+// import { useAuth } from "../../context/AuthContext";
+
+// import { ToastContainer, toast } from "react-toastify";
+// import "react-toastify/dist/ReactToastify.css";
+
+// const Login = () => {
+//   const [Username, setUsername] = useState("");
+//   const [password, setPassword] = useState("");
+//   const [error, setError] = useState("");
+//   const [loading, setLoading] = useState(false);
+
+//   const { login } = useAuth();
+//   const navigate = useNavigate();
+//     const location = useLocation();
+
+//  useEffect(() => {
+//     if (location.state?.showLoginToast) {
+//       toast.warn(" Please login first to access this page", {
+//         position: "top-center",
+//         autoClose: 2500,
+//         theme: "light",
+//         marginTop: "50px",
+
+//       });
+//     }
+//   }, []);
+
+
+
+//   const handleSubmit = async (e) => {
+//     e.preventDefault();
+//     if (loading) return;
+
+//     setError("");
+//     setLoading(true);
+
+//     try {
+//       const res = await api.post("/login", {
+//         Username: Username.trim(),
+//         password,
+//       });
+
+//       login(res.data.user);
+//       const redirectTo = location.state?.from?.pathname || "/home";
+
+//       navigate(redirectTo, { replace: true });
+//     } catch (err) {
+//       setError(err.response?.data?.message || "Login failed");
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+//   return (
+//     <div className="popup-overlay">
+//           <ToastContainer  style={{ marginTop: "60px" }}/>
+
+//       <div className="popup-container">
+//         {/* LEFT SIDE */}
+//         <div className="left-side login-white-side">
+//           <h2>Login to your account</h2>
+
+//           {/* ERROR MESSAGE */}
+//           {error && (
+//             <p style={{ color: "red", marginBottom: "10px" }}>{error}</p>
+//           )}
+
+//           <form onSubmit={handleSubmit}>
+//             <div className="input-group">
+//               <span className="icon user-icon"></span>
+//               <input
+//                 type="text"
+//                 placeholder="Username"
+//                 value={Username}
+//                 onChange={(e) => setUsername(e.target.value)}
+//                 required
+//               />
+//             </div>
+
+//             <div className="input-group">
+//               <span className="icon lock-icon"></span>
+//               <input
+//                 type="password"
+//                 placeholder="Password"
+//                 value={password}
+//                 onChange={(e) => setPassword(e.target.value)}
+//                 required
+//               />
+//             </div>
+//             {/* Remember & Forgot */}
+//             <div className="login-options">
+//               <label className="remember-me">
+//                 <input type="checkbox" />
+//                 <span>Remember me</span>
+//               </label>
+
+//               <Link to="/forgot-password" className="forgot-link">
+//                 Forgot password?
+//               </Link>
+//             </div>
+//             <button
+//               type="submit"
+//               className="create-account-btn"
+//               disabled={loading}
+//             >
+//               {loading ? "LOGGING IN..." : "LOGIN"}
+//             </button>
+
+//             {/* Register text */}
+//             <p className="register-text">
+//               Don’t have an account? <Link to="/register">Register</Link>
+//             </p>
+//           </form>
+//         </div>
+
+//         {/* RIGHT SIDE */}
+//         <Link to="/">
+//           <button className="popup-close-btn">&times;</button>
+//         </Link>
+//         <div className="right-side login-colorful-side">
+//           <Link to="/register">
+//             <button className="signup-btn">Sign Up</button>
+//           </Link>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default Login;
+
+
+import React, { useState, useEffect } from "react";
 import "./Login.css";
-import { Link, useNavigate ,useLocation } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import api from "../../API/axios";
 import { useAuth } from "../../context/AuthContext";
 
@@ -15,22 +151,20 @@ const Login = () => {
 
   const { login } = useAuth();
   const navigate = useNavigate();
-    const location = useLocation();
+  const location = useLocation();
 
- useEffect(() => {
+  /* ============ SHOW LOGIN REQUIRED TOAST ============ */
+  useEffect(() => {
     if (location.state?.showLoginToast) {
-      toast.warn(" Please login first to access this page", {
+      toast.warn("Please login first to access this page", {
         position: "top-center",
         autoClose: 2500,
         theme: "light",
-        marginTop: "50px",
-
       });
     }
-  }, []);
+  }, [location.state]);
 
-
-
+  /* ============ HANDLE LOGIN ============ */
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (loading) return;
@@ -40,16 +174,34 @@ const Login = () => {
 
     try {
       const res = await api.post("/login", {
-        Username: Username.trim(),
+        username: Username.trim(), // ✅ FIXED
         password,
       });
 
-      login(res.data.user);
-      const redirectTo = location.state?.from?.pathname || "/home";
+      if (!res.data?.user) {
+        throw new Error("Invalid server response");
+      }
 
+      // ✅ save user in context
+      login(res.data.user);
+
+      // ✅ redirect after login
+      const redirectTo = location.state?.from?.pathname || "/home";
       navigate(redirectTo, { replace: true });
+
+      toast.success("Login successful 🎉");
+
     } catch (err) {
-      setError(err.response?.data?.message || "Login failed");
+      console.error("LOGIN ERROR:", err);
+
+      const msg =
+        err.response?.data?.message ||
+        err.message ||
+        "Login failed";
+
+      setError(msg);
+      toast.error(msg);
+
     } finally {
       setLoading(false);
     }
@@ -57,7 +209,7 @@ const Login = () => {
 
   return (
     <div className="popup-overlay">
-          <ToastContainer  style={{ marginTop: "60px" }}/>
+      <ToastContainer style={{ marginTop: "60px" }} />
 
       <div className="popup-container">
         {/* LEFT SIDE */}
@@ -66,7 +218,9 @@ const Login = () => {
 
           {/* ERROR MESSAGE */}
           {error && (
-            <p style={{ color: "red", marginBottom: "10px" }}>{error}</p>
+            <p style={{ color: "red", marginBottom: "10px" }}>
+              {error}
+            </p>
           )}
 
           <form onSubmit={handleSubmit}>
@@ -91,6 +245,7 @@ const Login = () => {
                 required
               />
             </div>
+
             {/* Remember & Forgot */}
             <div className="login-options">
               <label className="remember-me">
@@ -102,6 +257,7 @@ const Login = () => {
                 Forgot password?
               </Link>
             </div>
+
             <button
               type="submit"
               className="create-account-btn"
@@ -110,17 +266,20 @@ const Login = () => {
               {loading ? "LOGGING IN..." : "LOGIN"}
             </button>
 
-            {/* Register text */}
+            {/* Register */}
             <p className="register-text">
-              Don’t have an account? <Link to="/register">Register</Link>
+              Don’t have an account?{" "}
+              <Link to="/register">Register</Link>
             </p>
           </form>
         </div>
 
-        {/* RIGHT SIDE */}
+        {/* CLOSE BUTTON */}
         <Link to="/">
           <button className="popup-close-btn">&times;</button>
         </Link>
+
+        {/* RIGHT SIDE */}
         <div className="right-side login-colorful-side">
           <Link to="/register">
             <button className="signup-btn">Sign Up</button>
