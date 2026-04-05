@@ -195,6 +195,14 @@ app.use(
 /* ============ DATABASE (Aiven MySQL) ============ */
 const db = mysql.createPool(process.env.DATABASE_URL);
 
+/* ============ START SERVER ============ */
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => {
+  console.log(`✅ Server running on port ${PORT}`);
+});
+
+
 /* ============ SESSION (FIXED) ============ */
 app.set("trust proxy", 1);
 
@@ -220,6 +228,8 @@ app.get("/api/auth/me", (req, res) => {
   });
 });
 
+
+
 /* ============ STATIC FILES ============ */
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
@@ -241,11 +251,4 @@ app.use("/api", referralRoutes);
 /* ============ ROOT CHECK ============ */
 app.get("/", (req, res) => {
   res.send("🚀 API running: https://project-coin.onrender.com/api");
-});
-
-/* ============ START SERVER ============ */
-const PORT = process.env.PORT || 3000;
-
-app.listen(PORT, () => {
-  console.log(`✅ Server running on port ${PORT}`);
 });
