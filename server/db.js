@@ -36,7 +36,7 @@ host: process.env.DB_HOST,
   port: process.env.DB_PORT,
 
   ssl: {
-    rejectUnauthorized: true   // ⭐ CORRECTION: Required for Render to talk to Aiven
+    rejectUnauthorized: false   // ⭐ CORRECTION: Required for Render to talk to Aiven
   },
   waitForConnections: true,
   connectionLimit: 10,
