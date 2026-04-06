@@ -168,7 +168,7 @@ const Referral = () => {
       {/* 🔹 REFERRAL CODE */}
       <div className="ref-box">
         <span className="label">Your Referral Code</span>
-        <strong className="code">{code || "Not available"}</strong>
+        <strong className="code">{code}</strong>
       </div>
 
       {/* 🔹 REFERRAL LINK */}
