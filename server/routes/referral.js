@@ -130,15 +130,12 @@
 // });
 
 // module.exports = router;
-
 const express = require("express");
 const db = require("../db");
 
 const router = express.Router();
 
-/* ================================
-   🔐 SESSION CHECK
-================================ */
+/* AUTH */
 const checkAuth = (req, res, next) => {
   if (!req.session?.user) {
     return res.status(401).json({ message: "Unauthorized" });
@@ -146,9 +143,7 @@ const checkAuth = (req, res, next) => {
   next();
 };
 
-/* ================================
-   🎯 GET REFERRAL CODE
-================================ */
+/* GET CODE */
 router.get("/referral", checkAuth, (req, res) => {
   const username = req.session.user.username;
 
@@ -156,25 +151,16 @@ router.get("/referral", checkAuth, (req, res) => {
     "SELECT referral_code FROM users WHERE username = ?",
     [username],
     (err, rows) => {
-      if (err) {
-        console.error("Referral code error:", err);
-        return res.status(500).json({ message: "DB error" });
-      }
-
-      if (!rows.length) {
-        return res.json({ referralCode: "" });
-      }
+      if (err) return res.status(500).json({ message: "DB error" });
 
       res.json({
-        referralCode: rows[0].referral_code,
+        referralCode: rows[0]?.referral_code || "",
       });
     }
   );
 });
 
-/* ================================
-   👥 TOTAL REFERRALS
-================================ */
+/* STATS */
 router.get("/referral/stats", checkAuth, (req, res) => {
   const username = req.session.user.username;
 
@@ -182,10 +168,7 @@ router.get("/referral/stats", checkAuth, (req, res) => {
     "SELECT COUNT(*) AS total FROM referrals WHERE referrer_username = ?",
     [username],
     (err, rows) => {
-      if (err) {
-        console.error("Stats error:", err);
-        return res.status(500).json({ message: "DB error" });
-      }
+      if (err) return res.status(500).json({ message: "DB error" });
 
       res.json({
         totalReferrals: rows[0]?.total || 0,
@@ -194,9 +177,7 @@ router.get("/referral/stats", checkAuth, (req, res) => {
   );
 });
 
-/* ================================
-   📋 REFERRAL USERS
-================================ */
+/* USERS */
 router.get("/referral/users", checkAuth, (req, res) => {
   const username = req.session.user.username;
 
@@ -204,10 +185,7 @@ router.get("/referral/users", checkAuth, (req, res) => {
     "SELECT referred_username FROM referrals WHERE referrer_username = ?",
     [username],
     (err, rows) => {
-      if (err) {
-        console.error("Users error:", err);
-        return res.status(500).json({ message: "DB error" });
-      }
+      if (err) return res.status(500).json({ message: "DB error" });
 
       res.json({
         users: rows.map((r) => r.referred_username),
