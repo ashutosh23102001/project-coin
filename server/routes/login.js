@@ -377,10 +377,7 @@ function generateCode(username) {
 
 // module.exports = router;
 
-const bcrypt = require("bcryptjs");
-const db = require("../db");
 
-const router = express.Router();
 
 /* ======================
    REGISTER WITH REFERRAL (FINAL FIX)
