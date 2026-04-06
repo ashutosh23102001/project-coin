@@ -378,15 +378,100 @@ function generateCode(username) {
 // module.exports = router;
 
 
+// // after without referal code
 
-/* ======================
-   REGISTER WITH REFERRAL (FINAL FIX)
-====================== */
+
+// /* ======================
+//    REGISTER WITH REFERRAL (FINAL FIX)
+// ====================== */
+// router.post("/register", async (req, res) => {
+//   try {
+//     const { username, password, referralCode } = req.body;
+
+//     /* ================= VALIDATION ================= */
+//     if (!username || !password) {
+//       return res.status(400).json({
+//         success: false,
+//         message: "All fields required",
+//       });
+//     }
+
+//     if (password.length < 6) {
+//       return res.status(400).json({
+//         success: false,
+//         message: "Password must be at least 6 characters",
+//       });
+//     }
+
+//     /* ================= CHECK USER ================= */
+//     const [existing] = await db.query(
+//       "SELECT id FROM users WHERE username = ?",
+//       [username]
+//     );
+
+//     if (existing.length > 0) {
+//       return res.status(409).json({
+//         success: false,
+//         message: "Username already exists",
+//       });
+//     }
+
+//     /* ================= CREATE USER ================= */
+//     const hashedPassword = await bcrypt.hash(password, 10);
+//     const myReferralCode = generateCode(username);
+
+//     await db.query(
+//       `INSERT INTO users (username, password, referral_code)
+//        VALUES (?, ?, ?)`,
+//       [username, hashedPassword, myReferralCode]
+//     );
+
+//     /* ================= REFERRAL ================= */
+//     if (referralCode) {
+//       const [rows] = await db.query(
+//         `SELECT username FROM users WHERE referral_code = ?`,
+//         [referralCode]
+//       );
+
+//       if (rows.length > 0) {
+//         const referrer = rows[0].username;
+
+//         await db.query(
+//           `INSERT INTO referrals (referrer_username, referred_username)
+//            VALUES (?, ?)`,
+//           [referrer, username]
+//         );
+
+//         await db.query(
+//           `INSERT INTO click_counter (username, clicks_added)
+//            VALUES (?, 20)`,
+//           [referrer]
+//         );
+//       }
+//     }
+
+//     /* ================= SUCCESS ================= */
+//     return res.status(201).json({
+//       success: true,
+//       message: "User registered successfully",
+//     });
+
+//   } catch (error) {
+//     console.error("REGISTER ERROR:", error);
+
+//     return res.status(500).json({
+//       success: false,
+//       message: "Server error",
+//     });
+//   }
+// });
+
+// module.exports = router;
+
 router.post("/register", async (req, res) => {
   try {
     const { username, password, referralCode } = req.body;
 
-    /* ================= VALIDATION ================= */
     if (!username || !password) {
       return res.status(400).json({
         success: false,
@@ -394,74 +479,60 @@ router.post("/register", async (req, res) => {
       });
     }
 
-    if (password.length < 6) {
-      return res.status(400).json({
-        success: false,
-        message: "Password must be at least 6 characters",
-      });
-    }
-
-    /* ================= CHECK USER ================= */
-    const [existing] = await db.query(
-      "SELECT id FROM users WHERE username = ?",
-      [username]
-    );
-
-    if (existing.length > 0) {
-      return res.status(409).json({
-        success: false,
-        message: "Username already exists",
-      });
-    }
-
-    /* ================= CREATE USER ================= */
+    const bcrypt = require("bcryptjs");
     const hashedPassword = await bcrypt.hash(password, 10);
+
     const myReferralCode = generateCode(username);
 
-    await db.query(
-      `INSERT INTO users (username, password, referral_code)
-       VALUES (?, ?, ?)`,
-      [username, hashedPassword, myReferralCode]
-    );
+    // 1️⃣ CREATE USER
+    db.query(
+      "INSERT INTO users (username, password, referral_code) VALUES (?, ?, ?)",
+      [username, hashedPassword, myReferralCode],
+      (err) => {
+        if (err) {
+          if (err.code === "ER_DUP_ENTRY") {
+            return res.status(409).json({
+              success: false,
+              message: "Username already exists",
+            });
+          }
 
-    /* ================= REFERRAL ================= */
-    if (referralCode) {
-      const [rows] = await db.query(
-        `SELECT username FROM users WHERE referral_code = ?`,
-        [referralCode]
-      );
+          console.error("Register error:", err);
+          return res.status(500).json({ success: false });
+        }
 
-      if (rows.length > 0) {
-        const referrer = rows[0].username;
+        // 2️⃣ HANDLE REFERRAL
+        if (referralCode) {
+          db.query(
+            "SELECT username FROM users WHERE referral_code = ?",
+            [referralCode],
+            (err, rows) => {
+              if (!err && rows.length) {
+                const referrer = rows[0].username;
 
-        await db.query(
-          `INSERT INTO referrals (referrer_username, referred_username)
-           VALUES (?, ?)`,
-          [referrer, username]
-        );
+                db.query(
+                  "INSERT INTO referrals (referrer_username, referred_username) VALUES (?, ?)",
+                  [referrer, username]
+                );
 
-        await db.query(
-          `INSERT INTO click_counter (username, clicks_added)
-           VALUES (?, 20)`,
-          [referrer]
-        );
+                db.query(
+                  "INSERT INTO click_counter (username, clicks_added) VALUES (?, 20)",
+                  [referrer]
+                );
+              }
+            }
+          );
+        }
+
+        // ✅ IMPORTANT RESPONSE
+        return res.status(201).json({
+          success: true,
+          message: "Registered successfully",
+        });
       }
-    }
-
-    /* ================= SUCCESS ================= */
-    return res.status(201).json({
-      success: true,
-      message: "User registered successfully",
-    });
-
-  } catch (error) {
-    console.error("REGISTER ERROR:", error);
-
-    return res.status(500).json({
-      success: false,
-      message: "Server error",
-    });
+    );
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false });
   }
 });
-
-module.exports = router;
