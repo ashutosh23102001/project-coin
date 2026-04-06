@@ -130,6 +130,7 @@
 // });
 
 // module.exports = router;
+
 const express = require("express");
 const db = require("../db");
 
@@ -143,8 +144,9 @@ const checkAuth = (req, res, next) => {
   next();
 };
 
-/* GET CODE */
-router.get("/referral", checkAuth, (req, res) => {
+/* GET CODE */router.get("/referral", checkAuth, (req, res) => {
+  console.log("SESSION:", req.session);
+
   const username = req.session.user.username;
 
   db.query(
@@ -152,6 +154,8 @@ router.get("/referral", checkAuth, (req, res) => {
     [username],
     (err, rows) => {
       if (err) return res.status(500).json({ message: "DB error" });
+
+      console.log("DB RESULT:", rows);
 
       res.json({
         referralCode: rows[0]?.referral_code || "",
