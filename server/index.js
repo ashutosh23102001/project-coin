@@ -266,6 +266,7 @@ const session = require("express-session");
 const cookieParser = require("cookie-parser");
 const mysql = require("mysql2");
 const path = require("path");
+const MySQLStore = require("express-mysql-session")(session); // ✅ ADDED
 
 /* ============ ROUTES ============ */
 const loginRoutes = require("./routes/login");
@@ -311,11 +312,14 @@ app.use(
     secret: process.env.SESSION_SECRET, // 🔥 must be in Render env
     resave: false,
     saveUninitialized: false,
+        store: sessionStore, // ✅ ADD THIS LINE
+
     cookie: {
-      httpOnly: true,
-      secure: true,     // HTTPS (Render)
-      sameSite: "none", // Vercel ↔ Render
-    },
+  httpOnly: true,
+  secure: true,     // ✅ already correct
+  sameSite: "none", // ✅ already correct
+  maxAge: 1000 * 60 * 60 * 24, // 🔥 ADD THIS (IMPORTANT)
+},
   })
 );
 
@@ -340,7 +344,7 @@ db.getConnection((err, conn) => {
     conn.release();
   }
 });
-
+const sessionStore = new MySQLStore({}, db.promise()); // ✅ ADD THIS
 /* ============ STATIC FILES ============ */
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
