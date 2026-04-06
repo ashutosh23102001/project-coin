@@ -377,7 +377,6 @@ function generateCode(username) {
 
 // module.exports = router;
 
-const express = require("express");
 const bcrypt = require("bcryptjs");
 const db = require("../db");
 
