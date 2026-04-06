@@ -101,31 +101,38 @@ const Referral = () => {
      🔥 LOAD ALL REFERRAL DATA
   ========================= */
   useEffect(() => {
-    const loadData = async () => {
-      try {
-        const [res1, res2, res3] = await Promise.all([
-          api.get("/referral"),
-          api.get("/referral/stats"),
-          api.get("/referral/users"),
-        ]);
+  const loadData = async () => {
+    try {
+      const [res1, res2, res3] = await Promise.all([
+        api.get("/referral"),
+        api.get("/referral/stats"),
+        api.get("/referral/users"),
+      ]);
 
-        setCode(res1.data.referralCode || "");
-        setCount(res2.data.totalReferrals || 0);
-        setUsers(res3.data.users || []);
-      } catch (err) {
-        console.error("❌ Referral error:", err);
+      console.log("REFERRAL API:", res1.data); // ✅ DEBUG
 
-        // 🔐 Session expired → redirect
-        if (err.response?.status === 401) {
-          navigate("/login");
-        }
-      } finally {
-        setLoading(false);
+      setCode(
+        res1.data.referralCode ||
+        res1.data.code ||
+        res1.data.referral_code ||
+        ""
+      );
+
+      setCount(res2.data.totalReferrals || 0);
+      setUsers(res3.data.users || []);
+    } catch (err) {
+      console.error("❌ Referral error:", err);
+
+      if (err.response?.status === 401) {
+        navigate("/login");
       }
-    };
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    loadData();
-  }, [navigate]);
+  loadData();
+}, [navigate]);
 
   /* =========================
      🔗 REFERRAL LINK
