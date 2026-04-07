@@ -144,7 +144,8 @@ const checkAuth = (req, res, next) => {
   next();
 };
 
-/* GET CODE */router.get("/referral", checkAuth, (req, res) => {
+/* GET CODE */
+router.get("/referral", checkAuth, (req, res) => {
   console.log("SESSION:", req.session);
 
   const username = req.session.user.username;
@@ -158,7 +159,7 @@ const checkAuth = (req, res, next) => {
       console.log("DB RESULT:", rows);
 
       res.json({
-        referralCode: rows[0]?.referral_code || "",
+        referralCode: rows[0]?.referral_code || "no input",
       });
     }
   );
