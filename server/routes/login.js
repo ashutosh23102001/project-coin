@@ -541,15 +541,15 @@ function generateCode(username) {
 /* LOGIN */
 router.post("/login", async (req, res) => {
   try {
-    const { Username, password } = req.body;
+    const { username, password } = req.body;
 
-    if (!Username || !password) {
+    if (!username || !password) {
       return res.status(400).json({ message: "All fields required" });
     }
 
     const [rows] = await db.query(
       "SELECT * FROM users WHERE username = ?",
-      [Username]
+      [username]
     );
 
     if (!rows.length) {
