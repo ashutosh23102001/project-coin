@@ -146,18 +146,20 @@ const checkAuth = (req, res, next) => {
 
 /* GET CODE */
 router.get("/referral", checkAuth, (req, res) => {
-  console.log("USERNAME:", req.session.user.username);
+  console.log("SESSION:", req.session);
+
+  const username = req.session.user.username;
 
   db.query(
     "SELECT referral_code FROM users WHERE username = ?",
-    [req.session.user.username],
+    [username],
     (err, rows) => {
-      console.log("ROWS:", rows); // 🔥 ADD THIS
-
       if (err) return res.status(500).json({ message: "DB error" });
 
+      console.log("DB RESULT:", rows);
+
       res.json({
-        referralCode: rows[0]?.referral_code || "EMPTY",
+        referralCode: rows[0]?.referral_code || "no input",
       });
     }
   );
