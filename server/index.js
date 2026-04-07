@@ -300,28 +300,6 @@ app.use(
   })
 );
 
-/* ============ MIDDLEWARE ============ */
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser());
-
-/* ============ SESSION ============ */
-app.use(
-  session({
-    name: "dcoin.sid",
-    secret: process.env.SESSION_SECRET, // 🔥 must be in Render env
-    resave: false,
-    saveUninitialized: false,
-        store: sessionStore, // ✅ ADD THIS LINE
-
-    cookie: {
-  httpOnly: true,
-  secure: true,     // ✅ already correct
-  sameSite: "none", // ✅ already correct
-  maxAge: 1000 * 60 * 60 * 24, // 🔥 ADD THIS (IMPORTANT)
-},
-  })
-);
 
 /* ============ DATABASE (FIXED) ============ */
 const db = mysql.createPool({
@@ -345,6 +323,31 @@ db.getConnection((err, conn) => {
   }
 });
 const sessionStore = new MySQLStore({}, db.promise()); // ✅ ADD THIS
+
+
+/* ============ MIDDLEWARE ============ */
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
+
+/* ============ SESSION ============ */
+app.use(
+  session({
+    name: "dcoin.sid",
+    secret: process.env.SESSION_SECRET, // 🔥 must be in Render env
+    resave: false,
+    saveUninitialized: false,
+        store: sessionStore, // ✅ ADD THIS LINE
+
+    cookie: {
+  httpOnly: true,
+  secure: true,     // ✅ already correct
+  sameSite: "none", // ✅ already correct
+  maxAge: 1000 * 60 * 60 * 24, // 🔥 ADD THIS (IMPORTANT)
+},
+  })
+);
+
 /* ============ STATIC FILES ============ */
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
