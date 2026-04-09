@@ -544,7 +544,7 @@ router.post("/login", async (req, res) => {
     const { username, password } = req.body;
 
     if (!username || !password) {
-      return res.status(400).json({ message: "All fields required" });
+      return res.status(400).json({ message: "All fields required" })
     }
 
     const [rows] = await db.query(
