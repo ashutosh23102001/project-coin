@@ -134,7 +134,167 @@
 // export default Login;
 
 
-import React, { useState, useEffect } from "react";
+  // import React, { useState, useEffect } from "react";
+  // import "./Login.css";
+  // import { Link, useNavigate, useLocation } from "react-router-dom";
+  // import api from "../../API/axios";
+  // import { useAuth } from "../../context/AuthContext";
+
+  // import { ToastContainer, toast } from "react-toastify";
+  // import "react-toastify/dist/ReactToastify.css";
+
+  // const Login = () => {
+  //   const [Username, setUsername] = useState("");
+  //   const [password, setPassword] = useState("");
+  //   const [error, setError] = useState("");
+  //   const [loading, setLoading] = useState(false);
+
+  //   const { login } = useAuth();
+  //   const navigate = useNavigate();
+  //   const location = useLocation();
+
+  //   /* ============ SHOW LOGIN REQUIRED TOAST ============ */
+  //   useEffect(() => {
+  //     if (location.state?.showLoginToast) {
+  //       toast.warn("Please login first to access this page", {
+  //         position: "top-center",
+  //         autoClose: 2500,
+  //         theme: "light",
+  //       });
+  //     }
+  //   }, [location.state]);
+
+  //   // /* ============ HANDLE LOGIN ============ */
+  //   const handleSubmit = async (e) => {
+  //     e.preventDefault();
+  //     if (loading) return;
+
+  //     setError("");
+  //     setLoading(true);
+
+  //     try {
+  //       const res = await api.post("/login", {
+  //         username: Username.trim(), // ✅ FIXED
+  //         password,
+  //       });
+
+  //       if (!res.data?.user) {
+  //         throw new Error("Invalid server response");
+  //       }
+
+  //       // ✅ save user in context
+  //       login(res.data.user);
+
+  //       // ✅ redirect after login
+  //       const redirectTo = location.state?.from?.pathname || "/home";
+  //       navigate(redirectTo, { replace: true });
+
+  //       toast.success("Login successful 🎉");
+
+  //     } catch (err) {
+  //       console.error("LOGIN ERROR:", err);
+
+  //       const msg =
+  //         err.response?.data?.message ||
+  //         err.message ||
+  //         "Login failed";
+
+  //       setError(msg);
+  //       toast.error(msg);
+
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
+
+  //   return (
+  //     <div className="popup-overlay">
+  //       <ToastContainer style={{ marginTop: "60px" }} />
+
+  //       <div className="popup-container">
+  //         {/* LEFT SIDE */}
+  //         <div className="left-side login-white-side">
+  //           <h2>Login to your account</h2>
+
+  //           {/* ERROR MESSAGE */}
+  //           {error && (
+  //             <p style={{ color: "red", marginBottom: "10px" }}>
+  //               {error}
+  //             </p>
+  //           )}
+
+  //           <form onSubmit={handleSubmit}>
+  //             <div className="input-group">
+  //               <span className="icon user-icon"></span>
+  //               <input
+  //                 type="text"
+  //                 placeholder="Username"
+  //                 value={Username}
+  //                 onChange={(e) => setUsername(e.target.value)}
+  //                 required
+  //               />
+  //             </div>
+
+  //             <div className="input-group">
+  //               <span className="icon lock-icon"></span>
+  //               <input
+  //                 type="password"
+  //                 placeholder="Password"
+  //                 value={password}
+  //                 onChange={(e) => setPassword(e.target.value)}
+  //                 required
+  //               />
+  //             </div>
+
+  //             {/* Remember & Forgot */}
+  //             <div className="login-options">
+  //               <label className="remember-me">
+  //                 <input type="checkbox" />
+  //                 <span>Remember me</span>
+  //               </label>
+
+  //               <Link to="/forgot-password" className="forgot-link">
+  //                 Forgot password?
+  //               </Link>
+  //             </div>
+
+  //             <button
+  //               type="submit"
+  //               className="create-account-btn"
+  //               disabled={loading}
+  //             >
+  //               {loading ? "LOGGING IN..." : "LOGIN"}
+  //             </button>
+
+  //             {/* Register */}
+  //             <p className="register-text">
+  //               Don’t have an account?{" "}
+  //               <Link to="/register">Register</Link>
+  //             </p>
+  //           </form>
+  //         </div>
+
+  //         {/* CLOSE BUTTON */}
+  //         <Link to="/">
+  //           <button className="popup-close-btn">&times;</button>
+  //         </Link>
+
+  //         {/* RIGHT SIDE */}
+  //         <div className="right-side login-colorful-side">
+  //           <Link to="/register">
+  //             <button className="signup-btn">Sign Up</button>
+  //           </Link>
+  //         </div>
+  //       </div>
+  //     </div>
+  //   );
+  // };
+
+  // export default Login;
+
+
+
+  import React, { useState, useEffect } from "react";
 import "./Login.css";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import api from "../../API/axios";
@@ -144,7 +304,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const Login = () => {
-  const [Username, setUsername] = useState("");
+  const [username, setUsername] = useState(""); // 🔴 FIXED (Username → username)
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -153,103 +313,72 @@ const Login = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  /* ============ SHOW LOGIN REQUIRED TOAST ============ */
+  /* 🔔 SHOW LOGIN REQUIRED TOAST */
   useEffect(() => {
     if (location.state?.showLoginToast) {
       toast.warn("Please login first to access this page", {
         position: "top-center",
         autoClose: 2500,
-        theme: "light",
       });
     }
   }, [location.state]);
 
-  // /* ============ HANDLE LOGIN ============ */
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-  //   if (loading) return;
+  /* 🚀 HANDLE LOGIN */
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (loading) return;
 
-  //   setError("");
-  //   setLoading(true);
+    setError("");
+    setLoading(true);
 
-  //   try {
-  //     const res = await api.post("/login", {
-  //       username: Username.trim(), // ✅ FIXED
-  //       password,
-  //     });
+    try {
+      const res = await api.post("/login", {
+        // 🔴 CORRECTION: must match backend
+        username: username.trim(),
+        password: password,
+      });
 
-  //     if (!res.data?.user) {
-  //       throw new Error("Invalid server response");
-  //     }
+      console.log("LOGIN RESPONSE:", res.data);
 
-  //     // ✅ save user in context
-  //     login(res.data.user);
-
-  //     // ✅ redirect after login
-  //     const redirectTo = location.state?.from?.pathname || "/home";
-  //     navigate(redirectTo, { replace: true });
-
-  //     toast.success("Login successful 🎉");
-
-  //   } catch (err) {
-  //     console.error("LOGIN ERROR:", err);
-
-  //     const msg =
-  //       err.response?.data?.message ||
-  //       err.message ||
-  //       "Login failed";
-
-  //     setError(msg);
-  //     toast.error(msg);
-
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
-const handleSubmit = async (e) => {
-  e.preventDefault();
-
-  try {
-    const res = await fetch(
-      "https://project-coin.onrender.com/api/login",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify({
-          username: Username.trim(),
-          password,
-        }),
+      if (!res.data?.user) {
+        throw new Error("Invalid server response");
       }
-    );
 
-    const data = await res.json();
+      // ✅ SAVE USER
+      login(res.data.user);
 
-    if (!res.ok) {
-      throw new Error(data.message);
+      // ✅ REDIRECT
+      const redirectTo = location.state?.from?.pathname || "/home";
+      navigate(redirectTo, { replace: true });
+
+      toast.success("Login successful 🎉");
+
+    } catch (err) {
+      console.error("LOGIN ERROR:", err);
+
+      const msg =
+        err.response?.data?.message ||
+        err.message ||
+        "Login failed";
+
+      setError(msg);
+      toast.error(msg);
+    } finally {
+      setLoading(false);
     }
-
-    login(data.user);
-    navigate("/home");
-
-  } catch (err) {
-    console.error(err);
-    toast.error(err.message);
-  }
-};
+  };
 
   return (
     <div className="popup-overlay">
-      <ToastContainer style={{ marginTop: "60px" }} />
+      {/* 🔴 TOAST CONTAINER REQUIRED */}
+      <ToastContainer position="top-center" autoClose={2500} />
 
       <div className="popup-container">
-        {/* LEFT SIDE */}
+
+        {/* LEFT */}
         <div className="left-side login-white-side">
           <h2>Login to your account</h2>
 
-          {/* ERROR MESSAGE */}
           {error && (
             <p style={{ color: "red", marginBottom: "10px" }}>
               {error}
@@ -258,18 +387,16 @@ const handleSubmit = async (e) => {
 
           <form onSubmit={handleSubmit}>
             <div className="input-group">
-              <span className="icon user-icon"></span>
               <input
                 type="text"
                 placeholder="Username"
-                value={Username}
+                value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 required
               />
             </div>
 
             <div className="input-group">
-              <span className="icon lock-icon"></span>
               <input
                 type="password"
                 placeholder="Password"
@@ -277,18 +404,6 @@ const handleSubmit = async (e) => {
                 onChange={(e) => setPassword(e.target.value)}
                 required
               />
-            </div>
-
-            {/* Remember & Forgot */}
-            <div className="login-options">
-              <label className="remember-me">
-                <input type="checkbox" />
-                <span>Remember me</span>
-              </label>
-
-              <Link to="/forgot-password" className="forgot-link">
-                Forgot password?
-              </Link>
             </div>
 
             <button
@@ -299,7 +414,6 @@ const handleSubmit = async (e) => {
               {loading ? "LOGGING IN..." : "LOGIN"}
             </button>
 
-            {/* Register */}
             <p className="register-text">
               Don’t have an account?{" "}
               <Link to="/register">Register</Link>
@@ -307,12 +421,7 @@ const handleSubmit = async (e) => {
           </form>
         </div>
 
-        {/* CLOSE BUTTON */}
-        <Link to="/">
-          <button className="popup-close-btn">&times;</button>
-        </Link>
-
-        {/* RIGHT SIDE */}
+        {/* RIGHT */}
         <div className="right-side login-colorful-side">
           <Link to="/register">
             <button className="signup-btn">Sign Up</button>

@@ -24,13 +24,29 @@
 
 // all fix 
 
+// import axios from "axios";
+
+// const api = axios.create({
+//   baseURL: import.meta.env.VITE_API_URL || "https://project-coin.onrender.com/api",
+//   withCredentials: true,
+//    headers: {
+//     "Content-Type": "application/json", // ✅ ADD THIS
+//   },
+// });
+
+// export default api;
+
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || "https://project-coin.onrender.com/api",
+  baseURL: "https://project-coin.onrender.com/api",
+
+  // 🔴 CORRECTION 1: REQUIRED for session cookies
   withCredentials: true,
-   headers: {
-    "Content-Type": "application/json", // ✅ ADD THIS
+
+  // 🔴 CORRECTION 2: FORCE JSON
+  headers: {
+    "Content-Type": "application/json",
   },
 });
 

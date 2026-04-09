@@ -185,88 +185,88 @@
 //       });
 //     }
 //   );
+// // });
+// const express = require("express");
+// const bcrypt = require("bcryptjs");
+// const db = require("../db");
+
+// const router = express.Router();
+
+// /* ======================
+//    LOGIN (FINAL FIXED)
+// ====================== */
+// router.post("/login", async (req, res) => {
+//   try {
+//     const { Username, password } = req.body;
+
+//     // ✅ VALIDATION
+//     if (!Username || !password) {
+//       return res.status(400).json({ message: "All fields required" });
+//     }
+
+//     // ✅ FETCH USER
+//     const [rows] = await db.query(
+//       "SELECT * FROM users WHERE username = ?",
+//       [Username]
+//     );
+
+//     if (rows.length === 0) {
+//       return res.status(401).json({ message: "Invalid login" });
+//     }
+
+//     const user = rows[0];
+
+//     // ✅ PASSWORD CHECK (bcrypt)
+//     const isMatch = await bcrypt.compare(password, user.password);
+
+//     if (!isMatch) {
+//       return res.status(401).json({ message: "Invalid login" });
+//     }
+
+//     // ✅ SESSION SAVE
+//     req.session.user = {
+//       id: user.id,
+//       username: user.username,
+//     };
+
+//     // ✅ RESPONSE
+//     res.json({
+//       success: true,
+//       message: "Login successful",
+//       user: req.session.user,
+//     });
+
+//   } catch (err) {
+//     console.error("LOGIN ERROR:", err);
+//     res.status(500).json({ message: "Server error" });
+//   }
 // });
-const express = require("express");
-const bcrypt = require("bcryptjs");
-const db = require("../db");
-
-const router = express.Router();
-
-/* ======================
-   LOGIN (FINAL FIXED)
-====================== */
-router.post("/login", async (req, res) => {
-  try {
-    const { Username, password } = req.body;
-
-    // ✅ VALIDATION
-    if (!Username || !password) {
-      return res.status(400).json({ message: "All fields required" });
-    }
-
-    // ✅ FETCH USER
-    const [rows] = await db.query(
-      "SELECT * FROM users WHERE username = ?",
-      [Username]
-    );
-
-    if (rows.length === 0) {
-      return res.status(401).json({ message: "Invalid login" });
-    }
-
-    const user = rows[0];
-
-    // ✅ PASSWORD CHECK (bcrypt)
-    const isMatch = await bcrypt.compare(password, user.password);
-
-    if (!isMatch) {
-      return res.status(401).json({ message: "Invalid login" });
-    }
-
-    // ✅ SESSION SAVE
-    req.session.user = {
-      id: user.id,
-      username: user.username,
-    };
-
-    // ✅ RESPONSE
-    res.json({
-      success: true,
-      message: "Login successful",
-      user: req.session.user,
-    });
-
-  } catch (err) {
-    console.error("LOGIN ERROR:", err);
-    res.status(500).json({ message: "Server error" });
-  }
-});
 
 
 
 
-// // /* ================= LOGOUT ================= */
-router.post("/logout", (req, res) => {
-  req.session.destroy(() => {
-    res.clearCookie("dcoin.sid");
-    res.json({ message: "Logged out successfully" });
-  });
-});
+// // // /* ================= LOGOUT ================= */
+// router.post("/logout", (req, res) => {
+//   req.session.destroy(() => {
+//     res.clearCookie("dcoin.sid");
+//     res.json({ message: "Logged out successfully" });
+//   });
+// });
 
 
-/* ======================
-   REGISTER WITH REFERRAL
-====================== */
+// /* ======================
+//    REGISTER WITH REFERRAL
+// ====================== */
 
-/* ======================
-   HELPER: GENERATE REFERRAL CODE
-====================== */
-function generateCode(username) {
-  return (
-    username.slice(0, 3).toUpperCase() +
-    Math.random().toString(36).substring(2, 6).toUpperCase()
-  );
-}
+// /* ======================
+//    HELPER: GENERATE REFERRAL CODE
+// ====================== */
+// function generateCode(username) {
+//   return (
+//     username.slice(0, 3).toUpperCase() +
+//     Math.random().toString(36).substring(2, 6).toUpperCase()
+//   );
+// }
 
 // /* ======================
 //    REGISTER WITH REFERRAL
@@ -580,37 +580,52 @@ function generateCode(username) {
 // });
 
 
+const express = require("express");
+const bcrypt = require("bcryptjs");
+const db = require("../db");
 
+const router = express.Router();
+
+/* ================= LOGIN ================= */
 router.post("/login", async (req, res) => {
   try {
-    // 🔴 CORRECTION 2: correct destructuring
+    // 🔴 CORRECTION 1: correct destructuring
     const { username, password } = req.body;
 
-    // 🔴 CORRECTION 3: fix wrong variable (Username → username)
-    if (!username || !password) {
-      return res.status(400).json({ message: "All fields required" });
-    }
-
-    // 🔴 DEBUG (optional)
+    // 🔴 DEBUG (IMPORTANT)
     console.log("BODY:", req.body);
 
+    // 🔴 CORRECTION 2: validation
+    if (!username || !password) {
+      return res.status(400).json({
+        message: "All fields required",
+      });
+    }
+
+    // 🔴 CORRECTION 3: promise query
     const [rows] = await db.promise().query(
       "SELECT * FROM users WHERE username = ?",
       [username]
     );
 
     if (!rows.length) {
-      return res.status(401).json({ message: "Invalid login" });
+      return res.status(401).json({
+        message: "Invalid login",
+      });
     }
 
     const user = rows[0];
 
+    // 🔴 CORRECTION 4: password check
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
-      return res.status(401).json({ message: "Invalid login" });
+      return res.status(401).json({
+        message: "Invalid login",
+      });
     }
 
+    // 🔴 CORRECTION 5: session save
     req.session.user = {
       id: user.id,
       username: user.username,
@@ -620,20 +635,25 @@ router.post("/login", async (req, res) => {
       success: true,
       user: req.session.user,
     });
+
   } catch (err) {
     console.error("LOGIN ERROR:", err);
-    res.status(500).json({ message: "Server error" });
+
+    res.status(500).json({
+      message: "Server error",
+    });
   }
 });
 
-
-/* LOGOUT */
+/* ================= LOGOUT ================= */
 router.post("/logout", (req, res) => {
   req.session.destroy(() => {
     res.clearCookie("dcoin.sid");
     res.json({ message: "Logged out successfully" });
   });
 });
+
+
 
 /* GENERATE CODE */
 function generateCode(username) {
