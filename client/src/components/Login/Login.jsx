@@ -164,48 +164,83 @@ const Login = () => {
     }
   }, [location.state]);
 
-  /* ============ HANDLE LOGIN ============ */
+  // /* ============ HANDLE LOGIN ============ */
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   if (loading) return;
+
+  //   setError("");
+  //   setLoading(true);
+
+  //   try {
+  //     const res = await api.post("/login", {
+  //       username: Username.trim(), // ✅ FIXED
+  //       password,
+  //     });
+
+  //     if (!res.data?.user) {
+  //       throw new Error("Invalid server response");
+  //     }
+
+  //     // ✅ save user in context
+  //     login(res.data.user);
+
+  //     // ✅ redirect after login
+  //     const redirectTo = location.state?.from?.pathname || "/home";
+  //     navigate(redirectTo, { replace: true });
+
+  //     toast.success("Login successful 🎉");
+
+  //   } catch (err) {
+  //     console.error("LOGIN ERROR:", err);
+
+  //     const msg =
+  //       err.response?.data?.message ||
+  //       err.message ||
+  //       "Login failed";
+
+  //     setError(msg);
+  //     toast.error(msg);
+
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (loading) return;
+  e.preventDefault();
+  if (loading) return;
 
-    setError("");
-    setLoading(true);
+  setLoading(true);
 
-    try {
-      const res = await api.post("/login", {
-        username: Username.trim(), // ✅ FIXED
-        password,
-      });
+  try {
+    const res = await api.post("/login", {
+      username: Username.trim(),
+      password,
+    });
 
-      if (!res.data?.user) {
-        throw new Error("Invalid server response");
-      }
-
-      // ✅ save user in context
-      login(res.data.user);
-
-      // ✅ redirect after login
-      const redirectTo = location.state?.from?.pathname || "/home";
-      navigate(redirectTo, { replace: true });
-
-      toast.success("Login successful 🎉");
-
-    } catch (err) {
-      console.error("LOGIN ERROR:", err);
-
-      const msg =
-        err.response?.data?.message ||
-        err.message ||
-        "Login failed";
-
-      setError(msg);
-      toast.error(msg);
-
-    } finally {
-      setLoading(false);
+    // 🔴 CORRECTION 6: ensure response exists
+    if (!res.data?.user) {
+      throw new Error("Invalid server response");
     }
-  };
+
+    login(res.data.user);
+
+    navigate("/home");
+
+    toast.success("Login successful 🎉");
+
+  } catch (err) {
+    const msg =
+      err.response?.data?.message ||
+      err.message ||
+      "Login failed";
+
+    toast.error(msg);
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div className="popup-overlay">
