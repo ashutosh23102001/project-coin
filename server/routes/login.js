@@ -538,16 +538,63 @@ function generateCode(username) {
 
 
 
-/* LOGIN */
+// /* LOGIN */
+// router.post("/login", async (req, res) => {
+//   try {
+//     const { username, password } = req.body;
+
+//     if (!username || !password) {
+//       return res.status(400).json({ message: "All fields required" })
+//     }
+
+//     const [rows] = await db.query(
+//       "SELECT * FROM users WHERE username = ?",
+//       [username]
+//     );
+
+//     if (!rows.length) {
+//       return res.status(401).json({ message: "Invalid login" });
+//     }
+
+//     const user = rows[0];
+
+//     const isMatch = await bcrypt.compare(password, user.password);
+
+//     if (!isMatch) {
+//       return res.status(401).json({ message: "Invalid login" });
+//     }
+
+//     req.session.user = {
+//       id: user.id,
+//       username: user.username,
+//     };
+
+//     res.json({
+//       success: true,
+//       user: req.session.user,
+//     });
+//   } catch (err) {
+//     console.error("LOGIN ERROR:", err);
+//     res.status(500).json({ message: "Server error" });
+//   }
+// });
+
+
+
 router.post("/login", async (req, res) => {
   try {
+    // 🔴 CORRECTION 2: correct destructuring
     const { username, password } = req.body;
 
+    // 🔴 CORRECTION 3: fix wrong variable (Username → username)
     if (!username || !password) {
-      return res.status(400).json({ message: "All fields required" })
+      return res.status(400).json({ message: "All fields required" });
     }
 
-    const [rows] = await db.query(
+    // 🔴 DEBUG (optional)
+    console.log("BODY:", req.body);
+
+    const [rows] = await db.promise().query(
       "SELECT * FROM users WHERE username = ?",
       [username]
     );
@@ -578,6 +625,7 @@ router.post("/login", async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 });
+
 
 /* LOGOUT */
 router.post("/logout", (req, res) => {
