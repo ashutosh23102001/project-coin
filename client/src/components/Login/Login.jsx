@@ -206,39 +206,37 @@ const Login = () => {
   //     setLoading(false);
   //   }
   // };
-
-  const handleSubmit = async (e) => {
+const handleSubmit = async (e) => {
   e.preventDefault();
-  if (loading) return;
-
-  setLoading(true);
 
   try {
-    const res = await api.post("/login", {
-      username: Username.trim(),
-      password,
-    });
+    const res = await fetch(
+      "https://project-coin.onrender.com/api/login",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          username: Username.trim(),
+          password,
+        }),
+      }
+    );
 
-    // 🔴 CORRECTION 6: ensure response exists
-    if (!res.data?.user) {
-      throw new Error("Invalid server response");
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.message);
     }
 
-    login(res.data.user);
-
+    login(data.user);
     navigate("/home");
 
-    toast.success("Login successful 🎉");
-
   } catch (err) {
-    const msg =
-      err.response?.data?.message ||
-      err.message ||
-      "Login failed";
-
-    toast.error(msg);
-  } finally {
-    setLoading(false);
+    console.error(err);
+    toast.error(err.message);
   }
 };
 
