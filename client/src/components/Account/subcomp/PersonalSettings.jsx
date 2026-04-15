@@ -45,10 +45,11 @@ const PersonalSettings = () => {
   /* ================= SUBMIT ================= */
   const handleSubmit = async e => {
     e.preventDefault();
+     setError("");  
+  setSuccess("");
 
     if (!isEditing) {
       setIsEditing(true);
-      setSuccess("");
       return;
     }
 
