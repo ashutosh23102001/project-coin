@@ -229,6 +229,65 @@ router.get("/", (req, res) => {
 /* =============================
    UPDATE PERSONAL DETAILS
 ============================= */
+
+// router.put("/", (req, res) => {
+//   if (!req.session.user)
+//     return res.status(401).json({ message: "Unauthorized" });
+
+//   const userId = req.session.user.id;
+
+//   let {
+//     first_name = "",
+//     middle_name = "",
+//     last_name = "",
+//     date_of_birth = null,
+//     gender = ""
+//   } = req.body;
+
+//   // 🔴 DOB validation
+//   if (
+//     !date_of_birth ||
+//     !/^\d{4}-\d{2}-\d{2}$/.test(date_of_birth)
+//   ) {
+//     date_of_birth = null;
+//   }
+
+//   console.log("SESSION USER:", req.session.user); // 🔴 DEBUG
+
+//   db.query(
+//     `UPDATE users_info SET
+//       first_name=?,
+//       middle_name=?,
+//       last_name=?,
+//       date_of_birth=?,
+//       gender=?,
+//       updated_at=NOW()
+//      WHERE user_id=?`,
+//     [
+//       first_name,
+//       middle_name,
+//       last_name,
+//       date_of_birth,
+//       gender,
+//       userId
+//     ],
+//     (err, result) => {
+//       if (err)
+//         return res.status(500).json({ message: "DB error" });
+
+//       // 🔴 IMPORTANT SAFETY CHECK
+//       if (result.affectedRows === 0) {
+//         return res.status(400).json({
+//           message: "No record updated. User not found."
+//         });
+//       }
+
+//       res.json({ message: "Saved successfully" });
+//     }
+//   );
+// });
+
+
 router.put("/", (req, res) => {
   if (!req.session.user)
     return res.status(401).json({ message: "Unauthorized" });
@@ -243,42 +302,33 @@ router.put("/", (req, res) => {
     gender = ""
   } = req.body;
 
-  // 🔴 DOB validation
-  if (
-    !date_of_birth ||
-    !/^\d{4}-\d{2}-\d{2}$/.test(date_of_birth)
-  ) {
+  if (!date_of_birth || !/^\d{4}-\d{2}-\d{2}$/.test(date_of_birth)) {
     date_of_birth = null;
   }
 
-  console.log("SESSION USER:", req.session.user); // 🔴 DEBUG
-
   db.query(
-    `UPDATE users_info SET
-      first_name=?,
-      middle_name=?,
-      last_name=?,
-      date_of_birth=?,
-      gender=?,
-      updated_at=NOW()
-     WHERE user_id=?`,
+    `INSERT INTO users_info 
+      (user_id, first_name, middle_name, last_name, date_of_birth, gender)
+     VALUES (?, ?, ?, ?, ?, ?)
+     ON DUPLICATE KEY UPDATE
+      first_name = VALUES(first_name),
+      middle_name = VALUES(middle_name),
+      last_name = VALUES(last_name),
+      date_of_birth = VALUES(date_of_birth),
+      gender = VALUES(gender),
+      updated_at = NOW()`,
     [
+      userId,
       first_name,
       middle_name,
       last_name,
       date_of_birth,
-      gender,
-      userId
+      gender
     ],
-    (err, result) => {
-      if (err)
+    (err) => {
+      if (err) {
+        console.error(err);
         return res.status(500).json({ message: "DB error" });
-
-      // 🔴 IMPORTANT SAFETY CHECK
-      if (result.affectedRows === 0) {
-        return res.status(400).json({
-          message: "No record updated. User not found."
-        });
       }
 
       res.json({ message: "Saved successfully" });
