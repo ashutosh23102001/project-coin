@@ -24,7 +24,7 @@ router.get("/address", (req, res) => {
       city,
       state,
       pincode
-    FROM users_info
+    FROM user_contacts
     WHERE user_id = ?
   `;
 
@@ -85,7 +85,7 @@ router.put("/update-address", (req, res) => {
      🧠 SQL QUERY
   ============================ */
   const sql = `
-    UPDATE users_info SET
+    UPDATE user_contacts SET
       address_line1 = ?,        -- ✅ ADDED
       address_line2 = ?,        -- ✅ ADDED
       city = ?,                 -- ✅ ADDED
