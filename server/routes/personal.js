@@ -282,6 +282,118 @@
 // module.exports = router;
 
 
+// const express = require("express");
+// const db = require("../db");
+
+// const router = express.Router();
+
+// /* =============================
+//    GET PERSONAL DETAILS
+// ============================= */
+// router.get("/", (req, res) => {
+//   if (!req.session.user) {
+//     return res.status(401).json({ message: "Unauthorized" });
+//   }
+
+//   const userId = req.session.user.id;
+
+//   db.query(
+//     `SELECT 
+//       first_name,
+//       middle_name,
+//       last_name,
+//       DATE_FORMAT(date_of_birth,'%Y-%m-%d') AS date_of_birth,
+//       gender
+//      FROM users_info
+//      WHERE user_id=?`,
+//     [userId],
+//     (err, rows) => {
+//       if (err) {
+//         console.error("GET ERROR:", err);
+//         return res.status(500).json({ message: "DB error" });
+//       }
+
+//       res.json(rows[0] || {});
+//     }
+//   );
+// });
+
+// /* =============================
+//    UPDATE / INSERT PERSONAL DETAILS
+// ============================= */
+
+// router.put("/", (req, res) => {
+//   if (!req.session.user) {
+//     return res.status(401).json({ message: "Unauthorized" });
+//   }
+
+//   const userId = req.session.user.id;
+
+//   let {
+//     first_name = "",
+//     middle_name = "",
+//     last_name = "",
+//     date_of_birth = null,
+//     gender = ""
+//   } = req.body;
+
+//   if (!date_of_birth || !/^\d{4}-\d{2}-\d{2}$/.test(date_of_birth)) {
+//     date_of_birth = null;
+//   }
+
+//   db.query(
+//     "SELECT user_id FROM users_info WHERE user_id=?",
+//     [userId],
+//     (err, rows) => {
+//       if (err) {
+//         console.error("CHECK ERROR:", err);
+//         return res.status(500).json({ message: err.message });
+//       }
+
+//       if (rows.length > 0) {
+//         // UPDATE
+//         db.query(
+//           `UPDATE users_info SET
+//             first_name=?,
+//             middle_name=?,
+//             last_name=?,
+//             date_of_birth=?,
+//             gender=?,
+//             updated_at=NOW()
+//            WHERE user_id=?`,
+//           [first_name, middle_name, last_name, date_of_birth, gender, userId],
+//           (err) => {
+//             if (err) {
+//               console.error("UPDATE ERROR:", err);
+//               return res.status(500).json({ message: err.message });
+//             }
+
+//             res.json({ message: "Updated successfully" });
+//           }
+//         );
+//       } else {
+//         // INSERT
+//         db.query(
+//           `INSERT INTO users_info
+//           (user_id, first_name, middle_name, last_name, date_of_birth, gender)
+//           VALUES (?, ?, ?, ?, ?, ?)`,
+//           [userId, first_name, middle_name, last_name, date_of_birth, gender],
+//           (err) => {
+//             if (err) {
+//               console.error("INSERT ERROR:", err);
+//               return res.status(500).json({ message: err.message });
+//             }
+
+//             res.json({ message: "Saved successfully" });
+//           }
+//         );
+//       }
+//     }
+//   );
+// });
+// module.exports = router;
+
+
 const express = require("express");
 const db = require("../db");
 
@@ -291,7 +403,7 @@ const router = express.Router();
    GET PERSONAL DETAILS
 ============================= */
 router.get("/", (req, res) => {
-  if (!req.session.user) {
+  if (!req.session?.user) {
     return res.status(401).json({ message: "Unauthorized" });
   }
 
@@ -299,6 +411,7 @@ router.get("/", (req, res) => {
 
   db.query(
     `SELECT 
+      username,
       first_name,
       middle_name,
       last_name,
@@ -321,13 +434,13 @@ router.get("/", (req, res) => {
 /* =============================
    UPDATE / INSERT PERSONAL DETAILS
 ============================= */
-
 router.put("/", (req, res) => {
-  if (!req.session.user) {
+  if (!req.session?.user) {
     return res.status(401).json({ message: "Unauthorized" });
   }
 
   const userId = req.session.user.id;
+  const username = req.session.user.username; // ✅ FIX ADDED
 
   let {
     first_name = "",
@@ -337,58 +450,43 @@ router.put("/", (req, res) => {
     gender = ""
   } = req.body;
 
+  // ✅ Validate date
   if (!date_of_birth || !/^\d{4}-\d{2}-\d{2}$/.test(date_of_birth)) {
     date_of_birth = null;
   }
 
+  /* =============================
+     UPSERT (INSERT + UPDATE)
+  ============================= */
   db.query(
-    "SELECT user_id FROM users_info WHERE user_id=?",
-    [userId],
-    (err, rows) => {
+    `INSERT INTO users_info 
+    (user_id, username, first_name, middle_name, last_name, date_of_birth, gender)
+    VALUES (?, ?, ?, ?, ?, ?, ?)
+    ON DUPLICATE KEY UPDATE
+      first_name = VALUES(first_name),
+      middle_name = VALUES(middle_name),
+      last_name = VALUES(last_name),
+      date_of_birth = VALUES(date_of_birth),
+      gender = VALUES(gender),
+      updated_at = NOW()`,
+    [
+      userId,
+      username, // ✅ FIXED (this was missing)
+      first_name,
+      middle_name,
+      last_name,
+      date_of_birth,
+      gender
+    ],
+    (err) => {
       if (err) {
-        console.error("CHECK ERROR:", err);
+        console.error("UPSERT ERROR:", err);
         return res.status(500).json({ message: err.message });
       }
 
-      if (rows.length > 0) {
-        // UPDATE
-        db.query(
-          `UPDATE users_info SET
-            first_name=?,
-            middle_name=?,
-            last_name=?,
-            date_of_birth=?,
-            gender=?,
-            updated_at=NOW()
-           WHERE user_id=?`,
-          [first_name, middle_name, last_name, date_of_birth, gender, userId],
-          (err) => {
-            if (err) {
-              console.error("UPDATE ERROR:", err);
-              return res.status(500).json({ message: err.message });
-            }
-
-            res.json({ message: "Updated successfully" });
-          }
-        );
-      } else {
-        // INSERT
-        db.query(
-          `INSERT INTO users_info
-          (user_id, first_name, middle_name, last_name, date_of_birth, gender)
-          VALUES (?, ?, ?, ?, ?, ?)`,
-          [userId, first_name, middle_name, last_name, date_of_birth, gender],
-          (err) => {
-            if (err) {
-              console.error("INSERT ERROR:", err);
-              return res.status(500).json({ message: err.message });
-            }
-
-            res.json({ message: "Saved successfully" });
-          }
-        );
-      }
+      res.json({ message: "Saved successfully" });
     }
   );
 });
+
 module.exports = router;
