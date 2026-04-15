@@ -77,6 +77,7 @@ const PersonalSettings = () => {
         value={form.first_name}
         disabled={!isEditing}
         onChange={handleChange}
+        required
       />
 
       <label>Middle Name</label>
@@ -93,6 +94,7 @@ const PersonalSettings = () => {
         value={form.last_name}
         disabled={!isEditing}
         onChange={handleChange}
+        required
       />
 
       <div className="dob-gender-row">
@@ -104,6 +106,7 @@ const PersonalSettings = () => {
             value={form.date_of_birth}
             disabled={!isEditing}
             onChange={handleChange}
+            required
           />
         </div>
 
@@ -122,6 +125,7 @@ const PersonalSettings = () => {
                     value={g}
                     checked={form.gender === g}
                     onChange={handleChange}
+                    required
                   />
                   {g}
                 </label>
