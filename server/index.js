@@ -161,8 +161,9 @@ app.set("trust proxy", 1);
 app.use(
   cors({
     origin: [
-      "https://ashutosh23102001-project-coin.vercel.app",
-      "https://project-coin-zfh8.vercel.app",
+        "https://project-coin-ashu.vercel.app"
+
+
     ],
     credentials: true,
   })
