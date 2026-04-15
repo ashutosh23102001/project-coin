@@ -21,7 +21,7 @@ const PersonalSettings = () => {
   /* ================= FETCH ================= */
   useEffect(() => {
     api
-      .get("/company")
+      .get("/personal")
       .then(res => {
         setForm({
           first_name: res.data.first_name || "",
@@ -53,7 +53,7 @@ const PersonalSettings = () => {
     }
 
     try {
-      const res = await api.put("/company", form);
+      const res = await api.put("/personal", form);
       setSuccess(res.data.message);
       setIsEditing(false);
     } catch (err) {
