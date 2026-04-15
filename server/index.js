@@ -270,17 +270,17 @@ const MySQLStore = require("express-mysql-session")(session); // ✅ ADDED
 
 /* ============ ROUTES ============ */
 const loginRoutes = require("./routes/login");
-const accountRoutes = require("./routes/account");
-const clickRoutes = require("./routes/clicks");
-const companyRoutes = require("./routes/company");
-const shortenerRoutes = require("./routes/shortener");
-const addressRoutes = require("./routes/address");
-const emailOtpRoutes = require("./routes/emailOtp");
-const profilePicRoute = require("./routes/profilePic");
-const forgotPasswordRoutes = require("./routes/forgotPassword");
-const coverRoute = require("./routes/cover");
+// const accountRoutes = require("./routes/account");
+// const clickRoutes = require("./routes/clicks");
+// const companyRoutes = require("./routes/company");
+// const shortenerRoutes = require("./routes/shortener");
+// const addressRoutes = require("./routes/address");
+// const emailOtpRoutes = require("./routes/emailOtp");
+// const profilePicRoute = require("./routes/profilePic");
+// const forgotPasswordRoutes = require("./routes/forgotPassword");
+// const coverRoute = require("./routes/cover");
 const referralRoutes = require("./routes/referral");
-const pointsRoutes = require("./routes/points");
+// const pointsRoutes = require("./routes/points");
 const profileRoute = require("./routes/profile");
 
 const app = express();
@@ -361,17 +361,17 @@ app.get("/api/auth/me", (req, res) => {
 
 /* ============ ROUTES ============ */
 app.use("/api", loginRoutes);
-app.use("/api/account", accountRoutes);
-app.use("/api", clickRoutes);
-app.use("/api/company", companyRoutes);
-app.use("/api", shortenerRoutes);
-app.use("/api", addressRoutes);
-app.use("/api", emailOtpRoutes);
+// app.use("/api/account", accountRoutes);
+// app.use("/api", clickRoutes);
+// app.use("/api/company", companyRoutes);
+// app.use("/api", shortenerRoutes);
+// app.use("/api", addressRoutes);
+// app.use("/api", emailOtpRoutes);
 app.use("/api", profileRoute);
-app.use("/api", profilePicRoute);
-app.use("/api", forgotPasswordRoutes);
-app.use("/api", coverRoute);
-app.use("/api", pointsRoutes);
+// app.use("/api", profilePicRoute);
+// app.use("/api", forgotPasswordRoutes);
+// app.use("/api", coverRoute);
+// app.use("/api", pointsRoutes);
 app.use("/api", referralRoutes);
 
 /* ============ ROOT CHECK ============ */

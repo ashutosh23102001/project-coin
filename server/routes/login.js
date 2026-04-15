@@ -580,52 +580,116 @@
 // });
 
 
+// const express = require("express");
+// const bcrypt = require("bcryptjs");
+// const db = require("../db");
+
+// const router = express.Router();
+
+// /* ================= LOGIN ================= */
+// router.post("/login", async (req, res) => {
+//   try {
+//     // 🔴 CORRECTION 1: correct destructuring
+//     const { username, password } = req.body;
+
+//     // 🔴 DEBUG (IMPORTANT)
+//     console.log("BODY:", req.body);
+
+//     // 🔴 CORRECTION 2: validation
+//     if (!username || !password) {
+//       return res.status(400).json({
+//         message: "All fields required",
+//       });
+//     }
+
+//     // 🔴 CORRECTION 3: promise query
+//     const [rows] = await db.promise().query(
+//       "SELECT * FROM users WHERE username = ?",
+//       [username]
+//     );
+
+//     if (!rows.length) {
+//       return res.status(401).json({
+//         message: "Invalid login",
+//       });
+//     }
+
+//     const user = rows[0];
+
+//     // 🔴 CORRECTION 4: password check
+//     const isMatch = await bcrypt.compare(password, user.password);
+
+//     if (!isMatch) {
+//       return res.status(401).json({
+//         message: "Invalid login",
+//       });
+//     }
+
+//     // 🔴 CORRECTION 5: session save
+//     req.session.user = {
+//       id: user.id,
+//       username: user.username,
+//     };
+
+//     res.json({
+//       success: true,
+//       user: req.session.user,
+//     });
+
+//   } catch (err) {
+//     console.error("LOGIN ERROR:", err);
+
+//     res.status(500).json({
+//       message: "Server error",
+//     });
+//   }
+// });
+
+// /* ================= LOGOUT ================= */
+// router.post("/logout", (req, res) => {
+//   req.session.destroy(() => {
+//     res.clearCookie("dcoin.sid");
+//     res.json({ message: "Logged out successfully" });
+//   });
+// });
+
+
 const express = require("express");
 const bcrypt = require("bcryptjs");
-const db = require("../db");
+const db = require("../db"); // ✅ FIX: correct DB import
 
 const router = express.Router();
 
 /* ================= LOGIN ================= */
 router.post("/login", async (req, res) => {
   try {
-    // 🔴 CORRECTION 1: correct destructuring
     const { username, password } = req.body;
 
-    // 🔴 DEBUG (IMPORTANT)
     console.log("BODY:", req.body);
 
-    // 🔴 CORRECTION 2: validation
     if (!username || !password) {
-      return res.status(400).json({
-        message: "All fields required",
-      });
+      return res.status(400).json({ message: "All fields required" });
     }
 
-    // 🔴 CORRECTION 3: promise query
+    /* ✅ FIX: promise query */
     const [rows] = await db.promise().query(
       "SELECT * FROM users WHERE username = ?",
       [username]
     );
 
     if (!rows.length) {
-      return res.status(401).json({
-        message: "Invalid login",
-      });
+      return res.status(401).json({ message: "Invalid login" });
     }
 
     const user = rows[0];
 
-    // 🔴 CORRECTION 4: password check
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
-      return res.status(401).json({
-        message: "Invalid login",
-      });
+      return res.status(401).json({ message: "Invalid login" });
     }
 
-    // 🔴 CORRECTION 5: session save
+    /* ✅ FIX: session */
     req.session.user = {
       id: user.id,
       username: user.username,
@@ -649,9 +713,16 @@ router.post("/login", async (req, res) => {
 router.post("/logout", (req, res) => {
   req.session.destroy(() => {
     res.clearCookie("dcoin.sid");
-    res.json({ message: "Logged out successfully" });
+    res.json({ message: "Logged out" });
   });
 });
+
+module.exports = router;
+
+
+
+
+
 
 
 

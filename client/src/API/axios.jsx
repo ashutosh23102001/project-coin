@@ -36,15 +36,30 @@
 
 // export default api;
 
+// import axios from "axios";
+
+// const api = axios.create({
+//   baseURL: "https://project-coin.onrender.com/api",
+
+//   // 🔴 CORRECTION 1: REQUIRED for session cookies
+//   withCredentials: true,
+
+//   // 🔴 CORRECTION 2: FORCE JSON
+//   headers: {
+//     "Content-Type": "application/json",
+//   },
+// });
+
+// export default api;
+
 import axios from "axios";
 
 const api = axios.create({
+  /* ✅ FIX: correct backend URL */
   baseURL: "https://project-coin.onrender.com/api",
 
-  // 🔴 CORRECTION 1: REQUIRED for session cookies
   withCredentials: true,
 
-  // 🔴 CORRECTION 2: FORCE JSON
   headers: {
     "Content-Type": "application/json",
   },

@@ -6,7 +6,7 @@ import "./sub.css";
 
 const PersonalSettings = () => {
   const [form, setForm] = useState({
-    first_name: "",
+    first_name: "", 
     middle_name: "",
     last_name: "",
     date_of_birth: "",
