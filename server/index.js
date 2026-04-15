@@ -1,156 +1,6 @@
 // // //cd server > npm init >enter >enter > enter> check dependiencies > npm install express mysql cors 
-// require("dotenv").config();
 
-
-// const express = require("express");
-// const cors = require("cors");
-// const session = require("express-session");
-// const cookieParser = require("cookie-parser");
-// const mysql = require('mysql2'); // standard package for MySQL
-
-// const loginRoutes = require("./routes/login");
-// const accountRoutes = require("./routes/account");
-// const clickRoutes = require("./routes/clicks"); 
-// const companyRoutes = require("./routes/company");
-// const shortenerRoutes = require("./routes/shortener");
-// const addressRoutes = require("./routes/address");
-// const emailOtpRoutes = require("./routes/emailOtp");
-// const profilePicRoute = require("./routes/profilePic");
-// const path = require("path");
-// const forgotPasswordRoutes = require("./routes/forgotPassword");
-// const coverRoute = require("./routes/cover");
-// const referralRoutes = require("./routes/referral");
-// const pointsRoutes = require("./routes/points");
-// const profileRoute = require("./routes/profile"); // ⭐ FIX
-
-
-
-
-// const app = express();
-
-// /* ============ MIDDLEWARE ============ */
-// app.use(express.json());
-// app.use(express.urlencoded({ extended: true }));
-
-// // 1. COMBINE WITH VERCEL (FRONTEND)
-// // This tells your server: "Only allow my Vercel React app to talk to me."
-
-// app.use(
-//   cors({
-//   origin: "https://project-coin-zfh8-fmq85ff3h-ashutosh23102001s-projects.vercel.app",
-//   methods: ['GET', 'POST', 'PUT', 'DELETE'],
-//     credentials: true
-//   })
-// );
-
-// // 2. COMBINE WITH AIVEN (DATABASE)
-// // This uses the hidden connection string you pasted into Render
-// const db = mysql.createConnection(process.env.DB_URL);
-
-// app.use(cookieParser());
-
-// app.use(
-//   session({
-//     name: "dcoin.sid",
-//     secret: "dcoin_secret_key",
-//     resave: false,
-//     saveUninitialized: false,
-//     cookie: {
-//       httpOnly: true,
-//       secure: false,
-//       sameSite: "lax", // ✅ ADD THIS
-
-//     }
-//   })
-// );
-
-// /* ============ AUTH CHECK ============ */
-// app.get("/api/auth/me", (req, res) => {
-//   res.json({
-//     loggedIn: !!req.session.user,
-//     user: req.session.user || null
-//   });
-// });
-
-// app.use("/uploads", express.static(path.join(__dirname, "uploads"))); // ⭐ FIX ONLY ONCE
-
-
-// /* ============ ROUTES ============ */
-// app.use("/api", loginRoutes);
-// app.use("/api/account", accountRoutes); // ✅ FIXED
-// app.use("/api", clickRoutes); // ✅ IMPORTANT FIX
-// app.use("/api/company", companyRoutes);     // ✅ Personal Settings
-// app.use("/api", shortenerRoutes);   // ✅ IMPORTANT
-// app.use("/api", addressRoutes);
-// app.use("/api", emailOtpRoutes); // ✅ OTP ENDPOINTS  
-// app.use("/api", profileRoute); // ⭐ FIX
-
-// app.use("/api", profilePicRoute);
-// app.use("/uploads", express.static(path.join(__dirname, "uploads")));
-// app.use("/api", require("./routes/profile"));          // profile data
-// app.use("/api", forgotPasswordRoutes);
-// app.use("/api", coverRoute);
-// app.use("/api", pointsRoutes);
-// app.use("/api", referralRoutes);
-
-
-
-// /* ============ START SERVER ============ */
-// const PORT = process.env.PORT || 21240;
-// app.listen(PORT, () => {
-//     console.log("✅ Server running on http://localhost:" + PORT);
-// });
-
-
-
-// after deplyment changes 
-
-// require("dotenv").config();
-// const express = require("express");
-// const session = require("express-session"); // ⭐ FIX: Make sure this line exists!
-// const cors = require("cors");
-// const mysql = require('mysql2'); 
-// // ... other imports
-
-// const app = express();
-
-// /* ============ MIDDLEWARE ============ */
-// app.use(express.json());
-
-// // ⭐ FIX: Use your MAIN Vercel domain (not the long git-preview one)
-// app.use(
-//   cors({
-//     origin: "https://project-coin-ashutosh23102001s-projects.vercel.app", 
-//     methods: ['GET', 'POST', 'PUT', 'DELETE'],
-//     credentials: true
-//   })
-// );
-
-// // ⭐ FIX: Use createPool instead of createConnection for better stability on Render
-// const db = mysql.createPool(process.env.DATABASE_URL); 
-
-// // ... rest of your session and routes code
-
-// /* ============ START SERVER ============ */
-// // ⭐ FIX: Render assigns its own port, don't force 21240 here
-// const PORT = process.env.PORT || 3002; 
-// app.listen(PORT, () => {
-//     console.log(`✅ Server running on port ${PORT}`);
-// });
-
-// app.use(
-//   session({
-//     // ... other settings
-//     cookie: {
-//       httpOnly: true,
-//       secure: true, // ⭐ FIX: Must be true for HTTPS (Render/Vercel)
-//       sameSite: "none", // ⭐ FIX: Allows cookies across different domains
-//     },
-//     proxy: true // ⭐ FIX: Required for Render's load balancer
-//   })
-// );
-
-// all fix 
+// // try 
 
 // require("dotenv").config();
 
@@ -160,67 +10,90 @@
 // const cookieParser = require("cookie-parser");
 // const mysql = require("mysql2");
 // const path = require("path");
+// const MySQLStore = require("express-mysql-session")(session); // ✅ ADDED
 
 // /* ============ ROUTES ============ */
 // const loginRoutes = require("./routes/login");
-// const accountRoutes = require("./routes/account");
-// const clickRoutes = require("./routes/clicks");
-// const companyRoutes = require("./routes/company");
-// const shortenerRoutes = require("./routes/shortener");
-// const addressRoutes = require("./routes/address");
-// const emailOtpRoutes = require("./routes/emailOtp");
-// const profilePicRoute = require("./routes/profilePic");
-// const forgotPasswordRoutes = require("./routes/forgotPassword");
-// const coverRoute = require("./routes/cover");
+// // const accountRoutes = require("./routes/account");
+// // const clickRoutes = require("./routes/clicks");
+// // const companyRoutes = require("./routes/personal");
+// // const shortenerRoutes = require("./routes/shortener");
+// // const addressRoutes = require("./routes/address");
+// // const emailOtpRoutes = require("./routes/emailOtp");
+// // const profilePicRoute = require("./routes/profilePic");
+// // const forgotPasswordRoutes = require("./routes/forgotPassword");
+// // const coverRoute = require("./routes/cover");
 // const referralRoutes = require("./routes/referral");
-// const pointsRoutes = require("./routes/points");
+// // const pointsRoutes = require("./routes/points");
 // const profileRoute = require("./routes/profile");
 
 // const app = express();
+
+// /* ============ TRUST PROXY (IMPORTANT FOR RENDER) ============ */
+// app.set("trust proxy", 1);
+
+// /* ============ CORS (FIRST) ============ */
+// app.use(
+//   cors({
+//     origin: [
+//       "https://project-coin-ashutosh23102001s-projects.vercel.app",
+//       "https://project-coin-zfh8.vercel.app",
+//     ],
+//     methods: ["GET", "POST", "PUT", "DELETE"],
+//     credentials: true,
+//   })
+// );
+
+
+// /* ============ DATABASE (FIXED) ============ */
+// const db = mysql.createPool({
+//   host: process.env.DB_HOST,
+//   user: process.env.DB_USER,
+//   password: process.env.DB_PASSWORD,
+//   database: process.env.DB_NAME,
+//   port: process.env.DB_PORT,
+//   ssl: {
+//     rejectUnauthorized: false,
+//   },
+// });
+
+// // Test DB
+// db.getConnection((err, conn) => {
+//   if (err) {
+//     console.error("❌ DB ERROR:", err.message);
+//   } else {
+//     console.log("✅ DB CONNECTED");
+//     conn.release();
+//   }
+// });
+// const sessionStore = new MySQLStore({}, db.promise()); // ✅ ADD THIS
+
 
 // /* ============ MIDDLEWARE ============ */
 // app.use(express.json());
 // app.use(express.urlencoded({ extended: true }));
 // app.use(cookieParser());
 
-// /* ============ CORS (Vercel Frontend) ============ */
-// app.use(
-//   cors({
-//     origin: ["https://project-coin-ashutosh23102001s-projects.vercel.app",
-//           "https://project-coin-zfh8.vercel.app"],
-
-//     methods: ["GET", "POST", "PUT", "DELETE"],
-//     credentials: true,
-//   })
-// );
-
-// /* ============ DATABASE (Aiven MySQL) ============ */
-// const db = mysql.createPool(process.env.DATABASE_URL);
-
-// /* ============ START SERVER ============ */
-// const PORT = process.env.PORT || 3000;
-
-// app.listen(PORT, () => {
-//   console.log(`✅ Server running on port ${PORT}`);
-// });
-
-
-// /* ============ SESSION (FIXED) ============ */
-// app.set("trust proxy", 1);
-
+// /* ============ SESSION ============ */
 // app.use(
 //   session({
 //     name: "dcoin.sid",
-//     secret: process.env.SESSION_SECRET, // 🔥 IMPORTANT
+//     secret: process.env.SESSION_SECRET, // 🔥 must be in Render env
 //     resave: false,
 //     saveUninitialized: false,
+//         store: sessionStore, // ✅ ADD THIS LINE
+
 //     cookie: {
-//       httpOnly: true,
-//       secure: true,       // ✅ required for HTTPS
-//       sameSite: "none",   // ✅ required for Vercel + Render
-//     },
+//   httpOnly: true,
+//   secure: true,     // ✅ already correct
+//   sameSite: "none", // ✅ already correct
+//   maxAge: 1000 * 60 * 60 * 24, // 🔥 ADD THIS (IMPORTANT)
+// },
 //   })
 // );
+
+// /* ============ STATIC FILES ============ */
+// app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // /* ============ AUTH CHECK ============ */
 // app.get("/api/auth/me", (req, res) => {
@@ -230,24 +103,19 @@
 //   });
 // });
 
-
-
-// /* ============ STATIC FILES ============ */
-// app.use("/uploads", express.static(path.join(__dirname, "uploads")));
-
-// /* ============ ROUTES (ALL CONNECTED) ============ */
+// /* ============ ROUTES ============ */
 // app.use("/api", loginRoutes);
-// app.use("/api/account", accountRoutes);
-// app.use("/api", clickRoutes);
-// app.use("/api/company", companyRoutes);
-// app.use("/api", shortenerRoutes);
-// app.use("/api", addressRoutes);
-// app.use("/api", emailOtpRoutes);
+// // app.use("/api/account", accountRoutes);
+// // app.use("/api", clickRoutes);
+// // app.use("/api/company", companyRoutes);
+// // app.use("/api", shortenerRoutes);
+// // app.use("/api", addressRoutes);
+// // app.use("/api", emailOtpRoutes);
 // app.use("/api", profileRoute);
-// app.use("/api", profilePicRoute);
-// app.use("/api", forgotPasswordRoutes);
-// app.use("/api", coverRoute);
-// app.use("/api", pointsRoutes);
+// // app.use("/api", profilePicRoute);
+// // app.use("/api", forgotPasswordRoutes);
+// // app.use("/api", coverRoute);
+// // app.use("/api", pointsRoutes);
 // app.use("/api", referralRoutes);
 
 // /* ============ ROOT CHECK ============ */
@@ -255,8 +123,13 @@
 //   res.send("🚀 API running: https://project-coin.onrender.com/api");
 // });
 
+// /* ============ START SERVER (LAST) ============ */
+// const PORT = process.env.PORT || 3000;
 
-// try 
+// app.listen(PORT, () => {
+//   console.log(`✅ Server running on port ${PORT}`);
+// });
+
 
 require("dotenv").config();
 
@@ -266,122 +139,101 @@ const session = require("express-session");
 const cookieParser = require("cookie-parser");
 const mysql = require("mysql2");
 const path = require("path");
-const MySQLStore = require("express-mysql-session")(session); // ✅ ADDED
+const MySQLStore = require("express-mysql-session")(session);
 
 /* ============ ROUTES ============ */
 const loginRoutes = require("./routes/login");
-// const accountRoutes = require("./routes/account");
-// const clickRoutes = require("./routes/clicks");
-// const companyRoutes = require("./routes/company");
-// const shortenerRoutes = require("./routes/shortener");
-// const addressRoutes = require("./routes/address");
-// const emailOtpRoutes = require("./routes/emailOtp");
-// const profilePicRoute = require("./routes/profilePic");
-// const forgotPasswordRoutes = require("./routes/forgotPassword");
-// const coverRoute = require("./routes/cover");
 const referralRoutes = require("./routes/referral");
-// const pointsRoutes = require("./routes/points");
 const profileRoute = require("./routes/profile");
+const accountRoutes = require("./routes/account");
+const personalRoutes = require("./routes/personal");
+
+
+
+
 
 const app = express();
 
-/* ============ TRUST PROXY (IMPORTANT FOR RENDER) ============ */
+/* ✅ FIX 1: TRUST PROXY */
 app.set("trust proxy", 1);
 
-/* ============ CORS (FIRST) ============ */
+/* ✅ FIX 2: CORS */
 app.use(
   cors({
     origin: [
       "https://project-coin-ashutosh23102001s-projects.vercel.app",
       "https://project-coin-zfh8.vercel.app",
     ],
-    methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })
 );
 
-
-/* ============ DATABASE (FIXED) ============ */
+/* ✅ FIX 3: DATABASE (EXPORT THIS) */
 const db = mysql.createPool({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
   port: process.env.DB_PORT,
-  ssl: {
-    rejectUnauthorized: false,
-  },
+  ssl: { rejectUnauthorized: false },
 });
 
-// Test DB
+/* ✅ IMPORTANT: EXPORT DB */
+module.exports = db;
+
+/* TEST DB */
 db.getConnection((err, conn) => {
-  if (err) {
-    console.error("❌ DB ERROR:", err.message);
-  } else {
+  if (err) console.error("❌ DB ERROR:", err.message);
+  else {
     console.log("✅ DB CONNECTED");
     conn.release();
   }
 });
-const sessionStore = new MySQLStore({}, db.promise()); // ✅ ADD THIS
 
+/* ✅ SESSION STORE */
+const sessionStore = new MySQLStore({}, db.promise());
 
-/* ============ MIDDLEWARE ============ */
+/* MIDDLEWARE */
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-/* ============ SESSION ============ */
+/* ✅ FIX 4: SESSION */
 app.use(
   session({
     name: "dcoin.sid",
-    secret: process.env.SESSION_SECRET, // 🔥 must be in Render env
+    secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
-        store: sessionStore, // ✅ ADD THIS LINE
-
+    store: sessionStore,
     cookie: {
-  httpOnly: true,
-  secure: true,     // ✅ already correct
-  sameSite: "none", // ✅ already correct
-  maxAge: 1000 * 60 * 60 * 24, // 🔥 ADD THIS (IMPORTANT)
-},
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+      maxAge: 1000 * 60 * 60 * 24,
+    },
   })
 );
 
-/* ============ STATIC FILES ============ */
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
-
-/* ============ AUTH CHECK ============ */
-app.get("/api/auth/me", (req, res) => {
-  res.json({
-    loggedIn: !!req.session.user,
-    user: req.session.user || null,
-  });
-});
-
-/* ============ ROUTES ============ */
+/* ROUTES */
 app.use("/api", loginRoutes);
-// app.use("/api/account", accountRoutes);
-// app.use("/api", clickRoutes);
-// app.use("/api/company", companyRoutes);
-// app.use("/api", shortenerRoutes);
-// app.use("/api", addressRoutes);
-// app.use("/api", emailOtpRoutes);
 app.use("/api", profileRoute);
-// app.use("/api", profilePicRoute);
-// app.use("/api", forgotPasswordRoutes);
-// app.use("/api", coverRoute);
-// app.use("/api", pointsRoutes);
 app.use("/api", referralRoutes);
+app.use("/api/account", accountRoutes);
+app.use("/api/personal", personalRoutes);
 
-/* ============ ROOT CHECK ============ */
+
+
+
+
+
+
+
+/* TEST */
 app.get("/", (req, res) => {
-  res.send("🚀 API running: https://project-coin.onrender.com/api");
+  res.send("🚀 API running");
 });
 
-/* ============ START SERVER (LAST) ============ */
 const PORT = process.env.PORT || 3000;
-
 app.listen(PORT, () => {
   console.log(`✅ Server running on port ${PORT}`);
 });
