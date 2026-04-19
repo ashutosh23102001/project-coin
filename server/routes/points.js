@@ -106,23 +106,10 @@
 // module.exports = router;
 
 //new
+
 const express = require("express");
 const db = require("../db");
 const router = express.Router();
-
-/* =========================================
-   🔥 CONFIG: ADD ALL TABLES HERE
-========================================= */
-// const POINT_SOURCES = {
-//   coin: {
-//     table: "click_counter",
-//     query: "SUM(clicks_added)"
-//   },
-//   link: {
-//     table: "short_urls",
-//     query: "COUNT(*)"
-//   }
-// };
 
 const POINT_SOURCES = {
   coin: {
@@ -137,7 +124,6 @@ const POINT_SOURCES = {
   }
 };
 
-/* ================= GET POINTS ================= */
 router.get("/points", (req, res) => {
   if (!req.session?.user) {
     return res.status(401).json({ message: "Unauthorized" });
@@ -169,17 +155,21 @@ router.get("/points", (req, res) => {
     const result = rows[0] || {};
 
     let total = 0;
-    let response = {};
+    let sources = [];
 
     for (let key in POINT_SOURCES) {
       const value = result[`${key}Clicks`] || 0;
-      response[`${key}Clicks`] = value;
+
+      sources.push({
+        key,
+        label: POINT_SOURCES[key].label,
+        value
+      });
+
       total += value;
     }
 
-    response.total = total;
-
-    res.json(response);
+    res.json({ sources, total });
   });
 });
 
