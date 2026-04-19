@@ -330,7 +330,7 @@ router.post("/verify-email-otp", (req, res) => {
 
     // save email
     db.query(
-      "UPDATE users_info SET email=? WHERE user_id=?",
+      "UPDATE user_contacts SET email=? WHERE user_id=?",
       [email, userId],
       (err2) => {
         if (err2) {
