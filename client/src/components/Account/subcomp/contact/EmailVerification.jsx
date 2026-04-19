@@ -43,21 +43,41 @@ const EmailVerification = ({ email, setEmail }) => {
     setTimeLeft(0);
   };
 
-  const sendOtp = async () => {
-    if (!email) return alert("Enter email");
+  // const sendOtp = async () => {
+  //   if (!email) return alert("Enter email");
 
-    try {
-      setSendingOtp(true);
-      await api.post("/send-email-otp", { email });
-      setOtpSent(true);
-      setEditMode(false);
-      setTimeLeft(60);
-    } catch (err) {
-      alert(err.response?.data?.message || "Failed to send OTP");
-    } finally {
-      setSendingOtp(false);
-    }
-  };
+  //   try {
+  //     setSendingOtp(true);
+  //     await api.post("/send-email-otp", { email });
+  //     setOtpSent(true);
+  //     setEditMode(false);
+  //     setTimeLeft(60);
+  //   } catch (err) {
+  //     alert(err.response?.data?.message || "Failed to send OTP");
+  //   } finally {
+  //     setSendingOtp(false);
+  //   }
+  // };
+
+  const sendOtp = async () => {
+  if (!email) return alert("Enter email");
+
+  try {
+    setSendingOtp(true);
+
+    await api.post("/send-email-otp", { email }); // 🔴 FIX
+
+    setOtpSent(true);
+    setEditMode(false);
+    setTimeLeft(60);
+
+  } catch (err) {
+    console.log(err); // 🔴 DEBUG
+    alert(err.response?.data?.message || "Failed to send OTP");
+  } finally {
+    setSendingOtp(false);
+  }
+};
 
   const resendOtp = async () => {
     try {

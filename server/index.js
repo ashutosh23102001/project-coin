@@ -148,6 +148,7 @@ const profileRoute = require("./routes/profile");
 const accountRoutes = require("./routes/account");
 const personalRoutes = require("./routes/personal");
 const addressRoutes = require("./routes/address");
+const emailOtpRoutes = require("./routes/emailOtp");
 
 
 
@@ -223,6 +224,7 @@ app.use("/api", referralRoutes);
 app.use("/api/account", accountRoutes);
 app.use("/api/personal", personalRoutes);
 app.use("/api", addressRoutes);
+app.use("/api", emailOtpRoutes);
 
 
 
