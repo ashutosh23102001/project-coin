@@ -149,6 +149,7 @@ const accountRoutes = require("./routes/account");
 const personalRoutes = require("./routes/personal");
 const addressRoutes = require("./routes/address");
 const emailOtpRoutes = require("./routes/emailOtp");
+const pointsRoutes = require("./routes/points");
 
 
 
@@ -225,6 +226,7 @@ app.use("/api/account", accountRoutes);
 app.use("/api/personal", personalRoutes);
 app.use("/api", addressRoutes);
 app.use("/api", emailOtpRoutes);
+app.use("/api", pointsRoutes);
 
 
 
