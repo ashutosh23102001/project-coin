@@ -113,14 +113,27 @@ const router = express.Router();
 /* =========================================
    🔥 CONFIG: ADD ALL TABLES HERE
 ========================================= */
+// const POINT_SOURCES = {
+//   coin: {
+//     table: "click_counter",
+//     query: "SUM(clicks_added)"
+//   },
+//   link: {
+//     table: "short_urls",
+//     query: "COUNT(*)"
+//   }
+// };
+
 const POINT_SOURCES = {
   coin: {
     table: "click_counter",
-    query: "SUM(clicks_added)"
+    query: "SUM(clicks_added)",
+    label: "Coin Game"
   },
   link: {
     table: "short_urls",
-    query: "COUNT(*)"
+    query: "COUNT(*)",
+    label: "Link Shortener"
   }
 };
 
