@@ -68,11 +68,63 @@
 // module.exports = router;
 
 
+
+//working
+
+
+
+// const express = require("express");
+// const db = require("../db");
+// const router = express.Router();
+
+// /* ================= GET TOTAL CLICKS ================= */
+// router.get("/points", (req, res) => {
+//   if (!req.session?.user) {
+//     return res.status(401).json({ message: "Unauthorized" });
+//   }
+
+//   const username = req.session.user.username;
+
+//   const sql = `
+//     SELECT SUM(clicks_added) AS total
+//     FROM click_counter
+//     WHERE username = ?
+//   `;
+
+//   db.query(sql, [username], (err, rows) => {
+//     if (err) {
+//       console.error("❌ POINTS ERROR:", err); // 🔴 DEBUG
+//       return res.status(500).json({ message: "Database error" });
+//     }
+
+//     res.json({
+//       total: rows[0].total || 0
+//     });
+//   });
+// });
+
+// module.exports = router;
+
+//new
 const express = require("express");
 const db = require("../db");
 const router = express.Router();
 
-/* ================= GET TOTAL CLICKS ================= */
+/* =========================================
+   🔥 CONFIG: ADD ALL TABLES HERE
+========================================= */
+const POINT_SOURCES = {
+  coin: {
+    table: "click_counter",
+    query: "SUM(clicks_added)"
+  },
+  link: {
+    table: "short_urls",
+    query: "COUNT(*)"
+  }
+};
+
+/* ================= GET POINTS ================= */
 router.get("/points", (req, res) => {
   if (!req.session?.user) {
     return res.status(401).json({ message: "Unauthorized" });
@@ -80,21 +132,41 @@ router.get("/points", (req, res) => {
 
   const username = req.session.user.username;
 
-  const sql = `
-    SELECT SUM(clicks_added) AS total
-    FROM click_counter
-    WHERE username = ?
-  `;
+  let selectParts = [];
+  let values = [];
 
-  db.query(sql, [username], (err, rows) => {
+  for (let key in POINT_SOURCES) {
+    const source = POINT_SOURCES[key];
+
+    selectParts.push(`
+      (SELECT ${source.query} FROM ${source.table} WHERE username = ?) AS ${key}Clicks
+    `);
+
+    values.push(username);
+  }
+
+  const sql = `SELECT ${selectParts.join(", ")}`;
+
+  db.query(sql, values, (err, rows) => {
     if (err) {
-      console.error("❌ POINTS ERROR:", err); // 🔴 DEBUG
+      console.error("❌ POINTS ERROR:", err);
       return res.status(500).json({ message: "Database error" });
     }
 
-    res.json({
-      total: rows[0].total || 0
-    });
+    const result = rows[0] || {};
+
+    let total = 0;
+    let response = {};
+
+    for (let key in POINT_SOURCES) {
+      const value = result[`${key}Clicks`] || 0;
+      response[`${key}Clicks`] = value;
+      total += value;
+    }
+
+    response.total = total;
+
+    res.json(response);
   });
 });
 
