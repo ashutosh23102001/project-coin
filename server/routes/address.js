@@ -129,15 +129,12 @@
 
 // module.exports = router;
 
-
 const express = require("express");
 const db = require("../db");
 
 const router = express.Router();
 
-/* =====================================================
-   🔹 GET ADDRESS
-===================================================== */
+/* ================= GET ADDRESS ================= */
 router.get("/address", (req, res) => {
   if (!req.session || !req.session.user) {
     return res.status(401).json({ message: "Unauthorized" });
@@ -146,23 +143,17 @@ router.get("/address", (req, res) => {
   const userId = req.session.user.id;
 
   const sql = `
-    SELECT 
-      address_line1,
-      address_line2,
-      city,
-      state,
-      pincode
+    SELECT address_line1, address_line2, city, state, pincode
     FROM user_contacts
     WHERE user_id = ?
   `;
 
   db.query(sql, [userId], (err, rows) => {
     if (err) {
-      console.error("❌ DB Error (fetch-address):", err);
+      console.error("❌ GET ERROR:", err);   // 🔴 DEBUG
       return res.status(500).json({ message: "Database error" });
     }
 
-    // ✅ FIX: return empty object instead of error
     if (!rows.length) {
       return res.json({
         address_line1: "",
@@ -177,10 +168,8 @@ router.get("/address", (req, res) => {
   });
 });
 
-/* =====================================================
-   🔹 UPSERT ADDRESS (INSERT + UPDATE)
-===================================================== */
-router.put("/address", (req, res) => {   // 🔴 FIX: route name changed
+/* ================= SAVE ADDRESS ================= */
+router.put("/address", (req, res) => {
   if (!req.session || !req.session.user) {
     return res.status(401).json({ message: "Unauthorized" });
   }
@@ -195,47 +184,86 @@ router.put("/address", (req, res) => {   // 🔴 FIX: route name changed
     pincode
   } = req.body;
 
-  // 🔴 FIX: validation
   if (!address_line1 || !city || !state || !pincode) {
     return res.status(400).json({
-      message: "Address Line 1, City, State and Pincode are required"
+      message: "All required fields missing"
     });
   }
 
-  // 🔴 FIX: UPSERT instead of UPDATE (important)
-  const sql = `
-    INSERT INTO user_contacts (
-      user_id, address_line1, address_line2, city, state, pincode
-    )
-    VALUES (?, ?, ?, ?, ?, ?)
-    ON DUPLICATE KEY UPDATE
-      address_line1 = VALUES(address_line1),
-      address_line2 = VALUES(address_line2),
-      city = VALUES(city),
-      state = VALUES(state),
-      pincode = VALUES(pincode),
-      updated_at = NOW()
-  `;
+  /* 🔴 FIX: SIMPLE LOG TO DEBUG */
+  console.log("DATA:", req.body);
+  console.log("USER:", userId);
 
-  db.query(
-    sql,
-    [
-      userId,
-      address_line1,
-      address_line2 || null,
-      city,
-      state,
-      pincode
-    ],
-    (err) => {
-      if (err) {
-        console.error("❌ DB Error (save-address):", err);
-        return res.status(500).json({ message: "Database error" });
-      }
+  /* 🔴 FIX: FIRST CHECK IF ROW EXISTS */
+  const checkSql = `SELECT user_id FROM user_contacts WHERE user_id = ?`;
 
-      res.json({ message: "Address saved successfully" });
+  db.query(checkSql, [userId], (err, rows) => {
+    if (err) {
+      console.error("❌ CHECK ERROR:", err);
+      return res.status(500).json({ message: "Database error" });
     }
-  );
+
+    if (rows.length === 0) {
+      /* 🔴 INSERT */
+      const insertSql = `
+        INSERT INTO user_contacts
+        (user_id, address_line1, address_line2, city, state, pincode)
+        VALUES (?, ?, ?, ?, ?, ?)
+      `;
+
+      db.query(
+        insertSql,
+        [
+          userId,
+          address_line1,
+          address_line2 || null,
+          city,
+          state,
+          pincode
+        ],
+        (err) => {
+          if (err) {
+            console.error("❌ INSERT ERROR:", err); // 🔴 SEE THIS IN RENDER LOG
+            return res.status(500).json({ message: "Database error" });
+          }
+
+          return res.json({ message: "Address saved successfully" });
+        }
+      );
+    } else {
+      /* 🔴 UPDATE */
+      const updateSql = `
+        UPDATE user_contacts SET
+          address_line1 = ?,
+          address_line2 = ?,
+          city = ?,
+          state = ?,
+          pincode = ?,
+          updated_at = NOW()
+        WHERE user_id = ?
+      `;
+
+      db.query(
+        updateSql,
+        [
+          address_line1,
+          address_line2 || null,
+          city,
+          state,
+          pincode,
+          userId
+        ],
+        (err) => {
+          if (err) {
+            console.error("❌ UPDATE ERROR:", err);
+            return res.status(500).json({ message: "Database error" });
+          }
+
+          res.json({ message: "Address updated successfully" });
+        }
+      );
+    }
+  });
 });
 
 module.exports = router;
