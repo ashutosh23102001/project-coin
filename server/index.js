@@ -147,6 +147,7 @@ const referralRoutes = require("./routes/referral");
 const profileRoute = require("./routes/profile");
 const accountRoutes = require("./routes/account");
 const personalRoutes = require("./routes/personal");
+const addressRoutes = require("./routes/address");
 
 
 
@@ -221,6 +222,7 @@ app.use("/api", profileRoute);
 app.use("/api", referralRoutes);
 app.use("/api/account", accountRoutes);
 app.use("/api/personal", personalRoutes);
+app.use("/api", addressRoutes);
 
 
 

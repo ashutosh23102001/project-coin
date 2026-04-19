@@ -1,9 +1,9 @@
 
 
-// import React, { useState ,useEffect  } from "react";
+// import React, { useState, useEffect } from "react";
 // import api from "../../../../API/axios";
 // import INDIAN_STATES from "../../../../constants/indianStates";
-// import Loader from "../../../Loader/Loader"; // ✅ ADDED
+// import Loader from "../../../Loader/Loader";
 // import "../sub.css";
 
 // const Address = () => {
@@ -18,29 +18,33 @@
 //     pincode: ""
 //   });
 
-//     const [isEditing, setIsEditing] = useState(false); // ✅ ADDED
-
-//   const [loading, setLoading] = useState(false); // ✅ ADDED
-//   const [success, setSuccess] = useState("");   // ✅ ADDED
-//   const [error, setError] = useState("");       // ✅ ADDED
-
-
+//   const [isEditing, setIsEditing] = useState(false);
+//   const [loading, setLoading] = useState(false);
+//   const [success, setSuccess] = useState("");
+//   const [error, setError] = useState("");
 
 //   /* ============================
 //      🔹 FETCH ADDRESS ON LOAD
 //   ============================ */
 //   useEffect(() => {
 //     api
-//       .get("/address") // ✅ ADDED
+//       .get("/address")
 //       .then(res => {
-//         setForm(res.data);
+//         const data = res.data || {};
+
+//         /* ✅ NULL-SAFE NORMALIZATION */
+//         setForm({
+//           address_line1: data.address_line1 || "",
+//           address_line2: data.address_line2 || "",
+//           city: data.city || "",
+//           state: data.state || "",
+//           pincode: data.pincode || ""
+//         });
 //       })
 //       .catch(() => {
 //         setError("Failed to load address");
 //       });
 //   }, []);
-
-
 
 //   /* ============================
 //      HANDLE CHANGE
@@ -56,11 +60,11 @@
 //     setError("");
 //     setSuccess("");
 
-// try {
+//     try {
 //       setLoading(true);
 //       const res = await api.put("/update-address", form);
 //       setSuccess(res.data.message);
-//       setIsEditing(false); // ✅ DISABLE AFTER SAVE
+//       setIsEditing(false);
 //     } catch (err) {
 //       setError(err.response?.data?.message || "Update failed");
 //     } finally {
@@ -72,106 +76,88 @@
 //     <section className="address-details">
 //       <h3>Address Details</h3>
 
-//       {/* ================= STATUS ================= */}
 //       {error && <p className="error">{error}</p>}
 //       {success && <p className="success">{success}</p>}
 
-//       {/* ================= ADDRESS LINE 1 ================= */}
 //       <label>Address Line 1</label>
 //       <input
 //         name="address_line1"
 //         value={form.address_line1}
 //         onChange={handleChange}
-//                 disabled={!isEditing}   // ✅ ADDED
-
+//         disabled={!isEditing}
 //       />
 
-//       {/* ================= ADDRESS LINE 2 ================= */}
 //       <label>Address Line 2</label>
 //       <input
 //         name="address_line2"
 //         value={form.address_line2}
 //         onChange={handleChange}
-//                 disabled={!isEditing}   // ✅ ADDED
-
+//         disabled={!isEditing}
 //       />
 
-//       {/* ================= CITY + STATE + PINCODE ================= */}
 //       <div className="city-state-row">
-//         {/* LEFT COLUMN */}
 //         <div className="city-col">
 //           <label>City</label>
 //           <input
 //             name="city"
 //             value={form.city}
 //             onChange={handleChange}
-//                     disabled={!isEditing}   // ✅ ADDED
-
+//             disabled={!isEditing}
 //           />
 
 //           <label>Pincode</label>
-//           <div className="otp-row"> {/* ✅ REUSED FLEX ROW */}
-//             <input
-//               name="pincode"
-//               maxLength={6}
-//               value={form.pincode}
-//               onChange={handleChange}
-
-//                       disabled={!isEditing}   // ✅ ADDED
-
-//             />
-
-//             {/* ✅ SAVE BUTTON NEXT TO PINCODE */}
-           
-//           </div>
+//           <input
+//             name="pincode"
+//             maxLength={6}
+//             value={form.pincode}
+//             onChange={handleChange}
+//             disabled={!isEditing}
+//           />
 //         </div>
 
-//         {/* RIGHT COLUMN */}
 //         <div className="state-col">
 //           <label>State</label>
 //           <select
 //             name="state"
 //             value={form.state}
 //             onChange={handleChange}
-//                     disabled={!isEditing}   // ✅ ADDED
-
+//             disabled={!isEditing}
 //           >
 //             <option value="">Select State</option>
-//             {INDIAN_STATES.map((s) => (
+//             {INDIAN_STATES.map(s => (
 //               <option key={s} value={s}>
 //                 {s}
 //               </option>
 //             ))}
 //           </select>
-//            {!isEditing ? (
-//   /* ================= EDIT MODE BUTTON ================= */
-//   <button
-//     type="button"
-//     className="verify-btn"
-//     onClick={() => setIsEditing(true)}   // ✅ ENABLE EDITING
-//   >
-//     Edit
-//   </button>
-// ) : (
-//   /* ================= SAVE MODE BUTTON ================= */
-//   <button
-//     type="button"
-//     className="verify-btn"
-//     onClick={handleSave}                 // ✅ SAVE DATA
-//     disabled={loading}
-//   >
-//     {loading ? <Loader /> : "Save"}
-//   </button>
-// )}
 
+//           {!isEditing ? (
+//             <button
+//               type="button"
+//               className="verify-btn"
+//               onClick={() => setIsEditing(true)}
+//             >
+//               Edit
+//             </button>
+//           ) : (
+//             <button
+//               type="button"
+//               className="verify-btn"
+//               onClick={handleSave}
+//               disabled={loading}
+//             >
+//               {loading ? <Loader /> : "Save"}
+//             </button>
+//           )}
 //         </div>
 //       </div>
-
 //     </section>
 //   );
 // };
 
 // export default Address;
+
+
 import React, { useState, useEffect } from "react";
 import api from "../../../../API/axios";
 import INDIAN_STATES from "../../../../constants/indianStates";
@@ -179,9 +165,6 @@ import Loader from "../../../Loader/Loader";
 import "../sub.css";
 
 const Address = () => {
-  /* ============================
-     STATE
-  ============================ */
   const [form, setForm] = useState({
     address_line1: "",
     address_line2: "",
@@ -195,16 +178,13 @@ const Address = () => {
   const [success, setSuccess] = useState("");
   const [error, setError] = useState("");
 
-  /* ============================
-     🔹 FETCH ADDRESS ON LOAD
-  ============================ */
+  /* ================= FETCH ================= */
   useEffect(() => {
     api
-      .get("/address")
+      .get("/address") // 🔴 FIX: correct endpoint
       .then(res => {
         const data = res.data || {};
 
-        /* ✅ NULL-SAFE NORMALIZATION */
         setForm({
           address_line1: data.address_line1 || "",
           address_line2: data.address_line2 || "",
@@ -213,31 +193,30 @@ const Address = () => {
           pincode: data.pincode || ""
         });
       })
-      .catch(() => {
+      .catch(err => {
+        console.log(err); // 🔴 DEBUG
         setError("Failed to load address");
       });
   }, []);
 
-  /* ============================
-     HANDLE CHANGE
-  ============================ */
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  /* ============================
-     SAVE ADDRESS
-  ============================ */
+  /* ================= SAVE ================= */
   const handleSave = async () => {
     setError("");
     setSuccess("");
 
     try {
       setLoading(true);
-      const res = await api.put("/update-address", form);
+
+      const res = await api.put("/address", form); // 🔴 FIX
+
       setSuccess(res.data.message);
       setIsEditing(false);
     } catch (err) {
+      console.log(err); // 🔴 DEBUG
       setError(err.response?.data?.message || "Update failed");
     } finally {
       setLoading(false);
@@ -297,27 +276,14 @@ const Address = () => {
           >
             <option value="">Select State</option>
             {INDIAN_STATES.map(s => (
-              <option key={s} value={s}>
-                {s}
-              </option>
+              <option key={s} value={s}>{s}</option>
             ))}
           </select>
 
           {!isEditing ? (
-            <button
-              type="button"
-              className="verify-btn"
-              onClick={() => setIsEditing(true)}
-            >
-              Edit
-            </button>
+            <button onClick={() => setIsEditing(true)}>Edit</button>
           ) : (
-            <button
-              type="button"
-              className="verify-btn"
-              onClick={handleSave}
-              disabled={loading}
-            >
+            <button onClick={handleSave} disabled={loading}>
               {loading ? <Loader /> : "Save"}
             </button>
           )}
