@@ -18,4 +18,4 @@ setInterval(() => {
       console.log(`🧹 Deleted ${result.affectedRows} expired OTP(s)`);
     }
   });
-}, 30 * 1000); // every 30 seconds
+}, 120 * 1000); // every 60 seconds

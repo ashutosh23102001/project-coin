@@ -229,6 +229,59 @@ router.post("/send-email-otp", (req, res) => {
 });
 
 /* ================= VERIFY OTP ================= */
+// router.post("/verify-email-otp", (req, res) => {
+//   const { email, otp } = req.body;
+
+//   if (!email || !otp) {
+//     return res.status(400).json({ message: "Email & OTP required" });
+//   }
+
+//   if (!req.session?.user) {
+//     return res.status(401).json({ message: "Unauthorized" });
+//   }
+
+//   const userId = req.session.user.id;
+
+//   const sql = `
+//     SELECT * FROM email_otps
+//     WHERE email=? AND otp=? AND verified=0
+//     ORDER BY created_at DESC
+//     LIMIT 1
+//   `;
+
+//   db.query(sql, [email, otp], (err, rows) => {
+//     if (err) {
+//       console.error("❌ VERIFY ERROR:", err);
+//       return res.status(500).json({ message: "DB error" });
+//     }
+
+//     if (!rows.length) {
+//       return res.status(400).json({ message: "Invalid OTP" });
+//     }
+
+//     const record = rows[0];
+
+//     if (new Date(record.expires_at) < new Date()) {
+//       return res.status(400).json({ message: "OTP expired" });
+//     }
+
+//     db.query("UPDATE email_otps SET verified=1 WHERE id=?", [record.id]);
+
+//     db.query(
+//       "UPDATE user_contacts SET email=? WHERE user_id=?",
+//       [email, userId],
+//       (err2) => {
+//         if (err2) {
+//           console.error("❌ SAVE EMAIL ERROR:", err2);
+//           return res.status(500).json({ message: "Failed to save email" });
+//         }
+
+//         res.json({ message: "Email verified successfully" });
+//       }
+//     );
+//   });
+// });
+
 router.post("/verify-email-otp", (req, res) => {
   const { email, otp } = req.body;
 
@@ -242,31 +295,40 @@ router.post("/verify-email-otp", (req, res) => {
 
   const userId = req.session.user.id;
 
+  // 🔴 FIX: remove otp from query (fetch latest first)
   const sql = `
     SELECT * FROM email_otps
-    WHERE email=? AND otp=? AND verified=0
+    WHERE email=? AND verified=0
     ORDER BY created_at DESC
     LIMIT 1
   `;
 
-  db.query(sql, [email, otp], (err, rows) => {
+  db.query(sql, [email], (err, rows) => {
     if (err) {
       console.error("❌ VERIFY ERROR:", err);
       return res.status(500).json({ message: "DB error" });
     }
 
     if (!rows.length) {
-      return res.status(400).json({ message: "Invalid OTP" });
+      return res.status(400).json({ message: "No OTP found" });
     }
 
     const record = rows[0];
 
+    // 🔴 FIX: compare manually
+    if (record.otp !== otp) {
+      return res.status(400).json({ message: "Invalid OTP" });
+    }
+
+    // 🔴 FIX: expiry check
     if (new Date(record.expires_at) < new Date()) {
       return res.status(400).json({ message: "OTP expired" });
     }
 
+    // mark verified
     db.query("UPDATE email_otps SET verified=1 WHERE id=?", [record.id]);
 
+    // save email
     db.query(
       "UPDATE users_info SET email=? WHERE user_id=?",
       [email, userId],
@@ -281,6 +343,9 @@ router.post("/verify-email-otp", (req, res) => {
     );
   });
 });
+
+
+
 
 /* ================= AUTO CLEAN ================= */
 cron.schedule("* * * * *", () => {
