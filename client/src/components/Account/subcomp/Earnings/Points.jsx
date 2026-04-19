@@ -102,3 +102,4 @@ const Points = () => {
     </div>
   );
 };
+export default Points;
