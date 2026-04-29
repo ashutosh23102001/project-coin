@@ -116,11 +116,6 @@ const POINT_SOURCES = {
     table: "click_counter",
     query: "SUM(clicks_added)",
     label: "Coin Game"
-  },
-  link: {
-    table: "short_urls",
-    query: "COUNT(*)",
-    label: "Link Shortener"
   }
 };
 
