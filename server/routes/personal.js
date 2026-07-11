@@ -1,198 +1,3 @@
-// const express = require("express");
-// const db = require("../db");
-
-// const router = express.Router();
-
-// /* =============================
-//    GET PERSONAL DETAILS
-// ============================= */
-// router.get("/", (req, res) => {
-//   if (!req.session.user) {
-//     return res.status(401).json({ message: "Unauthorized" });
-//   }
-
-//   const userId = req.session.user.id;
-
-//   db.query(
-//     "SELECT first_name, middle_name, last_name, date_of_birth, gender FROM users_info WHERE user_id=?",
-//     [userId],
-//     (err, rows) => {
-//       if (err) return res.status(500).json({ message: "DB error" });
-//       res.json(rows[0] || {});
-//     }
-//   );
-// });
-
-// /* =============================
-//    UPSERT PERSONAL DETAILS
-// ============================= */
-// router.put("/", (req, res) => {
-//   if (!req.session.user) {
-//     return res.status(401).json({ message: "Unauthorized" });
-//   }
-
-//   const userId = req.session.user.id;
-//   const username = req.session.user.username;
-
-//   const {
-//     first_name = "",
-//     middle_name = "",
-//     last_name = "",
-//     date_of_birth = null,
-//     gender = ""
-//   } = req.body;
-
-//   db.query(
-//     "SELECT user_id FROM users_info WHERE user_id=?",
-//     [userId],
-//     (err, rows) => {
-//       if (rows.length > 0) {
-//         db.query(
-//           `UPDATE users_info SET
-//             username=?,
-//             first_name=?,
-//             middle_name=?,
-//             last_name=?,
-//             date_of_birth=?,
-//             gender=?
-//            WHERE user_id=?`,
-//           [
-//             username,
-//             first_name,
-//             middle_name,
-//             last_name,
-//             date_of_birth,
-//             gender,
-//             userId
-//           ],
-//           () => res.json({ message: "Updated successfully" })
-//         );
-//       } else {
-//         db.query(
-//           `INSERT INTO users_info
-//            (user_id, username, first_name, middle_name, last_name, date_of_birth, gender)
-//            VALUES (?,?,?,?,?,?,?)`,
-//           [
-//             userId,
-//             username,
-//             first_name,
-//             middle_name,
-//             last_name,
-//             date_of_birth,
-//             gender
-//           ],
-//           () => res.json({ message: "Saved successfully" })
-//         );
-//       }
-//     }
-//   );
-// });
-
-// module.exports = router;
-
-// part 2
-// const express = require("express");
-// const db = require("../db");
-
-// const router = express.Router();
-
-// /* =============================
-//    GET PERSONAL DETAILS
-// ============================= */
-// router.get("/", (req, res) => {
-//   if (!req.session.user) {
-//     return res.status(401).json({ message: "Unauthorized" });
-//   }
-
-//   const userId = req.session.user.id;
-
-//   db.query(
-//     "SELECT first_name, middle_name, last_name, DATE_FORMAT(date_of_birth,'%Y-%m-%d') AS date_of_birth, gender FROM users_info WHERE user_id=?",
-//     [userId],
-//     (err, rows) => {
-//       if (err) return res.status(500).json({ message: "DB error" });
-//       res.json(rows[0] || {});
-//     }
-//   );
-// });
-
-// /* =============================
-//    UPSERT PERSONAL DETAILS
-// ============================= */
-// router.put("/", (req, res) => {
-//   if (!req.session.user) {
-//     return res.status(401).json({ message: "Unauthorized" });
-//   }
-
-//   const userId = req.session.user.id;
-//   const username = req.session.user.username;
-
-//   let {
-//     first_name = "",
-//     middle_name = "",
-//     last_name = "",
-//     date_of_birth = null,
-//     gender = ""
-//   } = req.body;
-
-//   // 🔒 DOB validation
-//   if (
-//     !date_of_birth ||
-//     !/^\d{4}-\d{2}-\d{2}$/.test(date_of_birth) ||
-//     new Date(date_of_birth).getFullYear() < 1900
-//   ) {
-//     date_of_birth = null;
-//   }
-
-//   db.query(
-//     "SELECT user_id FROM users_info WHERE user_id=?",
-//     [userId],
-//     (err, rows) => {
-//       if (rows.length > 0) {
-//         db.query(
-//           `UPDATE users_info SET
-//             username=?,
-//             first_name=?,
-//             middle_name=?,
-//             last_name=?,
-//             date_of_birth=?,
-//             gender=?
-//            WHERE user_id=?`,
-//           [
-//             username,
-//             first_name,
-//             middle_name,
-//             last_name,
-//             date_of_birth,
-//             gender,
-//             userId
-//           ],
-//           () => res.json({ message: "Updated successfully" })
-//         );
-//       } else {
-//         db.query(
-//           `INSERT INTO users_info
-//            (user_id, username, first_name, middle_name, last_name, date_of_birth, gender)
-//            VALUES (?,?,?,?,?,?,?)`,
-//           [
-//             userId,
-//             username,
-//             first_name,
-//             middle_name,
-//             last_name,
-//             date_of_birth,
-//             gender
-//           ],
-//           () => res.json({ message: "Saved successfully" })
-//         );
-//       }
-//     }
-//   );
-// });
-
-// module.exports = router;
-
-// final part
 
 
 // const express = require("express");
@@ -204,94 +9,7 @@
 //    GET PERSONAL DETAILS
 // ============================= */
 // router.get("/", (req, res) => {
-//   if (!req.session.user)
-//     return res.status(401).json({ message: "Unauthorized" });
-
-//   const userId = req.session.user.id;
-
-//   db.query(
-//     `SELECT 
-//       first_name,
-//       middle_name,
-//       last_name,
-//       DATE_FORMAT(date_of_birth,'%Y-%m-%d') AS date_of_birth,
-//       gender
-//      FROM users_info
-//      WHERE user_id=?`,
-//     [userId],
-//     (err, rows) => {
-//       if (err) return res.status(500).json({ message: "DB error" });
-//       res.json(rows[0] || {});
-//     }
-//   );
-// });
-
-// /* =============================
-//    UPDATE PERSONAL DETAILS
-// ============================= */
-
-
-// router.put("/", (req, res) => {
-//   if (!req.session.user)
-//     return res.status(401).json({ message: "Unauthorized" });
-
-//   const userId = req.session.user.id;
-
-//   let {
-//     first_name = "",
-//     middle_name = "",
-//     last_name = "",
-//     date_of_birth = null,
-//     gender = ""
-//   } = req.body;
-
-//   if (!date_of_birth || !/^\d{4}-\d{2}-\d{2}$/.test(date_of_birth)) {
-//     date_of_birth = null;
-//   }
-
-//   db.query(
-//     `INSERT INTO users_info 
-//       (user_id, first_name, middle_name, last_name, date_of_birth, gender)
-//      VALUES (?, ?, ?, ?, ?, ?)
-//      ON DUPLICATE KEY UPDATE
-//       first_name = VALUES(first_name),
-//       middle_name = VALUES(middle_name),
-//       last_name = VALUES(last_name),
-//       date_of_birth = VALUES(date_of_birth),
-//       gender = VALUES(gender),
-//       updated_at = NOW()`,
-//     [
-//       userId,
-//       first_name,
-//       middle_name,
-//       last_name,
-//       date_of_birth,
-//       gender
-//     ],
-//     (err) => {
-//       if (err) {
-//         console.error(err);
-//         return res.status(500).json({ message: "DB error" });
-//       }
-
-//       res.json({ message: "Saved successfully" });
-//     }
-//   );
-// });
-
-// module.exports = router;
-
-
-// const express = require("express");
-// const db = require("../db");
-
-// const router = express.Router();
-
-// /* =============================
-//    GET PERSONAL DETAILS
-// ============================= */
-// router.get("/", (req, res) => {
-//   if (!req.session.user) {
+//   if (!req.session?.user) {
 //     return res.status(401).json({ message: "Unauthorized" });
 //   }
 
@@ -299,6 +17,7 @@
 
 //   db.query(
 //     `SELECT 
+//       username,
 //       first_name,
 //       middle_name,
 //       last_name,
@@ -321,13 +40,13 @@
 // /* =============================
 //    UPDATE / INSERT PERSONAL DETAILS
 // ============================= */
-
 // router.put("/", (req, res) => {
-//   if (!req.session.user) {
+//   if (!req.session?.user) {
 //     return res.status(401).json({ message: "Unauthorized" });
 //   }
 
 //   const userId = req.session.user.id;
+//   const username = req.session.user.username; // ✅ FIX ADDED
 
 //   let {
 //     first_name = "",
@@ -337,156 +56,142 @@
 //     gender = ""
 //   } = req.body;
 
+//   // ✅ Validate date
 //   if (!date_of_birth || !/^\d{4}-\d{2}-\d{2}$/.test(date_of_birth)) {
 //     date_of_birth = null;
 //   }
 
+//   /* =============================
+//      UPSERT (INSERT + UPDATE)
+//   ============================= */
 //   db.query(
-//     "SELECT user_id FROM users_info WHERE user_id=?",
-//     [userId],
-//     (err, rows) => {
+//     `INSERT INTO users_info 
+//     (user_id, username, first_name, middle_name, last_name, date_of_birth, gender)
+//     VALUES (?, ?, ?, ?, ?, ?, ?)
+//     ON DUPLICATE KEY UPDATE
+//       first_name = VALUES(first_name),
+//       middle_name = VALUES(middle_name),
+//       last_name = VALUES(last_name),
+//       date_of_birth = VALUES(date_of_birth),
+//       gender = VALUES(gender),
+//       updated_at = NOW()`,
+//     [
+//       userId,
+//       username, // ✅ FIXED (this was missing)
+//       first_name,
+//       middle_name,
+//       last_name,
+//       date_of_birth,
+//       gender
+//     ],
+//     (err) => {
 //       if (err) {
-//         console.error("CHECK ERROR:", err);
+//         console.error("UPSERT ERROR:", err);
 //         return res.status(500).json({ message: err.message });
 //       }
 
-//       if (rows.length > 0) {
-//         // UPDATE
-//         db.query(
-//           `UPDATE users_info SET
-//             first_name=?,
-//             middle_name=?,
-//             last_name=?,
-//             date_of_birth=?,
-//             gender=?,
-//             updated_at=NOW()
-//            WHERE user_id=?`,
-//           [first_name, middle_name, last_name, date_of_birth, gender, userId],
-//           (err) => {
-//             if (err) {
-//               console.error("UPDATE ERROR:", err);
-//               return res.status(500).json({ message: err.message });
-//             }
-
-//             res.json({ message: "Updated successfully" });
-//           }
-//         );
-//       } else {
-//         // INSERT
-//         db.query(
-//           `INSERT INTO users_info
-//           (user_id, first_name, middle_name, last_name, date_of_birth, gender)
-//           VALUES (?, ?, ?, ?, ?, ?)`,
-//           [userId, first_name, middle_name, last_name, date_of_birth, gender],
-//           (err) => {
-//             if (err) {
-//               console.error("INSERT ERROR:", err);
-//               return res.status(500).json({ message: err.message });
-//             }
-
-//             res.json({ message: "Saved successfully" });
-//           }
-//         );
-//       }
+//       res.json({ message: "Saved successfully" });
 //     }
 //   );
 // });
-// module.exports = router;
 
+// module.exports = router;
 
 const express = require("express");
 const db = require("../db");
+const auth = require("../middleware/auth");
 
 const router = express.Router();
 
-/* =============================
-   GET PERSONAL DETAILS
-============================= */
-router.get("/", (req, res) => {
-  if (!req.session?.user) {
-    return res.status(401).json({ message: "Unauthorized" });
+/* ================= GET PERSONAL ================= */
+
+router.get("/", auth, async (req, res) => {
+  try {
+    const result = await db.query(
+      `SELECT
+        username,
+        first_name,
+        middle_name,
+        last_name,
+        date_of_birth,
+        gender
+      FROM users_info
+      WHERE user_id = $1`,
+      [req.session.user.id]
+    );
+
+    res.json(result.rows[0] || {});
+  } catch (err) {
+    console.error(err);
+
+    res.status(500).json({
+      message: "Database Error",
+    });
   }
-
-  const userId = req.session.user.id;
-
-  db.query(
-    `SELECT 
-      username,
-      first_name,
-      middle_name,
-      last_name,
-      DATE_FORMAT(date_of_birth,'%Y-%m-%d') AS date_of_birth,
-      gender
-     FROM users_info
-     WHERE user_id=?`,
-    [userId],
-    (err, rows) => {
-      if (err) {
-        console.error("GET ERROR:", err);
-        return res.status(500).json({ message: "DB error" });
-      }
-
-      res.json(rows[0] || {});
-    }
-  );
 });
 
-/* =============================
-   UPDATE / INSERT PERSONAL DETAILS
-============================= */
-router.put("/", (req, res) => {
-  if (!req.session?.user) {
-    return res.status(401).json({ message: "Unauthorized" });
-  }
+/* ================= SAVE PERSONAL ================= */
 
-  const userId = req.session.user.id;
-  const username = req.session.user.username; // ✅ FIX ADDED
-
-  let {
-    first_name = "",
-    middle_name = "",
-    last_name = "",
-    date_of_birth = null,
-    gender = ""
-  } = req.body;
-
-  // ✅ Validate date
-  if (!date_of_birth || !/^\d{4}-\d{2}-\d{2}$/.test(date_of_birth)) {
-    date_of_birth = null;
-  }
-
-  /* =============================
-     UPSERT (INSERT + UPDATE)
-  ============================= */
-  db.query(
-    `INSERT INTO users_info 
-    (user_id, username, first_name, middle_name, last_name, date_of_birth, gender)
-    VALUES (?, ?, ?, ?, ?, ?, ?)
-    ON DUPLICATE KEY UPDATE
-      first_name = VALUES(first_name),
-      middle_name = VALUES(middle_name),
-      last_name = VALUES(last_name),
-      date_of_birth = VALUES(date_of_birth),
-      gender = VALUES(gender),
-      updated_at = NOW()`,
-    [
-      userId,
-      username, // ✅ FIXED (this was missing)
+router.put("/", auth, async (req, res) => {
+  try {
+    const {
       first_name,
       middle_name,
       last_name,
       date_of_birth,
-      gender
-    ],
-    (err) => {
-      if (err) {
-        console.error("UPSERT ERROR:", err);
-        return res.status(500).json({ message: err.message });
-      }
+      gender,
+    } = req.body;
 
-      res.json({ message: "Saved successfully" });
-    }
-  );
+    await db.query(
+      `
+      INSERT INTO users_info
+      (
+        user_id,
+        username,
+        first_name,
+        middle_name,
+        last_name,
+        date_of_birth,
+        gender
+      )
+      VALUES
+      (
+        $1,$2,$3,$4,$5,$6,$7
+      )
+
+      ON CONFLICT (user_id)
+
+      DO UPDATE SET
+
+      first_name=EXCLUDED.first_name,
+      middle_name=EXCLUDED.middle_name,
+      last_name=EXCLUDED.last_name,
+      date_of_birth=EXCLUDED.date_of_birth,
+      gender=EXCLUDED.gender,
+      updated_at=NOW()
+      `,
+      [
+        req.session.user.id,
+        req.session.user.username,
+        first_name,
+        middle_name,
+        last_name,
+        date_of_birth || null,
+        gender,
+      ]
+    );
+
+    res.json({
+      success: true,
+      message: "Saved Successfully",
+    });
+  } catch (err) {
+    console.error(err);
+
+    res.status(500).json({
+      message: "Database Error",
+    });
+  }
 });
 
 module.exports = router;
