@@ -138,6 +138,45 @@ const POINT_SOURCES = {
     query: "COALESCE(SUM(clicks_added),0)",
     label: "Coin Game",
   },
+
+//const POINT_SOURCES = {
+  coin: {
+    table: "click_counter",
+    query: "COALESCE(SUM(clicks_added),0)",
+    label: "Coin Game",
+  },
+
+  links: {
+    table: "short_urls",
+    query: "COUNT(*)",
+    label: "Link Shortener",
+  },
+
+  typing: {
+    table: "typing_points",
+    query: "COALESCE(SUM(points),0)",
+    label: "Typing Test",
+  },
+// const POINT_SOURCES = {
+//   coin: {
+//     table: "click_counter",
+//     query: "COALESCE(SUM(clicks_added),0)",
+//     label: "Coin Game",
+//   },
+
+//   links: {
+//     table: "short_urls",
+//     query: "COUNT(*)",
+//     label: "Link Shortener",
+//   },
+
+//   typing: {
+//     table: "typing_points",
+//     query: "COALESCE(SUM(points),0)",
+//     label: "Typing Test",
+//   },
+// };
+
 };
 
 router.get("/points", auth, async (req, res) => {

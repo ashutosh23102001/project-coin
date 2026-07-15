@@ -495,7 +495,11 @@ const Login = () => {
         {/* RIGHT */}
 
         <div className="right-side login-colorful-side">
-
+             <Link to="/">
+            <button className="popup-close-btn">
+              ×
+            </button>
+          </Link>
           <Link to="/register">
             <button className="signup-btn">
               Sign Up
