@@ -43,6 +43,7 @@
 // };
 
 // export default Ad;
+
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../../API/axios";
@@ -76,7 +77,7 @@ const Ad = () => {
 
     const finishAd = async () => {
       try {
-        await api.post("/saveClickData", { clicks_added: 10 });
+        await api.post("/saveClickData", { clicks: 10 });
       } catch (err) {
         console.error("Save click failed", err);
       }

@@ -146,7 +146,7 @@ const Navbar = () => {
           ) : (
             <>
               <img
-                src={profilePic || "https://i.pravatar.cc/40"}
+                src={profilePic }
                 alt="profile"
                 className="profile-pic"
               />
