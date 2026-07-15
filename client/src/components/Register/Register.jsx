@@ -421,6 +421,9 @@
 
 // export default Register;
 
+
+
+
 import React, { useState, useEffect } from "react";
 import "./Register.css";
 import { Link, useNavigate } from "react-router-dom";

@@ -36,107 +36,59 @@ const router = express.Router();
 
 /* ================= SAVE CLICKS ================= */
 
-// router.post("/saveClickData", auth, async (req, res) => {
-
-//   try {
-
-//     const { clicks } = req.body;
-
-//     const username = req.session.user.username;
-
-//     await db.query(
-//       `
-//       INSERT INTO click_counter
-//       (
-//         username,
-//         clicks_added
-//       )
-
-//       VALUES
-//       (
-//         $1,$2
-//       )
-//       `,
-//       [
-//         username,
-//         clicks
-//       ]
-//     );
-
-//     res.json({
-
-//       success: true,
-
-//       message: "Clicks Saved"
-
-//     });
-
-//   } catch (err) {
-
-//     console.error(err);
-
-//     res.status(500).json({
-
-//       message: "Database Error"
-
-//     });
-
-//   }
-
-// });
-
 router.post("/saveClickData", auth, async (req, res) => {
 
-    try {
+  try {
 
-        console.log(req.body);
+    const { clicks } = req.body;
 
-        const { clicks } = req.body;
+    const username = req.session.user.username;
+    const userId = req.session.user.id;
 
-        if (!clicks) {
-            return res.status(400).json({
-                success:false,
-                message:"Clicks missing"
-            });
-        }
+    await db.query(
+      `
+      INSERT INTO click_counter
+      (
+       req.session.user.id,
 
-        const username = req.session.user.username;
+        username,
+        clicks_added
+      )
 
-        await db.query(
-            `
-            INSERT INTO click_counter
-            (
-                username,
-                clicks_added
-            )
-            VALUES
-            (
-                $1,$2
-            )
-            `,
-            [
-                username,
-                clicks
-            ]
-        );
+      VALUES
+      (
+        $1,$2,$3
+      )
+      `,
+      [
+        userId,
+        username,
+        clicks
+      ]
+    );
 
-        res.json({
-            success:true,
-            message:"Clicks Saved"
-        });
+    res.json({
 
-    } catch(err){
+      success: true,
 
-        console.error(err);
+      message: "Clicks Saved"
 
-        res.status(500).json({
-            success:false,
-            message:"Database Error"
-        });
+    });
 
-    }
+  } catch (err) {
+
+    console.error(err);
+
+    res.status(500).json({
+
+      message: "Database Error"
+
+    });
+
+  }
 
 });
+
 
 /* ================= CLICK HISTORY ================= */
 
