@@ -145,6 +145,7 @@
 const express = require("express");
 const bcrypt = require("bcryptjs");
 const db = require("../db");
+const generateReferralCode = require("../utils/generateReferralCode");
 
 const router = express.Router();
 
@@ -235,8 +236,7 @@ router.post("/register", async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // Generate referral code
-    const generateReferralCode = generateReferralCode(username);
-
+const myReferralCode = generateReferralCode(username);
     // Insert new user
     const newUser = await db.query(
       `
@@ -252,7 +252,12 @@ router.post("/register", async (req, res) => {
       )
       RETURNING id
       `,
-      [username, hashedPassword, generateReferralCode]
+[
+    username,
+    hashedPassword,
+    myReferralCode
+]
+
     );
 
     // Referral reward
