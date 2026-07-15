@@ -532,63 +532,6 @@ router.post("/register", async (req, res) => {
 
     const newUser = insertedUser.rows[0];
 
-    /* ==========================================
-       Referral reward
-    ========================================== */
-
-    if (referralCode) {
-
-      const referrer = await db.query(
-        `
-        SELECT username
-        FROM users
-        WHERE referral_code = $1
-        `,
-        [referralCode]
-      );
-
-      if (referrer.rows.length > 0) {
-
-        const referrerUsername = referrer.rows[0].username;
-
-        await db.query(
-          `
-          INSERT INTO referrals
-          (
-            referrer_username,
-            referred_username
-          )
-          VALUES
-          (
-            $1,
-            $2
-          )
-          `,
-          [
-            referrerUsername,
-            username,
-          ]
-        );
-
-        await db.query(
-          `
-          INSERT INTO click_counter
-          (
-            username,
-            clicks_added
-          )
-          VALUES
-          (
-            $1,
-            20
-          )
-          `,
-          [referrerUsername]
-        );
-
-      }
-
-    }
 
     // ✅ Auto Login
     req.session.user = {
