@@ -180,74 +180,241 @@
 // };
 
 // export default Register;
+import React, { useState, useEffect } from "react";
+import "./Register.css";
+import { Link, useNavigate } from "react-router-dom";
+import api from "../../API/axios";
+import { FaArrowsDownToPeople } from "react-icons/fa6";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-const createUser = async (e) => {
-  e.preventDefault();
+const Register = () => {
+  const navigate = useNavigate();
 
-  if (loading) return;
+  /* ================= STATE ================= */
 
-  const trimmedUsername = username.trim();
-  const trimmedReferral = referralCode.trim();
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [referralCode, setReferralCode] = useState("");
+  const [loading, setLoading] =useState(false);
 
-  if (!trimmedUsername || !password.trim()) {
-    toast.warn("Username and password are required");
-    return;
-  }
+  /* ================= GET REFERRAL CODE FROM URL ================= */
 
-  if (trimmedUsername.length < 3) {
-    toast.warn("Username must be at least 3 characters");
-    return;
-  }
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const ref = params.get("ref");
 
-  if (password.length < 6) {
-    toast.warn("Password must be at least 6 characters");
-    return;
-  }
+    if (ref) {
+      setReferralCode(ref);
+    }
+  }, []);
 
-  setLoading(true);
+  /* ================= REGISTER ================= */
 
-  try {
-    const { data } = await api.post("/register", {
-      username: trimmedUsername,
-      password: password.trim(),
-      referralCode: trimmedReferral || null,
-    });
+  const createUser = async (e) => {
+    e.preventDefault();
 
-    if (!data.success) {
-      toast.error(data.message || "Registration failed");
+    if (loading) return;
+
+    const trimmedUsername = username.trim();
+    const trimmedReferral = referralCode.trim();
+
+    if (!trimmedUsername || !password.trim()) {
+      toast.warn("Username and password are required");
       return;
     }
 
-    toast.success(data.message || "Account created successfully");
-
-    setUsername("");
-    setPassword("");
-    setReferralCode("");
-
-    setTimeout(() => {
-      navigate("/login", { replace: true });
-    }, 1500);
-
-  } catch (err) {
-
-    if (err.response?.status === 409) {
-
-      toast.error(
-        err.response.data.message || "Username already exists"
-      );
-
-    } else {
-
-      toast.error(
-        err.response?.data?.message ||
-        "Unable to register. Please try again."
-      );
-
+    if (trimmedUsername.length < 3) {
+      toast.warn("Username must be at least 3 characters");
+      return;
     }
 
-  } finally {
+    if (password.length < 6) {
+      toast.warn("Password must be at least 6 characters");
+      return;
+    }
 
-    setLoading(false);
+    setLoading(true);
 
-  }
+    try {
+      const { data } = await api.post("/register", {
+        username: trimmedUsername,
+        password: password.trim(),
+        referralCode: trimmedReferral || null,
+      });
+
+      if (!data.success) {
+        toast.error(data.message || "Registration failed");
+        return;
+      }
+
+      toast.success(
+        data.message || "Account created successfully!"
+      );
+
+      setUsername("");
+      setPassword("");
+      setReferralCode("");
+
+      setTimeout(() => {
+        navigate("/login", {
+          replace: true,
+        });
+      }, 1500);
+
+    } catch (err) {
+
+      if (err.response?.status === 409) {
+
+        toast.error(
+          err.response.data.message ||
+            "Username already exists"
+        );
+
+      } else {
+
+        toast.error(
+          err.response?.data?.message ||
+            "Unable to register"
+        );
+
+      }
+
+    } finally {
+
+      setLoading(false);
+
+    }
+  };
+
+  return (
+    <div className="popup-overlay">
+
+      <ToastContainer
+        position="top-center"
+        autoClose={2500}
+        style={{ marginTop: "60px" }}
+      />
+
+      <div className="popup-container">
+
+        {/* LEFT */}
+
+        <div className="left-side">
+
+          <h2>Create new account</h2>
+
+          <form onSubmit={createUser}>
+
+            <div className="input-group">
+              <i className="icon user-icon"></i>
+
+              <input
+                type="text"
+                placeholder="Username"
+                value={username}
+                maxLength={30}
+                autoComplete="username"
+                onChange={(e) =>
+                  setUsername(e.target.value)
+                }
+                required
+              />
+
+            </div>
+
+            <div className="input-group">
+              <i className="icon lock-icon"></i>
+
+              <input
+                type="password"
+                placeholder="Password"
+                value={password}
+                minLength={6}
+                autoComplete="new-password"
+                onChange={(e) =>
+                  setPassword(e.target.value)
+                }
+                required
+              />
+
+            </div>
+
+            <div className="input-group">
+
+              <FaArrowsDownToPeople />
+
+              <input
+                type="text"
+                placeholder="Referral Code (optional)"
+                value={referralCode}
+                maxLength={20}
+                onChange={(e) =>
+                  setReferralCode(
+                    e.target.value.toUpperCase()
+                  )
+                }
+              />
+
+            </div>
+
+            <div className="terms-checkbox">
+
+              <input
+                type="checkbox"
+                id="terms"
+                required
+              />
+
+              <label htmlFor="terms">
+                I agree to{" "}
+                <a href="/terms-and-conditions">
+                  Terms & Conditions
+                </a>
+              </label>
+
+            </div>
+
+            <button
+              type="submit"
+              className="create-account-btn"
+              disabled={loading}
+            >
+              {loading
+                ? "CREATING ACCOUNT..."
+                : "CREATE ACCOUNT"}
+            </button>
+
+          </form>
+
+        </div>
+
+        {/* RIGHT */}
+
+        <div className="right-side">
+
+          <Link to="/">
+            <button className="popup-close-btn">
+              ×
+            </button>
+          </Link>
+
+          <h1>Welcome!</h1>
+
+          <p>Create account & earn rewards</p>
+
+          <Link to="/login">
+            <button className="login-page-btn">
+              Login
+            </button>
+          </Link>
+
+        </div>
+
+      </div>
+
+    </div>
+  );
 };
+
+export default Register;
