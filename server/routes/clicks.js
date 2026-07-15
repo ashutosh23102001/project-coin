@@ -36,52 +36,105 @@ const router = express.Router();
 
 /* ================= SAVE CLICKS ================= */
 
+// router.post("/saveClickData", auth, async (req, res) => {
+
+//   try {
+
+//     const { clicks } = req.body;
+
+//     const username = req.session.user.username;
+
+//     await db.query(
+//       `
+//       INSERT INTO click_counter
+//       (
+//         username,
+//         clicks_added
+//       )
+
+//       VALUES
+//       (
+//         $1,$2
+//       )
+//       `,
+//       [
+//         username,
+//         clicks
+//       ]
+//     );
+
+//     res.json({
+
+//       success: true,
+
+//       message: "Clicks Saved"
+
+//     });
+
+//   } catch (err) {
+
+//     console.error(err);
+
+//     res.status(500).json({
+
+//       message: "Database Error"
+
+//     });
+
+//   }
+
+// });
+
 router.post("/saveClickData", auth, async (req, res) => {
 
-  try {
+    try {
 
-    const { clicks } = req.body;
+        console.log(req.body);
 
-    const username = req.session.user.username;
+        const { clicks } = req.body;
 
-    await db.query(
-      `
-      INSERT INTO click_counter
-      (
-        username,
-        clicks_added
-      )
+        if (!clicks) {
+            return res.status(400).json({
+                success:false,
+                message:"Clicks missing"
+            });
+        }
 
-      VALUES
-      (
-        $1,$2
-      )
-      `,
-      [
-        username,
-        clicks
-      ]
-    );
+        const username = req.session.user.username;
 
-    res.json({
+        await db.query(
+            `
+            INSERT INTO click_counter
+            (
+                username,
+                clicks_added
+            )
+            VALUES
+            (
+                $1,$2
+            )
+            `,
+            [
+                username,
+                clicks
+            ]
+        );
 
-      success: true,
+        res.json({
+            success:true,
+            message:"Clicks Saved"
+        });
 
-      message: "Clicks Saved"
+    } catch(err){
 
-    });
+        console.error(err);
 
-  } catch (err) {
+        res.status(500).json({
+            success:false,
+            message:"Database Error"
+        });
 
-    console.error(err);
-
-    res.status(500).json({
-
-      message: "Database Error"
-
-    });
-
-  }
+    }
 
 });
 
