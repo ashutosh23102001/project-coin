@@ -1,0 +1,109 @@
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    username VARCHAR(100) UNIQUE NOT NULL,
+    password TEXT NOT NULL,
+    referral_code VARCHAR(50) UNIQUE NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+CREATE TABLE users_info (
+    user_id INTEGER PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
+
+    username VARCHAR(100) NOT NULL,
+
+    first_name VARCHAR(100),
+
+    middle_name VARCHAR(100),
+
+    last_name VARCHAR(100),
+
+    date_of_birth DATE,
+
+    gender VARCHAR(20),
+
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+CREATE TABLE user_media (
+
+    user_id INTEGER PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
+
+    profile_pic_url TEXT,
+
+    cover_pic_url TEXT
+
+);
+CREATE TABLE user_contacts (
+
+    user_id INTEGER PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
+
+    address_line1 TEXT,
+
+    address_line2 TEXT,
+
+    city VARCHAR(100),
+
+    state VARCHAR(100),
+
+    pincode VARCHAR(20),
+
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+
+);
+CREATE TABLE referrals (
+
+    id SERIAL PRIMARY KEY,
+
+    referrer_username VARCHAR(100) NOT NULL,
+
+    referred_username VARCHAR(100) NOT NULL,
+
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+
+);
+CREATE TABLE click_counter (
+
+    id SERIAL PRIMARY KEY,
+
+    username VARCHAR(100) NOT NULL,
+
+    clicks_added INTEGER DEFAULT 0,
+
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+
+);
+CREATE TABLE short_urls (
+
+    id SERIAL PRIMARY KEY,
+
+    username VARCHAR(100) NOT NULL,
+
+    original_url TEXT NOT NULL,
+
+    short_code VARCHAR(100) UNIQUE NOT NULL,
+
+    clicks INTEGER DEFAULT 0,
+
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+
+);
+CREATE TABLE email_otps (
+
+    email VARCHAR(255) PRIMARY KEY,
+
+    otp VARCHAR(10) NOT NULL,
+
+    verified BOOLEAN DEFAULT FALSE,
+
+    expires_at TIMESTAMP NOT NULL
+
+);
+CREATE TABLE "session" (
+
+  sid varchar NOT NULL PRIMARY KEY,
+
+  sess json NOT NULL,
+
+  expire timestamp(6) NOT NULL
+
+);
+CREATE INDEX "IDX_session_expire"
+ON "session"(expire);

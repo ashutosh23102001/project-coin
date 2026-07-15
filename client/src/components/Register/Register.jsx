@@ -180,11 +180,253 @@
 // };
 
 // export default Register;
+
+
+// import React, { useState, useEffect } from "react";
+// import "./Register.css";
+// import { Link, useNavigate } from "react-router-dom";
+// import api from "../../API/axios";
+// import { FaArrowsDownToPeople } from "react-icons/fa6";
+// import { ToastContainer, toast } from "react-toastify";
+// import "react-toastify/dist/ReactToastify.css";
+
+// const Register = () => {
+//   const navigate = useNavigate();
+
+//   /* ================= STATE ================= */
+
+//   const [username, setUsername] = useState("");
+//   const [password, setPassword] = useState("");
+//   const [referralCode, setReferralCode] = useState("");
+//   const [loading, setLoading] =useState(false);
+
+//   /* ================= GET REFERRAL CODE FROM URL ================= */
+
+//   useEffect(() => {
+//     const params = new URLSearchParams(window.location.search);
+//     const ref = params.get("ref");
+
+//     if (ref) {
+//       setReferralCode(ref);
+//     }
+//   }, []);
+
+//   /* ================= REGISTER ================= */
+
+//   const createUser = async (e) => {
+//     e.preventDefault();
+
+//     if (loading) return;
+
+//     const trimmedUsername = username.trim();
+//     const trimmedReferral = referralCode.trim();
+
+//     if (!trimmedUsername || !password.trim()) {
+//       toast.warn("Username and password are required");
+//       return;
+//     }
+
+//     if (trimmedUsername.length < 3) {
+//       toast.warn("Username must be at least 3 characters");
+//       return;
+//     }
+
+//     if (password.length < 6) {
+//       toast.warn("Password must be at least 6 characters");
+//       return;
+//     }
+
+//     setLoading(true);
+
+//     try {
+//       const { data } = await api.post("/register", {
+//         username: trimmedUsername,
+//         password: password.trim(),
+//         referralCode: trimmedReferral || null,
+//       });
+
+//       if (!data.success) {
+//         toast.error(data.message || "Registration failed");
+//         return;
+//       }
+
+//       toast.success(
+//         data.message || "Account created successfully!"
+//       );
+
+//       setUsername("");
+//       setPassword("");
+//       setReferralCode("");
+
+//       setTimeout(() => {
+//         navigate("/login", {
+//           replace: true,
+//         });
+//       }, 1500);
+
+//     } catch (err) {
+
+//       if (err.response?.status === 409) {
+
+//         toast.error(
+//           err.response.data.message ||
+//             "Username already exists"
+//         );
+
+//       } else {
+
+//         toast.error(
+//           err.response?.data?.message ||
+//             "Unable to register"
+//         );
+
+//       }
+
+//     } finally {
+
+//       setLoading(false);
+
+//     }
+//   };
+
+//   return (
+//     <div className="popup-overlay">
+
+//       <ToastContainer
+//         position="top-center"
+//         autoClose={2500}
+//         style={{ marginTop: "60px" }}
+//       />
+
+//       <div className="popup-container">
+
+//         {/* LEFT */}
+
+//         <div className="left-side">
+
+//           <h2>Create new account</h2>
+
+//           <form onSubmit={createUser}>
+
+//             <div className="input-group">
+//               <i className="icon user-icon"></i>
+
+//               <input
+//                 type="text"
+//                 placeholder="Username"
+//                 value={username}
+//                 maxLength={30}
+//                 autoComplete="username"
+//                 onChange={(e) =>
+//                   setUsername(e.target.value)
+//                 }
+//                 required
+//               />
+
+//             </div>
+
+//             <div className="input-group">
+//               <i className="icon lock-icon"></i>
+
+//               <input
+//                 type="password"
+//                 placeholder="Password"
+//                 value={password}
+//                 minLength={6}
+//                 autoComplete="new-password"
+//                 onChange={(e) =>
+//                   setPassword(e.target.value)
+//                 }
+//                 required
+//               />
+
+//             </div>
+
+//             <div className="input-group">
+
+//               <FaArrowsDownToPeople />
+
+//               <input
+//                 type="text"
+//                 placeholder="Referral Code (optional)"
+//                 value={referralCode}
+//                 maxLength={20}
+//                 onChange={(e) =>
+//                   setReferralCode(
+//                     e.target.value.toUpperCase()
+//                   )
+//                 }
+//               />
+
+//             </div>
+
+//             <div className="terms-checkbox">
+
+//               <input
+//                 type="checkbox"
+//                 id="terms"
+//                 required
+//               />
+
+//               <label htmlFor="terms">
+//                 I agree to{" "}
+//                 <a href="/terms-and-conditions">
+//                   Terms & Conditions
+//                 </a>
+//               </label>
+
+//             </div>
+
+//             <button
+//               type="submit"
+//               className="create-account-btn"
+//               disabled={loading}
+//             >
+//               {loading
+//                 ? "CREATING ACCOUNT..."
+//                 : "CREATE ACCOUNT"}
+//             </button>
+
+//           </form>
+
+//         </div>
+
+//         {/* RIGHT */}
+
+//         <div className="right-side">
+
+//           <Link to="/">
+//             <button className="popup-close-btn">
+//               ×
+//             </button>
+//           </Link>
+
+//           <h1>Welcome!</h1>
+
+//           <p>Create account & earn rewards</p>
+
+//           <Link to="/login">
+//             <button className="login-page-btn">
+//               Login
+//             </button>
+//           </Link>
+
+//         </div>
+
+//       </div>
+
+//     </div>
+//   );
+// };
+
+// export default Register;
+
 import React, { useState, useEffect } from "react";
 import "./Register.css";
 import { Link, useNavigate } from "react-router-dom";
 import api from "../../API/axios";
 import { FaArrowsDownToPeople } from "react-icons/fa6";
+
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -196,16 +438,16 @@ const Register = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [referralCode, setReferralCode] = useState("");
-  const [loading, setLoading] =useState(false);
+  const [loading, setLoading] = useState(false);
 
-  /* ================= GET REFERRAL CODE FROM URL ================= */
+  /* ================= READ REFERRAL CODE FROM URL ================= */
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const ref = params.get("ref");
 
     if (ref) {
-      setReferralCode(ref);
+      setReferralCode(ref.toUpperCase());
     }
   }, []);
 
@@ -217,20 +459,23 @@ const Register = () => {
     if (loading) return;
 
     const trimmedUsername = username.trim();
-    const trimmedReferral = referralCode.trim();
+    const trimmedPassword = password.trim();
+    const trimmedReferral = referralCode.trim().toUpperCase();
 
-    if (!trimmedUsername || !password.trim()) {
+    /* Validation */
+
+    if (!trimmedUsername || !trimmedPassword) {
       toast.warn("Username and password are required");
       return;
     }
 
     if (trimmedUsername.length < 3) {
-      toast.warn("Username must be at least 3 characters");
+      toast.warn("Username must contain at least 3 characters");
       return;
     }
 
-    if (password.length < 6) {
-      toast.warn("Password must be at least 6 characters");
+    if (trimmedPassword.length < 6) {
+      toast.warn("Password must contain at least 6 characters");
       return;
     }
 
@@ -239,7 +484,7 @@ const Register = () => {
     try {
       const { data } = await api.post("/register", {
         username: trimmedUsername,
-        password: password.trim(),
+        password: trimmedPassword,
         referralCode: trimmedReferral || null,
       });
 
@@ -249,7 +494,7 @@ const Register = () => {
       }
 
       toast.success(
-        data.message || "Account created successfully!"
+        data.message || "Account created successfully 🎉"
       );
 
       setUsername("");
@@ -271,6 +516,13 @@ const Register = () => {
             "Username already exists"
         );
 
+      } else if (err.response?.status === 400) {
+
+        toast.error(
+          err.response.data.message ||
+            "Invalid request"
+        );
+
       } else {
 
         toast.error(
@@ -279,6 +531,8 @@ const Register = () => {
         );
 
       }
+
+      console.error(err);
 
     } finally {
 
@@ -307,14 +561,15 @@ const Register = () => {
           <form onSubmit={createUser}>
 
             <div className="input-group">
+
               <i className="icon user-icon"></i>
 
               <input
                 type="text"
                 placeholder="Username"
                 value={username}
-                maxLength={30}
                 autoComplete="username"
+                maxLength={30}
                 onChange={(e) =>
                   setUsername(e.target.value)
                 }
@@ -324,14 +579,15 @@ const Register = () => {
             </div>
 
             <div className="input-group">
+
               <i className="icon lock-icon"></i>
 
               <input
                 type="password"
                 placeholder="Password"
                 value={password}
-                minLength={6}
                 autoComplete="new-password"
+                minLength={6}
                 onChange={(e) =>
                   setPassword(e.target.value)
                 }
@@ -346,7 +602,7 @@ const Register = () => {
 
               <input
                 type="text"
-                placeholder="Referral Code (optional)"
+                placeholder="Referral Code (Optional)"
                 value={referralCode}
                 maxLength={20}
                 onChange={(e) =>
@@ -361,8 +617,8 @@ const Register = () => {
             <div className="terms-checkbox">
 
               <input
-                type="checkbox"
                 id="terms"
+                type="checkbox"
                 required
               />
 
