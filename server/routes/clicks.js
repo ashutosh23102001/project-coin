@@ -49,7 +49,7 @@ router.post("/saveClickData", auth, async (req, res) => {
       `
       INSERT INTO click_counter
       (
-       userId,
+       user_id,
         username,
         clicks_added
       )
