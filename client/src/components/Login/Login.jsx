@@ -164,6 +164,7 @@ const Login = () => {
     if (location.state?.showLoginToast) {
       toast.warn("Please login first to access this page", {
         position: "top-center",
+        marginTop: "20px",
         autoClose: 2500,
       });
 
