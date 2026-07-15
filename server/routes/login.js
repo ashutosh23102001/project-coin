@@ -90,11 +90,11 @@
 //     }
 
 //     const hashedPassword = await bcrypt.hash(password, 10);
-//     const myReferralCode = generateCode(username);
+//     const generateReferralCode = generateCode(username);
 
 //     db.query(
 //       "INSERT INTO users (username, password, referral_code) VALUES (?, ?, ?)",
-//       [username, hashedPassword, myReferralCode],
+//       [username, hashedPassword, generateReferralCode],
 //       (err) => {
 //         if (err) {
 //           if (err.code === "ER_DUP_ENTRY") {
@@ -235,7 +235,7 @@ router.post("/register", async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // Generate referral code
-    const myReferralCode = generateReferralCode(username);
+    const generateReferralCode = generateReferralCode(username);
 
     // Insert new user
     const newUser = await db.query(
@@ -252,7 +252,7 @@ router.post("/register", async (req, res) => {
       )
       RETURNING id
       `,
-      [username, hashedPassword, myReferralCode]
+      [username, hashedPassword, generateReferralCode]
     );
 
     // Referral reward
