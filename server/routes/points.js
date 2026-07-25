@@ -331,42 +331,135 @@
 // });
 
 // module.exports = router;
+const express = require("express");
+const db = require("../db");
+const auth = require("../middleware/auth");
+
+const router = express.Router();
+
+/* ================= POINT SOURCES ================= */
+
+const POINT_SOURCES = {
+  coin: {
+    table: "click_counter",
+    column: "clicks_added",
+    label: "Coin Game",
+  },
+
+  // Uncomment when your short_urls table is ready
+  /*
+  link: {
+    table: "short_urls",
+    column: "clicks",
+    label: "Link Shortener",
+  },
+  */
+};
+
+/* ================= GET POINTS ================= */
 
 router.get("/points", auth, async (req, res) => {
-  console.log("====== /points called ======");
-  console.log("Session:", req.session);
-  console.log("User:", req.session.user);
-
   try {
-    const result = await db.query(
-      `
-      SELECT COALESCE(SUM(clicks_added),0) AS total
-      FROM click_counter
-      WHERE user_id=$1
-      `,
-      [req.session.user.id]
-    );
+    /* ======== CHECK LOGIN ======== */
 
-    console.log(result.rows);
+    if (!req.session || !req.session.user) {
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized",
+      });
+    }
 
-    res.json({
-      sources: [
-        {
-          key: "coin",
-          label: "Coin Game",
-          value: Number(result.rows[0].total),
-        },
-      ],
-      total: Number(result.rows[0].total),
+    const userId = req.session.user.id;
+
+    const sources = [];
+    let total = 0;
+
+    /* ======== FETCH EACH SOURCE ======== */
+
+    for (const [key, source] of Object.entries(POINT_SOURCES)) {
+      const sql = `
+        SELECT
+          COALESCE(SUM(${source.column}), 0) AS total
+        FROM ${source.table}
+        WHERE user_id = $1
+      `;
+
+      const result = await db.query(sql, [userId]);
+
+      const value = Number(result.rows[0].total || 0);
+
+      total += value;
+
+      sources.push({
+        key,
+        label: source.label,
+        value,
+      });
+    }
+
+    /* ======== RESPONSE ======== */
+
+    return res.status(200).json({
+      success: true,
+      sources,
+      total,
     });
 
   } catch (err) {
-    console.error("POINT ERROR:");
-    console.error(err);
 
-    res.status(500).json({
+    console.error("========== POINTS ERROR ==========");
+    console.error(err);
+    console.error("==================================");
+
+    return res.status(500).json({
       success: false,
-      message: err.message,
+      message: "Database Error",
+      error: err.message,
     });
   }
 });
+
+/* ================= CLICK HISTORY ================= */
+
+router.get("/click-history", auth, async (req, res) => {
+  try {
+
+    if (!req.session || !req.session.user) {
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized",
+      });
+    }
+
+    const userId = req.session.user.id;
+
+    const result = await db.query(
+      `
+      SELECT
+        s_id,
+        clicks_added,
+        created_at
+      FROM click_counter
+      WHERE user_id = $1
+      ORDER BY created_at DESC
+      `,
+      [userId]
+    );
+
+    return res.status(200).json(result.rows);
+
+  } catch (err) {
+
+    console.error("========== CLICK HISTORY ERROR ==========");
+    console.error(err);
+    console.error("=========================================");
+
+    return res.status(500).json({
+      success: false,
+      message: "Database Error",
+      error: err.message,
+    });
+  }
+});
+
+module.exports = router;
