@@ -83,7 +83,7 @@ const Register = () => {
       setReferralCode("");
 
       setTimeout(() => {
-        navigate("/", {
+        navigate("/login", {
           replace: true,
         });
       }, 1500);

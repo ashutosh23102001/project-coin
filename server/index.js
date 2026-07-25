@@ -182,6 +182,7 @@ app.use(
 
 app.use(express.json());
 app.use(cookieParser());
+app.use("/uploads", express.static("uploads"));
 
 app.use(
   session({
@@ -215,6 +216,7 @@ app.use("/api", require("./routes/points"));
 app.use("/api", require("./routes/clicks"));
 app.use("/api", forgotPasswordRoute);
 app.use("/api", require("./routes/cover"));
+app.use("/api", require("./routes/profilePic"));
 
 app.get("/", (req, res) => {
   res.json({
