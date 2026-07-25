@@ -243,78 +243,130 @@
 // module.exports = router;
 
 
-const express = require("express");
-const db = require("../db");
-const auth = require("../middleware/auth");
+// const express = require("express");
+// const db = require("../db");
+// const auth = require("../middleware/auth");
 
-const router = express.Router();
+// const router = express.Router();
 
-/* ================= POINT SOURCES ================= */
+// /* ================= POINT SOURCES ================= */
 
-const POINT_SOURCES = {
-  coin: {
-    table: "click_counter",
-    column: "clicks_added",
-    where: "user_id = $1",
-    label: "Coin Game",
-  },
+// const POINT_SOURCES = {
+//   coin: {
+//     table: "click_counter",
+//     column: "clicks_added",
+//     where: "user_id = $1",
+//     label: "Coin Game",
+//   },
 
-  // Add more sources like this:
-  /*
-  link: {
-    table: "short_urls",
-    column: "clicks",
-    where: "user_id = $1",
-    label: "Link Shortener",
-  },
-  */
-};
+//   /*
+//   link: {
+//     table: "short_urls",
+//     column: "clicks",
+//     where: "user_id = $1",
+//     label: "Link Shortener",
+//   },
+//   */
+// };
 
-/* ================= GET POINTS ================= */
+// /* ================= GET POINTS ================= */
+
+// router.get("/points", auth, async (req, res) => {
+//   try {
+
+//     // ===== CORRECTION =====
+//     if (!req.session.user) {
+//       return res.status(401).json({
+//         success: false,
+//         message: "Unauthorized",
+//       });
+//     }
+
+//     const userId = req.session.user.id;
+
+//     const sources = [];
+//     let total = 0;
+
+//     for (const [key, source] of Object.entries(POINT_SOURCES)) {
+
+//       const result = await db.query(
+//         `
+//         SELECT
+//           COALESCE(SUM(${source.column}),0) AS total
+//         FROM ${source.table}
+//         WHERE ${source.where}
+//         `,
+//         [userId]
+//       );
+
+//       const value = Number(result.rows[0].total);
+
+//       sources.push({
+//         key,
+//         label: source.label,
+//         value,
+//       });
+
+//       total += value;
+//     }
+
+//     return res.json({
+//       success: true,
+//       sources,
+//       total,
+//     });
+
+//   } catch (err) {
+
+//     // ===== CORRECTION =====
+//     console.error("========== POINTS ERROR ==========");
+//     console.error(err);
+//     console.error("==================================");
+
+//     return res.status(500).json({
+//       success: false,
+//       message: err.message,
+//     });
+//   }
+// });
+
+// module.exports = router;
 
 router.get("/points", auth, async (req, res) => {
+  console.log("====== /points called ======");
+  console.log("Session:", req.session);
+  console.log("User:", req.session.user);
+
   try {
-    const userId = req.session.user.id;
+    const result = await db.query(
+      `
+      SELECT COALESCE(SUM(clicks_added),0) AS total
+      FROM click_counter
+      WHERE user_id=$1
+      `,
+      [req.session.user.id]
+    );
 
-    const sources = [];
-    let total = 0;
-
-    for (const [key, source] of Object.entries(POINT_SOURCES)) {
-      const sql = `
-        SELECT
-          COALESCE(SUM(${source.column}),0) AS total
-        FROM ${source.table}
-        WHERE ${source.where}
-      `;
-
-      const result = await db.query(sql, [userId]);
-
-      const value = Number(result.rows[0].total);
-
-      total += value;
-
-      sources.push({
-        key,
-        label: source.label,
-        value,
-      });
-    }
+    console.log(result.rows);
 
     res.json({
-      sources,
-      total,
+      sources: [
+        {
+          key: "coin",
+          label: "Coin Game",
+          value: Number(result.rows[0].total),
+        },
+      ],
+      total: Number(result.rows[0].total),
     });
 
   } catch (err) {
-
-    console.error("POINTS ERROR:", err);
+    console.error("POINT ERROR:");
+    console.error(err);
 
     res.status(500).json({
       success: false,
-      message: "Database Error",
-      error: err.message,
+      message: err.message,
     });
   }
 });
-
-module.exports = router;
