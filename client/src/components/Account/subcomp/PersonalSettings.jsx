@@ -23,15 +23,15 @@ const PersonalSettings = () => {
     api
       .get("/personal")
       .then(res => {
+        const dob = res.data.date_of_birth
+          ? new Date(res.data.date_of_birth).toISOString().split("T")[0]
+          : "";
+
         setForm({
           first_name: res.data.first_name || "",
           middle_name: res.data.middle_name || "",
           last_name: res.data.last_name || "",
-          date_of_birth: 
-          res.data.date_of_birth &&
-          res.data.date_of_birth !== "0000-00-00"
-            ? res.data.date_of_birth
-            : "",
+          date_of_birth: dob,
           gender: res.data.gender || ""
         });
       })
