@@ -3,6 +3,7 @@ const express = require("express");
 const bcrypt = require("bcryptjs");
 const db = require("../db");
 const generateReferralCode = require("../utils/generateReferralCode");
+const auth = require("../middleware/auth");
 
 const router = express.Router();
 
@@ -56,6 +57,34 @@ router.post("/login", async (req, res) => {
         message: "Invalid username or password",
       });
     }
+
+    //   CREATE LOGIN SESSION
+    // =====================================================
+
+    req.session.user = {
+      id: user.id,
+      username: user.username,
+    };
+
+    req.session.save((err) => {
+
+      if (err) {
+        console.error("SESSION SAVE ERROR:", err);
+
+        return res.status(500).json({
+          success: false,
+          message: "Session Error",
+        });
+      }
+
+      return res.json({
+        success: true,
+        message: "Login successful",
+        user: req.session.user,
+      });
+
+    });
+
 
 
   } catch (err) {
