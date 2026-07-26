@@ -39,6 +39,11 @@ const ProfilePic = ({ user, setUser }) => {
     }
   };
 
+
+const IMAGE_BASE_URL =
+  import.meta.env.VITE_IMAGE_URL ||
+  "https://project-coin.onrender.com";
+
   return (
     <div className="profile-pic-wrapper">
       <img
