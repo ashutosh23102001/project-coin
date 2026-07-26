@@ -69,7 +69,7 @@ const ProfilePic = ({ user, setUser }) => {
         src={
           user?.profile_pic_url
             ? `${IMAGE_BASE_URL}${user.profile_pic_url}?v=${refreshKey}`
-            : ""
+            : "<MdOutlineAccountCircle />"
         }
         alt="profile"
       />
