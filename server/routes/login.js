@@ -12,6 +12,8 @@ const router = express.Router();
 ===================================================== */
 
 router.post("/login", async (req, res) => {
+
+
   try {
     const { username, password } = req.body;
 
@@ -98,6 +100,33 @@ router.post("/login", async (req, res) => {
     });
 }
 });
+
+/* =====================================================
+   CHECK LOGIN SESSION
+===================================================== */
+
+router.get("/auth/me", (req, res) => {
+
+  if (!req.session || !req.session.user) {
+
+    return res.status(401).json({
+      success: false,
+      message: "Not logged in"
+    });
+
+  }
+
+  return res.json({
+
+    success: true,
+
+    user: req.session.user
+
+  });
+
+});
+
+
 
 
 /* =====================================================
