@@ -3,7 +3,7 @@
 import React, { useRef, useState } from "react";
 import api from "../../../API/axios";
 import "./ProfileSidebar.css";
-
+import defaultProfile from "../../../../assets/default_pic.webp";
 const IMAGE_BASE_URL =
   import.meta.env.VITE_IMAGE_URL ||
   "https://project-coin.onrender.com";
@@ -69,7 +69,7 @@ const ProfilePic = ({ user, setUser }) => {
         src={
           user?.profile_pic_url
             ? `${IMAGE_BASE_URL}${user.profile_pic_url}?v=${refreshKey}`
-            : <MdOutlineAccountCircle />
+            : defaultProfile
         }
         alt="profile"
       />
