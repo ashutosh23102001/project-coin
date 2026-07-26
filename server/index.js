@@ -1,6 +1,3 @@
-// // //cd server > npm init >enter >enter > enter> check dependiencies > npm install express mysql cors 
-
-// // try 
 
 
 require("dotenv").config();
@@ -46,6 +43,7 @@ app.use(
     store: new PgSession({
       pool: db,
       tableName: "session",
+       ttl: 3 * 60 * 60, // 3 hours (seconds)
     }),
     name: "dcoin.sid",
     secret: process.env.SESSION_SECRET,
@@ -56,7 +54,7 @@ app.use(
       httpOnly: true,
       secure: true,
       sameSite: "none",
-      maxAge: 24 * 60 * 60 * 1000,
+      maxAge: 3 * 60 * 60 * 1000,
     },
   })
 );
