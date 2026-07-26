@@ -74,6 +74,7 @@
 
 // export default ProfilePic;
 
+// all fix//
 
 import React, { useRef, useState } from "react";
 import api from "../../../API/axios";
