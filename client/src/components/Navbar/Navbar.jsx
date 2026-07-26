@@ -450,7 +450,7 @@ const Navbar = () => {
                 src={
                   profilePic
                     ? profilePic
-                    : <RiAccountCircleLine size={32} />
+                    : defaultProfile
                 }
                 alt="profile"
                 className="profile-pic"
