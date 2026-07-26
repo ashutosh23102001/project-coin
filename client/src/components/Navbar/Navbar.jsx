@@ -449,14 +449,14 @@ const Navbar = () => {
                 src={
                   profilePic
                     ? profilePic
-                    : "https://i.pravatar.cc/40"
+                    : ""
                 }
                 alt="profile"
                 className="profile-pic"
                 onError={(e) => {
 
                   e.target.src =
-                    "https://i.pravatar.cc/40";
+                    "";
 
                 }}
               />
