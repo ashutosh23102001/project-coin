@@ -186,7 +186,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { RiAccountCircleLine } from "react-icons/ri";
 import { useAuth } from "../../context/AuthContext";
 import api from "../../API/axios";
-import defaultProfile from "../../../../assets/default_pic.webp";
+import defaultProfile from "../../../assets/default_pic.webp";
 
 const Navbar = () => {
 
