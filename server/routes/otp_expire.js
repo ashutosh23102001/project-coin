@@ -21,10 +21,28 @@
 // }, 120 * 1000); // every 60 seconds
 
 
+// const db = require("./db");
+
+// // Run every 2 minutes
+// setInterval(async () => {
+//   try {
+//     const result = await db.query(`
+//       DELETE FROM email_otps
+//       WHERE expires_at <= NOW()
+//     `);
+
+//     if (result.rowCount > 0) {
+//       console.log(`🧹 Deleted ${result.rowCount} expired OTP(s)`);
+//     }
+//   } catch (err) {
+//     console.error("❌ OTP cleanup failed:", err.message);
+//   }
+// }, 120 * 1000);
+
+const cron = require("node-cron");
 const db = require("./db");
 
-// Run every 2 minutes
-setInterval(async () => {
+cron.schedule("*/2 * * * *", async () => {
   try {
     const result = await db.query(`
       DELETE FROM email_otps
@@ -34,7 +52,9 @@ setInterval(async () => {
     if (result.rowCount > 0) {
       console.log(`🧹 Deleted ${result.rowCount} expired OTP(s)`);
     }
+
   } catch (err) {
-    console.error("❌ OTP cleanup failed:", err.message);
+    console.error("❌ OTP cleanup failed:");
+    console.error(err);
   }
-}, 120 * 1000);
+});
