@@ -93,6 +93,16 @@ const transporter = nodemailer.createTransport({
     pass: process.env.EMAIL_PASS,
   },
 });
+// ======== CORRECTION START ========
+transporter.verify((error, success) => {
+  if (error) {
+    console.error("❌ Gmail Verify Error:");
+    console.error(error);
+  } else {
+    console.log("✅ Gmail Server Ready");
+  }
+});
+// ======== CORRECTION END ========
 
 /* =========================
    SEND EMAIL OTP
@@ -172,14 +182,18 @@ router.post("/send-email-otp", auth, async (req, res) => {
       message: "OTP sent successfully",
     });
   } catch (err) {
-    console.error("SEND OTP ERROR");
-    console.error(err);
+  console.error("========== SEND OTP ERROR ==========");
+  console.error(err);
+  console.error("Message:", err.message);
+  console.error("Code:", err.code);
+  console.error("Response:", err.response);
+  console.error("Response Code:", err.responseCode);
 
-    return res.status(500).json({
-      success: false,
-      message: err.message,
-    });
-  }
+  return res.status(500).json({
+    success: false,
+    message: err.message,
+  });
+}
 });
 
 /* =========================
