@@ -86,13 +86,22 @@ const router = express.Router();
    GMAIL TRANSPORTER
 ========================= */
 
+// ======== CORRECTION START ========
+
 const transporter = nodemailer.createTransport({
-  service: "gmail",
+  host: "smtp.gmail.com",
+  port: 587,
+  secure: false, // true only for port 465
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS,
   },
+  connectionTimeout: 30000,
+  greetingTimeout: 30000,
+  socketTimeout: 30000,
 });
+
+// ======== CORRECTION END ========
 // ======== CORRECTION START ========
 transporter.verify((error, success) => {
   if (error) {
