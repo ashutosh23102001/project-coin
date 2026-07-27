@@ -367,6 +367,10 @@
   font-size: 14px;
   color: #555;
 }
+#FP_btn {
+  text-align: right;
+}
+
 
 .register-text a {
   color: #6a00ff;
@@ -377,6 +381,17 @@
 .register-text a:hover {
   text-decoration: underline;
 }
+.terms-checkbox {
+  margin-bottom: 20px;
+  font-size: 14px;
+  user-select: none;
+}
+
+.terms-checkbox input {
+  margin-right: 8px;
+}
+
+
 
 /* ================================
    Right Side
