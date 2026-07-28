@@ -362,19 +362,19 @@ router.post("/forgot-password/send-otp", async (req,res)=>{
 
     }
 
-    catch(err){
+   catch (err) {
 
-        console.log(err);
+    console.error("========== SEND OTP ERROR ==========");
+    console.error(err);
+    console.error("Message:", err.message);
+    console.error("Stack:", err.stack);
 
-        return res.status(500).json({
+    return res.status(500).json({
+        success: false,
+        message: err.message,
+    });
 
-            success:false,
-
-            message:"Server Error"
-
-        });
-
-    }
+}
 
 });
 
