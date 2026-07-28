@@ -7,7 +7,6 @@ const cors = require("cors");
 const session = require("express-session");
 const PgSession = require("connect-pg-simple")(session);
 const cookieParser = require("cookie-parser");
-const forgotPasswordRoute = require("./routes/forgotPassword");
 const db = require("./db");
 
 const app = express();
@@ -69,7 +68,6 @@ app.use("/api", require("./routes/address"));
 app.use("/api", require("./routes/emailOtp"));
 app.use("/api", require("./routes/points"));
 app.use("/api", require("./routes/clicks"));
-app.use("/api", forgotPasswordRoute);
 app.use("/api", require("./routes/cover"));
 app.use("/api", require("./routes/profilePic"));
 app.use("/api", require("./routes/forgotPassword"));
