@@ -72,7 +72,7 @@ app.use("/api", require("./routes/clicks"));
 app.use("/api", forgotPasswordRoute);
 app.use("/api", require("./routes/cover"));
 app.use("/api", require("./routes/profilePic"));
-
+app.use("/api", require("./routes/forgotPassword"));
 app.get("/", (req, res) => {
   res.json({
     success: true,
