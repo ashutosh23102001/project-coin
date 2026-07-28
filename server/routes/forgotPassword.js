@@ -241,7 +241,7 @@ transporter.verify((err)=>{
             SEND OTP
 ========================================= */
 
-router.post("/send-otp", async (req,res)=>{
+router.post("/forgot-password/send-otp", async (req,res)=>{
 
     try{
 
@@ -382,7 +382,7 @@ router.post("/send-otp", async (req,res)=>{
             VERIFY OTP
 ========================================= */
 
-router.post("/verify-otp", async (req, res) => {
+router.post("/forgot-password/verify-otp", async (req, res) => {
 
     try {
 
@@ -491,7 +491,7 @@ router.post("/verify-otp", async (req, res) => {
         RESET PASSWORD
 ========================================= */
 
-router.post("/reset-password", async (req, res) => {
+router.post("/forgot-password/reset-password", async (req, res) => {
 
     try {
 
