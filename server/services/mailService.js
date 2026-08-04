@@ -38,6 +38,19 @@ const transporter = nodemailer.createTransport({
   },
 });
 
+
+console.log("EMAIL_USER:", process.env.EMAIL_USER);
+console.log("EMAIL_PASS exists:", !!process.env.EMAIL_PASS);
+
+transporter.verify((err) => {
+  if (err) {
+    console.error("❌ Gmail Verify Error");
+    console.error(err);
+  } else {
+    console.log("✅ Gmail Server Ready");
+  }
+});
+
 /* =========================================
         VERIFY SMTP
 ========================================= */
@@ -63,6 +76,8 @@ const sendMail = async (
 
   text,
 ) => {
+      console.log("Sending mail to:", to);
+
   await transporter.sendMail({
     from: process.env.EMAIL_USER,
 
@@ -72,6 +87,8 @@ const sendMail = async (
 
     text,
   });
+    console.log("Mail sent successfully");
+
 };
 
 module.exports = {

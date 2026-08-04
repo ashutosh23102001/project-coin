@@ -5,10 +5,8 @@ const db = require("../db");
 ========================================= */
 
 const getUserByEmail = async (email) => {
-
-    const result = await db.query(
-
-        `
+  const result = await db.query(
+    `
         SELECT
 
             u.id,
@@ -26,22 +24,14 @@ const getUserByEmail = async (email) => {
         WHERE uv.email = $1
         `,
 
-        [
+    [email],
+  );
 
-            email
+  if (result.rows.length === 0) {
+    return null;
+  }
 
-        ]
-
-    );
-
-    if (result.rows.length === 0) {
-
-        return null;
-
-    }
-
-    return result.rows[0];
-
+  return result.rows[0];
 };
 
 /* =========================================
@@ -49,10 +39,8 @@ const getUserByEmail = async (email) => {
 ========================================= */
 
 const getVerifiedEmail = async (userId) => {
-
-    const result = await db.query(
-
-        `
+  const result = await db.query(
+    `
         SELECT email
 
         FROM user_verification
@@ -60,22 +48,14 @@ const getVerifiedEmail = async (userId) => {
         WHERE user_id = $1
         `,
 
-        [
+    [userId],
+  );
 
-            userId
-
-        ]
-
-    );
-
-    return result.rows[0] || null;
-
+  return result.rows[0] || null;
 };
 
 module.exports = {
+  getUserByEmail,
 
-    getUserByEmail,
-
-    getVerifiedEmail
-
+  getVerifiedEmail,
 };

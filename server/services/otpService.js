@@ -8,13 +8,7 @@ const { sendMail } = require("./mailService");
 ========================================= */
 
 const generateOTP = () => {
-
-    return Math.floor(
-
-        100000 + Math.random() * 900000
-
-    ).toString();
-
+  return Math.floor(100000 + Math.random() * 900000).toString();
 };
 
 /* =========================================
@@ -22,26 +16,18 @@ const generateOTP = () => {
 ========================================= */
 
 const sendOTP = async (
+  email,
 
-    email,
+  purpose,
 
-    purpose,
-
-    subject
-
+  subject,
 ) => {
+  const otp = generateOTP();
 
-    const otp = generateOTP();
+  const expiresAt = new Date(Date.now() + 5 * 60 * 1000);
 
-    const expiresAt = new Date(
-
-        Date.now() + 5 * 60 * 1000
-
-    );
-
-    await db.query(
-
-        `
+  await db.query(
+    `
         INSERT INTO email_otps
         (
             email,
@@ -76,30 +62,16 @@ const sendOTP = async (
         expires_at = EXCLUDED.expires_at
         `,
 
-        [
+    [email, otp, purpose, expiresAt],
+  );
 
-            email,
+  await sendMail(
+    email,
 
-            otp,
+    subject,
 
-            purpose,
-
-            expiresAt
-
-        ]
-
-    );
-
-    await sendMail(
-
-        email,
-
-        subject,
-
-        `Your OTP is ${otp}. It will expire in 5 minutes.`
-
-    );
-
+    `Your OTP is ${otp}. It will expire in 5 minutes.`,
+  );
 };
 
 /* =========================================
@@ -107,75 +79,51 @@ const sendOTP = async (
 ========================================= */
 
 const verifyOTP = async (
+  email,
 
-    email,
+  otp,
 
-    otp,
-
-    purpose
-
+  purpose,
 ) => {
-
-    const result = await db.query(
-
-        `
+  const result = await db.query(
+    `
         SELECT *
         FROM email_otps
         WHERE email=$1
         AND purpose=$2
         `,
 
-        [
+    [email, purpose],
+  );
 
-            email,
+  if (result.rows.length === 0) {
+    return {
+      success: false,
 
-            purpose
+      message: "OTP not found.",
+    };
+  }
 
-        ]
+  const row = result.rows[0];
 
-    );
+  if (new Date() > new Date(row.expires_at)) {
+    return {
+      success: false,
 
-    if(result.rows.length===0){
+      message: "OTP expired.",
+    };
+  }
 
-        return{
+  if (row.otp !== otp) {
+    return {
+      success: false,
 
-            success:false,
+      message: "Invalid OTP.",
+    };
+  }
 
-            message:"OTP not found."
-
-        };
-
-    }
-
-    const row = result.rows[0];
-
-    if(new Date()>new Date(row.expires_at)){
-
-        return{
-
-            success:false,
-
-            message:"OTP expired."
-
-        };
-
-    }
-
-    if(row.otp!==otp){
-
-        return{
-
-            success:false,
-
-            message:"Invalid OTP."
-
-        };
-
-    }
-
-    await db.query(
-
-        `
+  await db.query(
+    `
         UPDATE email_otps
 
         SET verified=true
@@ -185,24 +133,14 @@ const verifyOTP = async (
         AND purpose=$2
         `,
 
-        [
+    [email, purpose],
+  );
 
-            email,
+  return {
+    success: true,
 
-            purpose
-
-        ]
-
-    );
-
-    return{
-
-        success:true,
-
-        message:"OTP verified."
-
-    };
-
+    message: "OTP verified.",
+  };
 };
 
 /* =========================================
@@ -210,16 +148,12 @@ const verifyOTP = async (
 ========================================= */
 
 const deleteOTP = async (
+  email,
 
-    email,
-
-    purpose
-
+  purpose,
 ) => {
-
-    await db.query(
-
-        `
+  await db.query(
+    `
         DELETE FROM email_otps
 
         WHERE email=$1
@@ -227,16 +161,8 @@ const deleteOTP = async (
         AND purpose=$2
         `,
 
-        [
-
-            email,
-
-            purpose
-
-        ]
-
-    );
-
+    [email, purpose],
+  );
 };
 
 /* =========================================
@@ -244,16 +170,12 @@ const deleteOTP = async (
 ========================================= */
 
 const isVerified = async (
+  email,
 
-    email,
-
-    purpose
-
+  purpose,
 ) => {
-
-    const result = await db.query(
-
-        `
+  const result = await db.query(
+    `
         SELECT verified
 
         FROM email_otps
@@ -263,34 +185,18 @@ const isVerified = async (
         AND purpose=$2
         `,
 
-        [
+    [email, purpose],
+  );
 
-            email,
-
-            purpose
-
-        ]
-
-    );
-
-    return(
-
-        result.rows.length>0 &&
-
-        result.rows[0].verified
-
-    );
-
+  return result.rows.length > 0 && result.rows[0].verified;
 };
 
-module.exports={
+module.exports = {
+  sendOTP,
 
-    sendOTP,
+  verifyOTP,
 
-    verifyOTP,
+  deleteOTP,
 
-    deleteOTP,
-
-    isVerified
-
+  isVerified,
 };
