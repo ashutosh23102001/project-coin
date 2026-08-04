@@ -217,93 +217,46 @@ const Navbar = () => {
      FETCH PROFILE PIC
   ============================================ */
 
-  // useEffect(() => {
+  useEffect(() => {
 
-  //   if (!user) {
-  //     setProfilePic(null);
-  //     return;
-  //   }
-
-  //   const fetchProfile = async () => {
-
-  //     try {
-
-  //       const res = await api.get("/profile");
-
-  //       console.log("PROFILE API:", res.data);
-
-  //       if (res.data?.profile_pic_url) {
-
-  //         setProfilePic(
-  //           IMAGE_BASE_URL + res.data.profile_pic_url
-  //         );
-
-  //       } else {
-
-  //         setProfilePic(null);
-
-  //       }
-
-  //     } catch (err) {
-
-  //       console.error(err);
-
-  //       setProfilePic(null);
-
-  //     }
-
-  //   };
-
-  //   fetchProfile();
-
-  // }, [user]);
-
-
-useEffect(() => {
-
-  if (!user) {
-    setProfilePic(null);
-    return;
-  }
-
-  const fetchProfile = async () => {
-
-    try {
-
-      const res = await api.get("/profile");
-
-      console.log("PROFILE API:", res.data);
-
-      if (res.data?.profile_pic_url) {
-
-        setProfilePic(
-          IMAGE_BASE_URL + res.data.profile_pic_url
-        );
-
-      } else {
-
-        setProfilePic(null);
-
-      }
-
-    } catch (err) {
-
-      if (err.response?.status === 401) {
-        // User is not logged in
-        setProfilePic(null);
-      } else {
-        console.error("Profile Error:", err);
-      }
-
+    if (!user) {
+      setProfilePic(null);
+      return;
     }
 
-  };
+    const fetchProfile = async () => {
 
-  fetchProfile();
+      try {
 
-}, [user]);
+        const res = await api.get("/profile");
 
+        console.log("PROFILE API:", res.data);
 
+        if (res.data?.profile_pic_url) {
+
+          setProfilePic(
+            IMAGE_BASE_URL + res.data.profile_pic_url
+          );
+
+        } else {
+
+          setProfilePic(null);
+
+        }
+
+      } catch (err) {
+
+        console.error(err);
+
+        setProfilePic(null);
+
+      }
+
+    };
+
+    fetchProfile();
+
+  }, [user]);
 
   /* ============================================
      TIMER HELPERS
