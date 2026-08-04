@@ -1,5 +1,3 @@
-
-
 // require("dotenv").config();
 
 // const express = require("express");
@@ -440,22 +438,16 @@ const express = require("express");
 const db = require("../db");
 
 const {
+  sendOTP,
 
-    sendOTP,
+  verifyOTP,
 
-    verifyOTP,
+  deleteOTP,
 
-    deleteOTP,
-
-    isVerified
-
+  isVerified,
 } = require("../services/otpService");
 
-const {
-
-    resetPassword
-
-} = require("../services/passwordService");
+const { resetPassword } = require("../services/passwordService");
 
 const router = express.Router();
 
@@ -464,28 +456,21 @@ const router = express.Router();
 ========================================= */
 
 router.post("/forgot-password/send-otp", async (req, res) => {
+  try {
+    const { email } = req.body;
 
-    try {
+    if (!email) {
+      return res.status(400).json({
+        success: false,
 
-        const { email } = req.body;
+        message: "Email is required.",
+      });
+    }
 
-        if (!email) {
+    /* Check registered email */
 
-            return res.status(400).json({
-
-                success: false,
-
-                message: "Email is required."
-
-            });
-
-        }
-
-        /* Check registered email */
-
-        const user = await db.query(
-
-            `
+    const user = await db.query(
+      `
             SELECT user_id
 
             FROM user_verification
@@ -493,60 +478,39 @@ router.post("/forgot-password/send-otp", async (req, res) => {
             WHERE email = $1
             `,
 
-            [
+      [email],
+    );
 
-                email
+    if (user.rows.length === 0) {
+      return res.status(404).json({
+        success: false,
 
-            ]
-
-        );
-
-        if (user.rows.length === 0) {
-
-            return res.status(404).json({
-
-                success: false,
-
-                message: "Email not registered."
-
-            });
-
-        }
-
-        await sendOTP(
-
-            email,
-
-            "forgot_password",
-
-            "Project Coin Password Reset"
-
-        );
-
-        return res.json({
-
-            success: true,
-
-            message: "OTP sent successfully."
-
-        });
-
+        message: "Email not registered.",
+      });
     }
 
-    catch (err) {
+    await sendOTP(
+      email,
 
-        console.log(err);
+      "forgot_password",
 
-        return res.status(500).json({
+      "Project Coin Password Reset",
+    );
 
-            success: false,
+    return res.json({
+      success: true,
 
-            message: err.message
+      message: "OTP sent successfully.",
+    });
+  } catch (err) {
+    console.log(err);
 
-        });
+    return res.status(500).json({
+      success: false,
 
-    }
-
+      message: err.message,
+    });
+  }
 });
 
 /* =========================================
@@ -554,57 +518,39 @@ router.post("/forgot-password/send-otp", async (req, res) => {
 ========================================= */
 
 router.post("/forgot-password/verify-otp", async (req, res) => {
+  try {
+    const {
+      email,
 
-    try {
+      otp,
+    } = req.body;
 
-        const {
+    const result = await verifyOTP(
+      email,
 
-            email,
+      otp,
 
-            otp
+      "forgot_password",
+    );
 
-        } = req.body;
-
-        const result = await verifyOTP(
-
-            email,
-
-            otp,
-
-            "forgot_password"
-
-        );
-
-        if (!result.success) {
-
-            return res.status(400).json(result);
-
-        }
-
-        return res.json({
-
-            success: true,
-
-            message: "OTP verified successfully."
-
-        });
-
+    if (!result.success) {
+      return res.status(400).json(result);
     }
 
-    catch (err) {
+    return res.json({
+      success: true,
 
-        console.log(err);
+      message: "OTP verified successfully.",
+    });
+  } catch (err) {
+    console.log(err);
 
-        return res.status(500).json({
+    return res.status(500).json({
+      success: false,
 
-            success: false,
-
-            message: err.message
-
-        });
-
-    }
-
+      message: err.message,
+    });
+  }
 });
 
 /* =========================================
@@ -612,95 +558,65 @@ router.post("/forgot-password/verify-otp", async (req, res) => {
 ========================================= */
 
 router.post("/forgot-password/reset-password", async (req, res) => {
+  try {
+    const {
+      email,
 
-    try {
+      newPassword,
+    } = req.body;
 
-        const {
+    if (!email || !newPassword) {
+      return res.status(400).json({
+        success: false,
 
-            email,
-
-            newPassword
-
-        } = req.body;
-
-        if (!email || !newPassword) {
-
-            return res.status(400).json({
-
-                success: false,
-
-                message: "Email and password are required."
-
-            });
-
-        }
-
-        const verified = await isVerified(
-
-            email,
-
-            "forgot_password"
-
-        );
-
-        if (!verified) {
-
-            return res.status(400).json({
-
-                success: false,
-
-                message: "OTP verification required."
-
-            });
-
-        }
-
-        const result = await resetPassword(
-
-            email,
-
-            newPassword
-
-        );
-
-        if (!result.success) {
-
-            return res.status(400).json(result);
-
-        }
-
-        await deleteOTP(
-
-            email,
-
-            "forgot_password"
-
-        );
-
-        return res.json({
-
-            success: true,
-
-            message: "Password updated successfully."
-
-        });
-
+        message: "Email and password are required.",
+      });
     }
 
-    catch (err) {
+    const verified = await isVerified(
+      email,
 
-        console.log(err);
+      "forgot_password",
+    );
 
-        return res.status(500).json({
+    if (!verified) {
+      return res.status(400).json({
+        success: false,
 
-            success: false,
-
-            message: err.message
-
-        });
-
+        message: "OTP verification required.",
+      });
     }
 
+    const result = await resetPassword(
+      email,
+
+      newPassword,
+    );
+
+    if (!result.success) {
+      return res.status(400).json(result);
+    }
+
+    await deleteOTP(
+      email,
+
+      "forgot_password",
+    );
+
+    return res.json({
+      success: true,
+
+      message: "Password updated successfully.",
+    });
+  } catch (err) {
+    console.log(err);
+
+    return res.status(500).json({
+      success: false,
+
+      message: err.message,
+    });
+  }
 });
 
 module.exports = router;
