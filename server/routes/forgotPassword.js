@@ -1,105 +1,199 @@
+
+
+// require("dotenv").config();
+
 // const express = require("express");
 // const bcrypt = require("bcryptjs");
+// const nodemailer = require("nodemailer");
 // const db = require("../db");
 
 // const router = express.Router();
 
-// /* ========= GET EMAIL BY USERNAME ========= */
-// router.post("/forgot-password/get-email", (req, res) => {
-//   const { username } = req.body;
-
-//   db.query(
-//     `SELECT ui.email
-//      FROM users u
-//      JOIN users_info ui ON u.id = ui.user_id
-//      WHERE u.username = ?`,
-//     [username],
-//     (err, rows) => {
-//       if (err) return res.status(500).json({ message: "DB error" });
-//       if (!rows.length || !rows[0].email)
-//         return res.status(404).json({ message: "Email not found , Contact to customer support" });
-
-//       res.json({ email: rows[0].email });
-//     }
-//   );
+// /* =========================================
+//             GMAIL TRANSPORTER
+// ========================================= */
+// const transporter = nodemailer.createTransport({
+//   service: "gmail",
+//   auth: {
+//     user: process.env.EMAIL_USER,
+//     pass: process.env.EMAIL_PASS,
+//   },
 // });
 
-// /* ========= VERIFY OTP (NO SESSION) ========= */
-// router.post("/forgot-password/verify-otp", (req, res) => {
-//   const { email, otp } = req.body;
+// transporter.verify((err)=>{
 
-//   db.query(
-//     `SELECT * FROM email_otps
-//      WHERE email=? AND otp=? AND verified=0
-//      ORDER BY created_at DESC LIMIT 1`,
-//     [email, otp],
-//     (err, rows) => {
-//       if (err) return res.status(500).json({ message: "DB error" });
-//       if (!rows.length)
-//         return res.status(400).json({ message: "Invalid OTP" });
+//     if(err){
 
-//       if (new Date(rows[0].expires_at) < new Date())
-//         return res.status(400).json({ message: "OTP expired" });
+//         console.log(err);
 
-//       db.query(
-//         "UPDATE email_otps SET verified=1 WHERE id=?",
-//         [rows[0].id]
-//       );
-
-//       res.json({ message: "OTP verified" });
 //     }
-//   );
+
+//     else{
+
+//         console.log("Gmail Ready");
+
+//     }
+
 // });
 
-// /* ========= RESET PASSWORD ========= */
-// router.post("/forgot-password/reset", async (req, res) => {
-//   const { username, newPassword } = req.body;
+// /* =========================================
+//             SEND OTP
+// ========================================= */
 
-//   const hashed = await bcrypt.hash(newPassword, 10);
+// router.post("/forgot-password/send-otp", async (req,res)=>{
 
-//   db.query(
-//     "UPDATE users SET password=? WHERE username=?",
-//     [hashed, username],
-//     err => {
-//       if (err)
-//         return res.status(500).json({ message: "Update failed" });
+//     try{
 
-//       res.json({ message: "Password updated successfully" });
+//         const { email } = req.body;
+
+//         if(!email){
+
+//             return res.status(400).json({
+
+//                 success:false,
+
+//                 message:"Email is required."
+
+//             });
+
+//         }
+
+//         /* Check Email */
+
+//         const user = await db.query(
+
+//             `
+//             SELECT user_id
+//             FROM user_verification
+//             WHERE email=$1
+//             `,
+
+//             [email]
+
+//         );
+
+//         if(user.rows.length===0){
+
+//             return res.status(404).json({
+
+//                 success:false,
+
+//                 message:"Email not registered."
+
+//             });
+
+//         }
+
+//         const otp = Math.floor(
+
+//             100000 + Math.random()*900000
+
+//         ).toString();
+
+//         const expiresAt = new Date(
+
+//             Date.now()+60000
+
+//         );
+
+//         await db.query(
+
+//             `
+//             INSERT INTO email_otps
+//             (
+//                 email,
+//                 otp,
+//                 verified,
+//                 expires_at
+//             )
+
+//             VALUES
+
+//             (
+//                 $1,
+//                 $2,
+//                 false,
+//                 $3
+//             )
+
+//             ON CONFLICT(email)
+
+//             DO UPDATE SET
+
+//             otp=EXCLUDED.otp,
+
+//             verified=false,
+
+//             expires_at=EXCLUDED.expires_at
+//             `,
+
+//             [
+
+//                 email,
+
+//                 otp,
+
+//                 expiresAt
+
+//             ]
+
+//         );
+
+//         await transporter.sendMail({
+
+//             from:process.env.EMAIL_USER,
+
+//             to:email,
+
+//             subject:"Password Reset OTP",
+
+//             text:`Your password reset OTP is ${otp}. It expires in 1 minute.`
+
+//         });
+
+//         return res.json({
+
+//             success:true,
+
+//             message:"OTP sent successfully."
+
+//         });
+
 //     }
-//   );
+
+//    catch (err) {
+
+//     console.error("========== SEND OTP ERROR ==========");
+//     console.error(err);
+//     console.error("Message:", err.message);
+//     console.error("Stack:", err.stack);
+
+//     return res.status(500).json({
+//         success: false,
+//         message: err.message,
+//     });
+
+// }
+
 // });
 
-// module.exports = router;
+// /* =========================================
+//             VERIFY OTP
+// ========================================= */
 
-
-// const express = require("express");
-// const bcrypt = require("bcryptjs");
-
-// const db = require("../db");
-
-// const router = express.Router();
-
-// /* ================= RESET PASSWORD ================= */
-
-// router.post("/forgot-password", async (req, res) => {
+// router.post("/forgot-password/verify-otp", async (req, res) => {
 
 //     try {
 
-//         const {
+//         const { email, otp } = req.body;
 
-//             username,
-
-//             newPassword
-
-//         } = req.body;
-
-//         if (!username || !newPassword) {
+//         if (!email || !otp) {
 
 //             return res.status(400).json({
 
 //                 success: false,
 
-//                 message: "Username and password required"
+//                 message: "Email and OTP are required."
 
 //             });
 
@@ -108,26 +202,173 @@
 //         const result = await db.query(
 
 //             `
-//             SELECT id
-//             FROM users
-//             WHERE username=$1
+//             SELECT *
+//             FROM email_otps
+//             WHERE email = $1
 //             `,
 
-//             [username]
+//             [email]
 
 //         );
 
-//         if (!result.rows.length) {
+//         if (result.rows.length === 0) {
+
+//             return res.status(400).json({
+
+//                 success: false,
+
+//                 message: "OTP not found."
+
+//             });
+
+//         }
+
+//         const row = result.rows[0];
+
+//         if (new Date() > new Date(row.expires_at)) {
+
+//             return res.status(400).json({
+
+//                 success: false,
+
+//                 message: "OTP expired."
+
+//             });
+
+//         }
+
+//         if (row.otp !== otp) {
+
+//             return res.status(400).json({
+
+//                 success: false,
+
+//                 message: "Invalid OTP."
+
+//             });
+
+//         }
+
+//         await db.query(
+
+//             `
+//             UPDATE email_otps
+//             SET verified = true
+//             WHERE email = $1
+//             `,
+
+//             [email]
+
+//         );
+
+//         return res.json({
+
+//             success: true,
+
+//             message: "OTP verified successfully."
+
+//         });
+
+//     }
+
+//     catch (err) {
+
+//         console.log(err);
+
+//         return res.status(500).json({
+
+//             success: false,
+
+//             message: "Server Error"
+
+//         });
+
+//     }
+
+// });
+// /* =========================================
+//         RESET PASSWORD
+// ========================================= */
+
+// router.post("/forgot-password/reset-password", async (req, res) => {
+
+//     try {
+
+//         const {
+
+//             email,
+
+//             newPassword
+
+//         } = req.body;
+
+//         if (!email || !newPassword) {
+
+//             return res.status(400).json({
+
+//                 success: false,
+
+//                 message: "Email and password are required."
+
+//             });
+
+//         }
+
+//         const otpResult = await db.query(
+
+//             `
+//             SELECT verified
+//             FROM email_otps
+//             WHERE email = $1
+//             `,
+
+//             [email]
+
+//         );
+
+//         if (
+
+//             otpResult.rows.length === 0 ||
+
+//             otpResult.rows[0].verified === false
+
+//         ) {
+
+//             return res.status(400).json({
+
+//                 success: false,
+
+//                 message: "OTP verification required."
+
+//             });
+
+//         }
+
+//         const user = await db.query(
+
+//             `
+//             SELECT user_id
+//             FROM user_verification
+//             WHERE email = $1
+//             `,
+
+//             [email]
+
+//         );
+
+//         if (user.rows.length === 0) {
 
 //             return res.status(404).json({
 
 //                 success: false,
 
-//                 message: "User not found"
+//                 message: "User not found."
 
 //             });
 
 //         }
+
+//         const userId = user.rows[0].user_id;
 
 //         const hashedPassword = await bcrypt.hash(
 
@@ -141,25 +382,36 @@
 
 //             `
 //             UPDATE users
-//             SET password=$1
-//             WHERE username=$2
+//             SET password = $1
+//             WHERE id = $2
 //             `,
 
 //             [
 
 //                 hashedPassword,
 
-//                 username
+//                 userId
 
 //             ]
 
 //         );
 
-//         res.json({
+//         await db.query(
+
+//             `
+//             DELETE FROM email_otps
+//             WHERE email = $1
+//             `,
+
+//             [email]
+
+//         );
+
+//         return res.json({
 
 //             success: true,
 
-//             message: "Password updated successfully"
+//             message: "Password updated successfully."
 
 //         });
 
@@ -167,9 +419,9 @@
 
 //     catch (err) {
 
-//         console.error(err);
+//         console.log(err);
 
-//         res.status(500).json({
+//         return res.status(500).json({
 
 //             success: false,
 
@@ -180,270 +432,154 @@
 //     }
 
 // });
-
 // module.exports = router;
-
 
 require("dotenv").config();
 
 const express = require("express");
-const bcrypt = require("bcryptjs");
-const nodemailer = require("nodemailer");
 const db = require("../db");
+
+const {
+
+    sendOTP,
+
+    verifyOTP,
+
+    deleteOTP,
+
+    isVerified
+
+} = require("../services/otpService");
+
+const {
+
+    resetPassword
+
+} = require("../services/passwordService");
 
 const router = express.Router();
 
 /* =========================================
-            GMAIL TRANSPORTER
-========================================= */
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-});
-
-transporter.verify((err)=>{
-
-    if(err){
-
-        console.log(err);
-
-    }
-
-    else{
-
-        console.log("Gmail Ready");
-
-    }
-
-});
-
-/* =========================================
-            SEND OTP
+        SEND OTP
 ========================================= */
 
-router.post("/forgot-password/send-otp", async (req,res)=>{
+router.post("/forgot-password/send-otp", async (req, res) => {
 
-    try{
+    try {
 
         const { email } = req.body;
 
-        if(!email){
+        if (!email) {
 
             return res.status(400).json({
 
-                success:false,
+                success: false,
 
-                message:"Email is required."
+                message: "Email is required."
 
             });
 
         }
 
-        /* Check Email */
+        /* Check registered email */
 
         const user = await db.query(
 
             `
             SELECT user_id
+
             FROM user_verification
-            WHERE email=$1
-            `,
 
-            [email]
-
-        );
-
-        if(user.rows.length===0){
-
-            return res.status(404).json({
-
-                success:false,
-
-                message:"Email not registered."
-
-            });
-
-        }
-
-        const otp = Math.floor(
-
-            100000 + Math.random()*900000
-
-        ).toString();
-
-        const expiresAt = new Date(
-
-            Date.now()+60000
-
-        );
-
-        await db.query(
-
-            `
-            INSERT INTO email_otps
-            (
-                email,
-                otp,
-                verified,
-                expires_at
-            )
-
-            VALUES
-
-            (
-                $1,
-                $2,
-                false,
-                $3
-            )
-
-            ON CONFLICT(email)
-
-            DO UPDATE SET
-
-            otp=EXCLUDED.otp,
-
-            verified=false,
-
-            expires_at=EXCLUDED.expires_at
+            WHERE email = $1
             `,
 
             [
 
-                email,
-
-                otp,
-
-                expiresAt
+                email
 
             ]
 
         );
 
-        await transporter.sendMail({
+        if (user.rows.length === 0) {
 
-            from:process.env.EMAIL_USER,
+            return res.status(404).json({
 
-            to:email,
+                success: false,
 
-            subject:"Password Reset OTP",
+                message: "Email not registered."
 
-            text:`Your password reset OTP is ${otp}. It expires in 1 minute.`
+            });
 
-        });
+        }
+
+        await sendOTP(
+
+            email,
+
+            "forgot_password",
+
+            "Project Coin Password Reset"
+
+        );
 
         return res.json({
 
-            success:true,
+            success: true,
 
-            message:"OTP sent successfully."
+            message: "OTP sent successfully."
 
         });
 
     }
 
-   catch (err) {
+    catch (err) {
 
-    console.error("========== SEND OTP ERROR ==========");
-    console.error(err);
-    console.error("Message:", err.message);
-    console.error("Stack:", err.stack);
+        console.log(err);
 
-    return res.status(500).json({
-        success: false,
-        message: err.message,
-    });
+        return res.status(500).json({
 
-}
+            success: false,
+
+            message: err.message
+
+        });
+
+    }
 
 });
 
 /* =========================================
-            VERIFY OTP
+        VERIFY OTP
 ========================================= */
 
 router.post("/forgot-password/verify-otp", async (req, res) => {
 
     try {
 
-        const { email, otp } = req.body;
+        const {
 
-        if (!email || !otp) {
+            email,
 
-            return res.status(400).json({
+            otp
 
-                success: false,
+        } = req.body;
 
-                message: "Email and OTP are required."
+        const result = await verifyOTP(
 
-            });
+            email,
 
-        }
+            otp,
 
-        const result = await db.query(
-
-            `
-            SELECT *
-            FROM email_otps
-            WHERE email = $1
-            `,
-
-            [email]
+            "forgot_password"
 
         );
 
-        if (result.rows.length === 0) {
+        if (!result.success) {
 
-            return res.status(400).json({
-
-                success: false,
-
-                message: "OTP not found."
-
-            });
+            return res.status(400).json(result);
 
         }
-
-        const row = result.rows[0];
-
-        if (new Date() > new Date(row.expires_at)) {
-
-            return res.status(400).json({
-
-                success: false,
-
-                message: "OTP expired."
-
-            });
-
-        }
-
-        if (row.otp !== otp) {
-
-            return res.status(400).json({
-
-                success: false,
-
-                message: "Invalid OTP."
-
-            });
-
-        }
-
-        await db.query(
-
-            `
-            UPDATE email_otps
-            SET verified = true
-            WHERE email = $1
-            `,
-
-            [email]
-
-        );
 
         return res.json({
 
@@ -463,13 +599,14 @@ router.post("/forgot-password/verify-otp", async (req, res) => {
 
             success: false,
 
-            message: "Server Error"
+            message: err.message
 
         });
 
     }
 
 });
+
 /* =========================================
         RESET PASSWORD
 ========================================= */
@@ -498,25 +635,15 @@ router.post("/forgot-password/reset-password", async (req, res) => {
 
         }
 
-        const otpResult = await db.query(
+        const verified = await isVerified(
 
-            `
-            SELECT verified
-            FROM email_otps
-            WHERE email = $1
-            `,
+            email,
 
-            [email]
+            "forgot_password"
 
         );
 
-        if (
-
-            otpResult.rows.length === 0 ||
-
-            otpResult.rows[0].verified === false
-
-        ) {
+        if (!verified) {
 
             return res.status(400).json({
 
@@ -528,66 +655,25 @@ router.post("/forgot-password/reset-password", async (req, res) => {
 
         }
 
-        const user = await db.query(
+        const result = await resetPassword(
 
-            `
-            SELECT user_id
-            FROM user_verification
-            WHERE email = $1
-            `,
+            email,
 
-            [email]
+            newPassword
 
         );
 
-        if (user.rows.length === 0) {
+        if (!result.success) {
 
-            return res.status(404).json({
-
-                success: false,
-
-                message: "User not found."
-
-            });
+            return res.status(400).json(result);
 
         }
 
-        const userId = user.rows[0].user_id;
+        await deleteOTP(
 
-        const hashedPassword = await bcrypt.hash(
+            email,
 
-            newPassword,
-
-            10
-
-        );
-
-        await db.query(
-
-            `
-            UPDATE users
-            SET password = $1
-            WHERE id = $2
-            `,
-
-            [
-
-                hashedPassword,
-
-                userId
-
-            ]
-
-        );
-
-        await db.query(
-
-            `
-            DELETE FROM email_otps
-            WHERE email = $1
-            `,
-
-            [email]
+            "forgot_password"
 
         );
 
@@ -609,11 +695,12 @@ router.post("/forgot-password/reset-password", async (req, res) => {
 
             success: false,
 
-            message: "Server Error"
+            message: err.message
 
         });
 
     }
 
 });
+
 module.exports = router;
