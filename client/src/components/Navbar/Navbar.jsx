@@ -217,46 +217,93 @@ const Navbar = () => {
      FETCH PROFILE PIC
   ============================================ */
 
-  useEffect(() => {
+  // useEffect(() => {
 
-    if (!user) {
-      setProfilePic(null);
-      return;
-    }
+  //   if (!user) {
+  //     setProfilePic(null);
+  //     return;
+  //   }
 
-    const fetchProfile = async () => {
+  //   const fetchProfile = async () => {
 
-      try {
+  //     try {
 
-        const res = await api.get("/profile");
+  //       const res = await api.get("/profile");
 
-        console.log("PROFILE API:", res.data);
+  //       console.log("PROFILE API:", res.data);
 
-        if (res.data?.profile_pic_url) {
+  //       if (res.data?.profile_pic_url) {
 
-          setProfilePic(
-            IMAGE_BASE_URL + res.data.profile_pic_url
-          );
+  //         setProfilePic(
+  //           IMAGE_BASE_URL + res.data.profile_pic_url
+  //         );
 
-        } else {
+  //       } else {
 
-          setProfilePic(null);
+  //         setProfilePic(null);
 
-        }
+  //       }
 
-      } catch (err) {
+  //     } catch (err) {
 
-        console.error(err);
+  //       console.error(err);
+
+  //       setProfilePic(null);
+
+  //     }
+
+  //   };
+
+  //   fetchProfile();
+
+  // }, [user]);
+
+
+useEffect(() => {
+
+  if (!user) {
+    setProfilePic(null);
+    return;
+  }
+
+  const fetchProfile = async () => {
+
+    try {
+
+      const res = await api.get("/profile");
+
+      console.log("PROFILE API:", res.data);
+
+      if (res.data?.profile_pic_url) {
+
+        setProfilePic(
+          IMAGE_BASE_URL + res.data.profile_pic_url
+        );
+
+      } else {
 
         setProfilePic(null);
 
       }
 
-    };
+    } catch (err) {
 
-    fetchProfile();
+      if (err.response?.status === 401) {
+        // User is not logged in
+        setProfilePic(null);
+      } else {
+        console.error("Profile Error:", err);
+      }
 
-  }, [user]);
+    }
+
+  };
+
+  fetchProfile();
+
+}, [user]);
+
+
 
   /* ============================================
      TIMER HELPERS
