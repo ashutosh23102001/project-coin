@@ -91,27 +91,20 @@ transporter.verify((err) => {
 
 // };
 
+                                                                                    const sendMail = async (to, subject, text) => {
 
-const sendMail = async (to, subject, text) => {
-  try {
-    console.log("Sending mail to:", to);
+  console.log("MAIL STEP 1");
 
-    const info = await transporter.sendMail({
-      from: process.env.EMAIL_USER,
-      to,
-      subject,
-      text,
-    });
+  const info = await transporter.sendMail({
+    from: process.env.EMAIL_USER,
+    to,
+    subject,
+    text,
+  });
 
-    console.log("Mail sent successfully");
-    console.log(info);
+  console.log("MAIL STEP 2");
+  console.log(info);
 
-    return info;
-  } catch (err) {
-    console.error("SEND MAIL ERROR:");
-    console.error(err);
-    throw err;
-  }
 };
 
 module.exports = {
