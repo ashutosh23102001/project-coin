@@ -69,26 +69,49 @@ transporter.verify((err) => {
         SEND MAIL
 ========================================= */
 
-const sendMail = async (
-  to,
+// const sendMail = async (
+//   to,
 
-  subject,
+//   subject,
 
-  text,
-) => {
-      console.log("Sending mail to:", to);
+//   text,
+// ) => {
+//       console.log("Sending mail to:", to);
 
-  await transporter.sendMail({
-    from: process.env.EMAIL_USER,
+//   await transporter.sendMail({
+//     from: process.env.EMAIL_USER,
 
-    to,
+//     to,
 
-    subject,
+//     subject,
 
-    text,
-  });
+//     text,
+//   });
+//     console.log("Mail sent successfully");
+
+// };
+
+
+const sendMail = async (to, subject, text) => {
+  try {
+    console.log("Sending mail to:", to);
+
+    const info = await transporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to,
+      subject,
+      text,
+    });
+
     console.log("Mail sent successfully");
+    console.log(info);
 
+    return info;
+  } catch (err) {
+    console.error("SEND MAIL ERROR:");
+    console.error(err);
+    throw err;
+  }
 };
 
 module.exports = {
