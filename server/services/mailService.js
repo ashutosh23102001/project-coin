@@ -68,7 +68,7 @@ transporter.verify((err) => {
 
 // };
 
-                                                                                    const sendMail = async (to, subject, text) => {
+const sendMail = async (to, subject, text) => {
 
   console.log("MAIL STEP 1");
 
