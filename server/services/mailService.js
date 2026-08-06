@@ -5,39 +5,16 @@ const nodemailer = require("nodemailer");
 /* =========================================
         GMAIL TRANSPORTER
 ========================================= */
-
-// const transporter = nodemailer.createTransport({
-//   host: "smtp.gmail.com",
-
-//   port: 465,
-
-//   secure: true,
-
-//   auth: {
-//     user: process.env.EMAIL_USER,
-
-//     pass: process.env.EMAIL_PASS,
-//   },
-
-//   connectionTimeout: 60000,
-
-//   greetingTimeout: 60000,
-
-//   socketTimeout: 60000,
-
-//   tls: {
-//     rejectUnauthorized: false,
-//   },
-// });
-
 const transporter = nodemailer.createTransport({
-  service: "gmail",
+  host: "smtp.gmail.com",
+  port: 587,
+  secure: false,
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS,
   },
+  requireTLS: true,
 });
-
 
 console.log("EMAIL_USER:", process.env.EMAIL_USER);
 console.log("EMAIL_PASS exists:", !!process.env.EMAIL_PASS);
