@@ -1,3 +1,5 @@
+
+
 require("dotenv").config();
 
 const nodemailer = require("nodemailer");
@@ -5,83 +7,93 @@ const nodemailer = require("nodemailer");
 /* =========================================
         GMAIL TRANSPORTER
 ========================================= */
+
 const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
   port: 587,
   secure: false,
+  requireTLS: true,
+
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS,
   },
-  requireTLS: true,
+
+  connectionTimeout: 60000,
+  greetingTimeout: 60000,
+  socketTimeout: 60000,
 });
 
+/* =========================================
+        ENV CHECK
+========================================= */
+
+console.log("=====================================");
 console.log("EMAIL_USER:", process.env.EMAIL_USER);
 console.log("EMAIL_PASS exists:", !!process.env.EMAIL_PASS);
-
-transporter.verify((err) => {
-  if (err) {
-    console.error("❌ Gmail Verify Error");
-    console.error(err);
-  } else {
-    console.log("✅ Gmail Server Ready");
-  }
-});
+console.log("=====================================");
 
 /* =========================================
         VERIFY SMTP
 ========================================= */
 
-// transporter.verify((err) => {
-//   if (err) {
-//     console.error("❌ Gmail Verify Error");
-
-//     console.error(err);
-//   } else {
-//     console.log("✅ Gmail Server Ready");
-//   }
-// });
+transporter.verify((err, success) => {
+  if (err) {
+    console.log("========== VERIFY ERROR ==========");
+    console.error("Message :", err.message);
+    console.error("Code    :", err.code);
+    console.error("Command :", err.command);
+    console.error(err);
+  } else {
+    console.log("========== VERIFY SUCCESS ==========");
+    console.log(success);
+    console.log("✅ Gmail Server Ready");
+  }
+});
 
 /* =========================================
         SEND MAIL
 ========================================= */
 
-// const sendMail = async (
-//   to,
-
-//   subject,
-
-//   text,
-// ) => {
-//       console.log("Sending mail to:", to);
-
-//   await transporter.sendMail({
-//     from: process.env.EMAIL_USER,
-
-//     to,
-
-//     subject,
-
-//     text,
-//   });
-//     console.log("Mail sent successfully");
-
-// };
-
 const sendMail = async (to, subject, text) => {
+  try {
+    console.log("=====================================");
+    console.log("MAIL STEP 1");
+    console.log("TO      :", to);
+    console.log("SUBJECT :", subject);
+    console.log("=====================================");
 
-  console.log("MAIL STEP 1");
+    const info = await transporter.sendMail({
+      from: `"Project Coin" <${process.env.EMAIL_USER}>`,
+      to,
+      subject,
+      text,
+    });
 
-  const info = await transporter.sendMail({
-    from: process.env.EMAIL_USER,
-    to,
-    subject,
-    text,
-  });
+    console.log("=====================================");
+    console.log("MAIL STEP 2");
+    console.log("SUCCESS");
+    console.log(info);
+    console.log("=====================================");
 
-  console.log("MAIL STEP 2");
-  console.log(info);
+    return info;
 
+  } catch (err) {
+
+    console.log("=====================================");
+    console.log("MAIL ERROR");
+    console.log("=====================================");
+
+    console.error("Message       :", err.message);
+    console.error("Code          :", err.code);
+    console.error("Command       :", err.command);
+    console.error("Response      :", err.response);
+    console.error("Response Code :", err.responseCode);
+    console.error("Stack:");
+    console.error(err);
+
+    throw err;
+  }
 };
 
 module.exports = {
