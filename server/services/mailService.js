@@ -68,7 +68,7 @@ const sendMail = async (to, subject, text) => {
     console.log("=====================================");
 
     const info = await transporter.sendMail({
-      from: `"Project Coin" <${process.env.EMAIL_USER}>`,
+      from: `"Project Coin" <${process.env.EMAIL_FROM}>`,
       to,
       subject,
       text,
