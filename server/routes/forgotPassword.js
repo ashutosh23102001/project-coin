@@ -162,14 +162,16 @@ router.post("/forgot-password/verify-otp", async (req, res) => {
     }
 
     // Get username for this email
-    const user = await db.query(
-      `
-      SELECT username
-      FROM user_verification
-      WHERE email = $1
-      `,
-      [email]
-    );
+   const user = await db.query(
+  `
+  SELECT u.username
+  FROM users u
+  JOIN user_verification uv
+    ON u.id = uv.user_id
+  WHERE uv.email = $1
+  `,
+  [email]
+);
 
     if (user.rows.length === 0) {
       return res.status(404).json({
