@@ -1,50 +1,50 @@
-
-
 require("dotenv").config();
 
 const nodemailer = require("nodemailer");
 
 /* =========================================
-        GMAIL TRANSPORTER
+        BREVO SMTP TRANSPORTER
 ========================================= */
+
 const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  port: 465,
-  secure: true, // SSL
+  host: "smtp-relay.brevo.com",
+  port: 587,
+  secure: false,
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS,
   },
-
-  connectionTimeout: 30000,
-  greetingTimeout: 30000,
-  socketTimeout: 30000,
 });
 
 /* =========================================
-        ENV CHECK
+        VERIFY SMTP CONNECTION
 ========================================= */
 
 console.log("=====================================");
-console.log("EMAIL_USER:", process.env.EMAIL_USER);
-console.log("EMAIL_PASS exists:", !!process.env.EMAIL_PASS);
+console.log("EMAIL_USER :", process.env.EMAIL_USER);
+console.log("EMAIL_PASS :", process.env.EMAIL_PASS ? "Loaded ✅" : "Missing ❌");
 console.log("=====================================");
-
-/* =========================================
-        VERIFY SMTP
-========================================= */
 
 transporter.verify((err, success) => {
   if (err) {
     console.log("========== VERIFY ERROR ==========");
-    console.error("Message :", err.message);
-    console.error("Code    :", err.code);
-    console.error("Command :", err.command);
+    console.log("Message :", err.message);
+    console.log("Code    :", err.code);
+    console.log("Command :", err.command);
+
+    if (err.response) {
+      console.log("Response :", err.response);
+    }
+
+    if (err.responseCode) {
+      console.log("Response Code :", err.responseCode);
+    }
+
     console.error(err);
   } else {
     console.log("========== VERIFY SUCCESS ==========");
     console.log(success);
-    console.log("✅ Gmail Server Ready");
+    console.log("✅ Brevo SMTP Ready");
   }
 });
 
@@ -69,25 +69,31 @@ const sendMail = async (to, subject, text) => {
 
     console.log("=====================================");
     console.log("MAIL STEP 2");
-    console.log("SUCCESS");
-    console.log(info);
+    console.log("✅ Mail Sent Successfully");
+    console.log("Message ID :", info.messageId);
+    console.log("Accepted   :", info.accepted);
+    console.log("Rejected   :", info.rejected);
+    console.log("Response   :", info.response);
     console.log("=====================================");
 
     return info;
-
   } catch (err) {
-
     console.log("=====================================");
-    console.log("MAIL ERROR");
-    console.log("=====================================");
+    console.log("❌ SEND MAIL ERROR");
+    console.log("Message :", err.message);
+    console.log("Code    :", err.code);
+    console.log("Command :", err.command);
 
-    console.error("Message       :", err.message);
-    console.error("Code          :", err.code);
-    console.error("Command       :", err.command);
-    console.error("Response      :", err.response);
-    console.error("Response Code :", err.responseCode);
-    console.error("Stack:");
+    if (err.response) {
+      console.log("Response :", err.response);
+    }
+
+    if (err.responseCode) {
+      console.log("Response Code :", err.responseCode);
+    }
+
     console.error(err);
+    console.log("=====================================");
 
     throw err;
   }
