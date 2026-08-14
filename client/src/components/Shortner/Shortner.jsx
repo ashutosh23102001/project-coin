@@ -221,7 +221,7 @@ const Shortner = () => {
                   className="expand-btn"
                   onClick={() => setExpanded(!expanded)}
                 >
-                  {expanded ? "▲ Show Less" : "▼ Expand History"}
+                  {expanded ? "▲" : "▼"}
                 </button>
               </div>
             )}
