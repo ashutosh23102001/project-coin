@@ -63,6 +63,7 @@ import TermsAndConditions from "../components/Footer/TermsAndConditions";
 import DashboardLayout from "../components/Dashboard/DashboardLayout";
 import Shortner from "../components/Shortner/Shortner";
 import LinkAd from "../components/Shortner/LinkAd";
+import ShortRedirect from "../components/Shortner/ShortRedirect";
 
 const AppRoutes = () => {
   return (
@@ -71,6 +72,7 @@ const AppRoutes = () => {
       <Route path="/ad" element={<Ad />} />
       <Route path="/privacy-policy" element={<PrivacyPolicy />} />
       <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
+      <Route path="/s/:code" element={<ShortRedirect />} />
 
       {/* ================= NORMAL DASHBOARD ================= */}
       <Route path="/" element={<Dashboard />} />
