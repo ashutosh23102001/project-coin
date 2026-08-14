@@ -1,152 +1,228 @@
-import React, { useEffect, useState } from "react";
-import "./Shortner.css";
+import { useState, useEffect } from "react";
 import api from "../../API/axios";
+
+import Navbar from "../Navbar/Navbar";
+import Left_ad from "../side-ad/Left_ad";
+import Right_ad from "../side-ad/Right_ad";
+import Bottom_ad from "../side-ad/Bottom_ad";
+
+import { useAuth } from "../../context/AuthContext";
+
+import "./Shortner.css";
+
 const Shortner = () => {
+  const { user, loading } = useAuth();
+
   const [url, setUrl] = useState("");
+
   const [shortUrl, setShortUrl] = useState("");
+
   const [history, setHistory] = useState([]);
+
   const [expanded, setExpanded] = useState(false);
-  const [loading, setLoading] = useState(false);
+
+  const [creating, setCreating] = useState(false);
+
+  /* =========================
+            LOAD HISTORY
+    ========================= */
 
   useEffect(() => {
+    if (!user) return;
+
     loadHistory();
-  }, []);
+  }, [user]);
 
   const loadHistory = async () => {
     try {
-      const res = await api.get("/shortener/history");
+      const res = await api.get("/shortener/history", {
+        withCredentials: true,
+      });
+
       setHistory(res.data);
     } catch (err) {
       console.log(err);
     }
   };
 
-  const shortenLink = async () => {
+  /* =========================
+          CREATE SHORT LINK
+    ========================= */
+
+  const createShortLink = async () => {
     if (!url.trim()) {
-      alert("Enter a URL");
+      alert("Enter URL");
+
       return;
     }
 
     try {
-      setLoading(true);
+      setCreating(true);
 
-      const res = await api.post("/shortener/create", {
-        original_url: url,
-      });
+      const res = await api.post(
+        "/shortener/create",
+
+        {
+          original_url: url,
+        },
+
+        {
+          withCredentials: true,
+        },
+      );
 
       setShortUrl(res.data.short_url);
+
       setUrl("");
 
       loadHistory();
     } catch (err) {
       console.log(err);
-      alert("Unable to create short link.");
+
+      alert("Unable to create link");
     } finally {
-      setLoading(false);
+      setCreating(false);
     }
   };
 
+  /* =========================
+            COPY
+    ========================= */
+
   const copyLink = (text) => {
     navigator.clipboard.writeText(text);
-    alert("Copied");
+
+    alert("Copied Successfully");
   };
 
   const displayHistory = expanded ? history : history.slice(0, 3);
 
+  if (loading) return <div style={{ color: "#fff" }}>Loading...</div>;
+
+  if (!user) return null;
   return (
-    <div className="shortner-page">
-      <div className="shortner-card">
-        <h1>LINK SHORTENER</h1>
+    <>
+      <Navbar />
 
-        <p>Create and manage your shortened links.</p>
+      <Left_ad />
 
-        {/* INPUT */}
+      <Right_ad />
 
-        <div className="input-row">
-          <input
-            type="text"
-            placeholder="Paste your long URL here..."
-            value={url}
-            onChange={(e) => setUrl(e.target.value)}
-          />
+      <div className="coin-page">
+        <div className="shortner-container">
+          <div className="shortner-card">
+            <h1 className="title">LINK SHORTENER</h1>
 
-          <button onClick={shortenLink} disabled={loading}>
-            {loading ? "Creating..." : "Shorten"}
-          </button>
-        </div>
+            <p className="subtitle">Create and manage your shortened links</p>
 
-        {/* OUTPUT */}
+            {/* ================= INPUT ================= */}
 
-        {shortUrl && (
-          <>
-            <h3>Shortened Link</h3>
+            <div className="input-box">
+              <input
+                type="text"
+                placeholder="Paste your long URL here..."
+                value={url}
+                onChange={(e) => setUrl(e.target.value)}
+              />
 
-            <div className="output-row">
-              <input value={shortUrl} readOnly />
-
-              <button onClick={() => copyLink(shortUrl)}>Copy</button>
+              <button onClick={createShortLink} disabled={creating}>
+                {creating ? "Creating..." : "Shorten"}
+              </button>
             </div>
-          </>
-        )}
-      </div>
 
-      {/* HISTORY */}
+            {/* ================= SHORT LINK ================= */}
 
-      <div className="history-card">
-        <h2>Recent History</h2>
+            {shortUrl && (
+              <>
+                <div className="section-title">Shortened Link</div>
 
-        <table>
-          <thead>
-            <tr>
-              <th>No.</th>
+                <div className="output-box">
+                  <input value={shortUrl} readOnly />
 
-              <th>Short Link</th>
-
-              <th>Clicks</th>
-
-              <th>Copy</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {displayHistory.length === 0 ? (
-              <tr>
-                <td colSpan="4">No links created.</td>
-              </tr>
-            ) : (
-              displayHistory.map((item, index) => (
-                <tr key={item.id}>
-                  <td>{index + 1}</td>
-
-                  <td>
-                    <a href={item.short_url} target="_blank" rel="noreferrer">
-                      {item.short_url}
-                    </a>
-                  </td>
-
-                  <td>{item.clicks}</td>
-
-                  <td>
-                    <button
-                      className="copy-btn"
-                      onClick={() => copyLink(item.short_url)}
-                    >
-                      Copy
-                    </button>
-                  </td>
-                </tr>
-              ))
+                  <button onClick={() => copyLink(shortUrl)}>Copy</button>
+                </div>
+              </>
             )}
-          </tbody>
-        </table>
+          </div>
 
-        {history.length > 3 && (
-          <button className="expand-btn" onClick={() => setExpanded(!expanded)}>
-            {expanded ? "▲ Show Less" : "▼ Expand History"}
-          </button>
-        )}
+          {/* ================= HISTORY ================= */}
+
+          <div className="history-card">
+            <h2>Recent History</h2>
+
+            <table>
+              <thead>
+                <tr>
+                  <th>No.</th>
+
+                  <th>Short Link</th>
+
+                  <th>Clicks</th>
+
+                  <th>Copy</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                {displayHistory.length === 0 ? (
+                  <tr>
+                    <td
+                      colSpan="4"
+                      style={{
+                        textAlign: "center",
+                        padding: "30px",
+                      }}
+                    >
+                      No Short Links Found
+                    </td>
+                  </tr>
+                ) : (
+                  displayHistory.map((item, index) => (
+                    <tr key={item.id}>
+                      <td>{index + 1}</td>
+
+                      <td>
+                        <a
+                          href={item.short_url}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          {item.short_url}
+                        </a>
+                      </td>
+
+                      <td>{item.clicks}</td>
+
+                      <td>
+                        <button
+                          className="copy-small"
+                          onClick={() => copyLink(item.short_url)}
+                        >
+                          Copy
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+
+            {history.length > 3 && (
+              <div className="expand-wrapper">
+                <button
+                  className="expand-btn"
+                  onClick={() => setExpanded(!expanded)}
+                >
+                  {expanded ? "▲ Show Less" : "▼ Expand History"}
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
-    </div>
+
+      <Bottom_ad />
+    </>
   );
 };
 

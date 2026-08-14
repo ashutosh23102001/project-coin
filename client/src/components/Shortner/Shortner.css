@@ -1,169 +1,230 @@
-.shortner-page {
-    width: 100%;
-    padding: 25px;
-    display: flex;
-    flex-direction: column;
-    gap: 25px;
-    box-sizing: border-box;
+/* ===========================
+        PAGE
+=========================== */
+
+.shortner-container {
+  width: 60%;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  padding-bottom: 30px;
 }
+
+/* ===========================
+        CARD
+=========================== */
 
 .shortner-card,
 .history-card {
+  width: 100%;
+  background: #151515;
+  border-radius: 15px;
+  padding: 25px;
+  box-sizing: border-box;
+  box-shadow: 0 0 18px rgba(0, 183, 255, 0.15);
+}
+
+.title {
+  color: #fff;
+  text-align: center;
+  font-size: 34px;
+  margin-bottom: 8px;
+}
+
+.subtitle {
+  text-align: center;
+  color: #9c9c9c;
+  margin-bottom: 30px;
+}
+
+/* ===========================
+        INPUT
+=========================== */
+
+.input-box {
+  display: flex;
+  gap: 12px;
+}
+
+.input-box input {
+  flex: 1;
+  height: 52px;
+  border: none;
+  outline: none;
+  border-radius: 10px;
+  padding: 0 18px;
+  background: #252525;
+  color: white;
+  font-size: 15px;
+}
+
+.input-box input::placeholder {
+  color: #888;
+}
+
+.input-box button {
+  width: 150px;
+  border: none;
+  border-radius: 10px;
+  background: #0084ff;
+  color: white;
+  font-size: 15px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.25s;
+}
+
+.input-box button:hover {
+  background: #0067cc;
+}
+
+/* ===========================
+    SHORT LINK
+=========================== */
+
+.section-title {
+  color: white;
+  font-size: 18px;
+  margin-top: 28px;
+  margin-bottom: 12px;
+}
+
+.output-box {
+  display: flex;
+  gap: 12px;
+}
+
+.output-box input {
+  flex: 1;
+  height: 50px;
+  border: none;
+  outline: none;
+  border-radius: 10px;
+  padding: 0 18px;
+  background: #252525;
+  color: #00d5ff;
+  font-size: 15px;
+}
+
+.output-box button {
+  width: 120px;
+  border: none;
+  border-radius: 10px;
+  background: #16a34a;
+  color: white;
+  cursor: pointer;
+  transition: 0.25s;
+}
+
+.output-box button:hover {
+  background: #15803d;
+}
+
+/* ===========================
+        HISTORY
+=========================== */
+
+.history-card h2 {
+  color: white;
+  margin-bottom: 20px;
+}
+
+.history-card table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.history-card thead {
+  background: #252525;
+}
+
+.history-card th {
+  color: white;
+  padding: 14px;
+  font-size: 15px;
+}
+
+.history-card td {
+  color: white;
+  padding: 14px;
+  text-align: center;
+  border-bottom: 1px solid #2d2d2d;
+}
+
+.history-card tr:hover {
+  background: #1d1d1d;
+}
+
+.history-card a {
+  color: #00c8ff;
+  text-decoration: none;
+}
+
+.copy-small {
+  border: none;
+  background: #0084ff;
+  color: white;
+  border-radius: 6px;
+  padding: 8px 16px;
+  cursor: pointer;
+}
+
+.copy-small:hover {
+  background: #0067cc;
+}
+
+/* ===========================
+      EXPAND BUTTON
+=========================== */
+
+.expand-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 25px;
+}
+
+.expand-btn {
+  border: none;
+  background: #0084ff;
+  color: white;
+  padding: 12px 28px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.25s;
+}
+
+.expand-btn:hover {
+  background: #0067cc;
+}
+
+/* ===========================
+      RESPONSIVE
+=========================== */
+
+@media (max-width: 1200px) {
+  .shortner-container {
+    width: 90%;
+  }
+}
+
+@media (max-width: 768px) {
+  .input-box,
+  .output-box {
+    flex-direction: column;
+  }
+
+  .input-box button,
+  .output-box button {
     width: 100%;
-    background: #fff;
-    border-radius: 12px;
-    padding: 25px;
-    box-shadow: 0 2px 12px rgba(0,0,0,.08);
-}
+    height: 50px;
+  }
 
-.shortner-card h1{
-    margin:0;
-    font-size:32px;
-    color:#1f2937;
-    text-align:center;
-}
+  .history-card {
+    overflow-x: auto;
+  }
 
-.shortner-card p{
-    margin:10px 0 30px;
-    text-align:center;
-    color:#666;
-    font-size:15px;
-}
-
-.input-row,
-.output-row{
-    display:flex;
-    gap:15px;
-    align-items:center;
-}
-
-.input-row input,
-.output-row input{
-    flex:1;
-    height:48px;
-    border:1px solid #d9d9d9;
-    border-radius:8px;
-    padding:0 15px;
-    font-size:15px;
-    outline:none;
-    transition:.3s;
-}
-
-.input-row input:focus,
-.output-row input:focus{
-    border-color:#2563eb;
-    box-shadow:0 0 0 3px rgba(37,99,235,.15);
-}
-
-.input-row button,
-.output-row button{
-    width:140px;
-    height:48px;
-    border:none;
-    border-radius:8px;
-    background:#2563eb;
-    color:#fff;
-    cursor:pointer;
-    font-size:15px;
-    font-weight:600;
-    transition:.25s;
-}
-
-.input-row button:hover,
-.output-row button:hover{
-    background:#1d4ed8;
-}
-
-.output-row{
-    margin-top:15px;
-}
-
-.output-row input{
-    background:#f5f5f5;
-}
-
-.history-card h2{
-    margin:0 0 20px;
-    color:#1f2937;
-}
-
-.history-card table{
-    width:100%;
-    border-collapse:collapse;
-}
-
-.history-card th{
-    background:#2563eb;
-    color:#fff;
-    padding:14px;
-    font-size:15px;
-}
-
-.history-card td{
-    padding:14px;
-    border-bottom:1px solid #ececec;
-    text-align:center;
-}
-
-.history-card tr:hover{
-    background:#f8f9fb;
-}
-
-.history-card a{
-    text-decoration:none;
-    color:#2563eb;
-    font-weight:500;
-}
-
-.copy-btn{
-    padding:8px 16px;
-    border:none;
-    border-radius:6px;
-    background:#10b981;
-    color:#fff;
-    cursor:pointer;
-    transition:.25s;
-}
-
-.copy-btn:hover{
-    background:#059669;
-}
-
-.expand-btn{
-    margin:25px auto 0;
-    display:block;
-    border:none;
-    background:#2563eb;
-    color:#fff;
-    padding:12px 28px;
-    border-radius:8px;
-    cursor:pointer;
-    font-size:15px;
-    transition:.3s;
-}
-
-.expand-btn:hover{
-    background:#1d4ed8;
-}
-
-@media(max-width:900px){
-
-    .input-row,
-    .output-row{
-        flex-direction:column;
-    }
-
-    .input-row button,
-    .output-row button{
-        width:100%;
-    }
-
-    .history-card{
-        overflow-x:auto;
-    }
-
-    table{
-        min-width:650px;
-    }
-
+  .history-card table {
+    min-width: 700px;
+  }
 }
