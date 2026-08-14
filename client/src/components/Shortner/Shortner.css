@@ -15,8 +15,7 @@
         CARD
 =========================== */
 
-.shortner-card,
-.history-card {
+.shortner-card {
   width: 100%;
   background: #151515;
   border-radius: 15px;
@@ -124,6 +123,20 @@
 /* ===========================
         HISTORY
 =========================== */
+.history-card{
+    width:100%;
+    background:#151515;
+    border-radius:15px;
+    padding:25px;
+    box-sizing:border-box;
+    box-shadow:0 0 18px rgba(0,183,255,.15);
+}
+
+.history-title{
+    color:#fff;
+    margin-bottom:20px;
+}
+
 
 .history-card h2 {
   color: white;
@@ -173,6 +186,94 @@
 .copy-small:hover {
   background: #0067cc;
 }
+
+.history-table-wrapper{
+
+    width:100%;
+
+    max-height:360px;
+
+    overflow-y:auto;
+
+    overflow-x:hidden;
+
+    border-radius:10px;
+
+    border:1px solid #262626;
+
+}
+
+.history-card table{
+
+    width:100%;
+
+    border-collapse:collapse;
+
+}
+.history-card thead th{
+
+    position:sticky;
+
+    top:0;
+
+    z-index:20;
+
+    background:#252525;
+
+    color:#fff;
+
+    padding:14px;
+
+}
+.history-card td{
+
+    padding:14px;
+
+    color:#fff;
+
+    text-align:center;
+
+    border-bottom:1px solid #2c2c2c;
+
+}
+.history-card tbody tr:hover{
+
+    background:#1d1d1d;
+
+}
+.history-card a{
+
+    color:#00c8ff;
+
+    text-decoration:none;
+
+}
+.history-table-wrapper::-webkit-scrollbar{
+
+    width:8px;
+
+}
+
+.history-table-wrapper::-webkit-scrollbar-track{
+
+    background:#171717;
+
+}
+
+.history-table-wrapper::-webkit-scrollbar-thumb{
+
+    background:#0b84ff;
+
+    border-radius:50px;
+
+}
+
+.history-table-wrapper::-webkit-scrollbar-thumb:hover{
+
+    background:#006de0;
+
+}
+
 
 /* ===========================
       EXPAND BUTTON

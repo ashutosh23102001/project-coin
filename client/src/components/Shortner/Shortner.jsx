@@ -147,65 +147,73 @@ const Shortner = () => {
 
           {/* ================= HISTORY ================= */}
 
+          {/* ================= HISTORY ================= */}
+
           <div className="history-card">
             <h2>Recent History</h2>
 
-            <table>
-              <thead>
-                <tr>
-                  <th>No.</th>
+            {/* Scrollable Table */}
 
-                  <th>Short Link</th>
-
-                  <th>Clicks</th>
-
-                  <th>Copy</th>
-                </tr>
-              </thead>
-
-              <tbody>
-                {displayHistory.length === 0 ? (
+            <div className="history-table-wrapper">
+              <table>
+                <thead>
                   <tr>
-                    <td
-                      colSpan="4"
-                      style={{
-                        textAlign: "center",
-                        padding: "30px",
-                      }}
-                    >
-                      No Short Links Found
-                    </td>
+                    <th>No.</th>
+
+                    <th>Short Link</th>
+
+                    <th>Clicks</th>
+
+                    <th>Copy</th>
                   </tr>
-                ) : (
-                  displayHistory.map((item, index) => (
-                    <tr key={item.id}>
-                      <td>{index + 1}</td>
+                </thead>
 
-                      <td>
-                        <a
-                          href={item.short_url}
-                          target="_blank"
-                          rel="noreferrer"
-                        >
-                          {item.short_url}
-                        </a>
-                      </td>
-
-                      <td>{item.clicks}</td>
-
-                      <td>
-                        <button
-                          className="copy-small"
-                          onClick={() => copyLink(item.short_url)}
-                        >
-                          Copy
-                        </button>
+                <tbody>
+                  {displayHistory.length === 0 ? (
+                    <tr>
+                      <td
+                        colSpan="4"
+                        style={{
+                          textAlign: "center",
+                          padding: "30px",
+                        }}
+                      >
+                        No Short Links Found
                       </td>
                     </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
+                  ) : (
+                    displayHistory.map((item, index) => (
+                      <tr key={item.id}>
+                        <td>{index + 1}</td>
+
+                        <td>
+                          <a
+                            href={item.short_url}
+                            target="_blank"
+                            rel="noreferrer"
+                          >
+                            {item.short_url}
+                          </a>
+                        </td>
+
+                        <td>{item.clicks}</td>
+
+                        <td>
+                          <button
+                            className="copy-small"
+                            onClick={() => copyLink(item.short_url)}
+                          >
+                            Copy
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Expand Button */}
 
             {history.length > 3 && (
               <div className="expand-wrapper">
@@ -218,6 +226,10 @@ const Shortner = () => {
               </div>
             )}
           </div>
+
+          {/* Bottom Ad */}
+
+          
         </div>
       </div>
 
