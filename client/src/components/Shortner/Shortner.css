@@ -1,6 +1,15 @@
 /* ===========================
         PAGE
 =========================== */
+.coin-page {
+  display: flex;
+  justify-content: center;
+  background: #0f0f0f;
+  min-height: 92vh;
+  padding-top: 120px;
+  position: relative;
+  overflow-x: hidden;
+}
 
 .shortner-container {
   width: 60%;
