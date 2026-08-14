@@ -1,7 +1,9 @@
 /* ===========================
         PAGE
 =========================== */
-
+.coin-page{
+  min-height: 100vh;
+}
 
 .shortner-container {
   width: 60%;
@@ -26,6 +28,8 @@ padding-top: 2px;
   padding: 25px;
   box-sizing: border-box;
   box-shadow: 0 0 18px rgba(0, 183, 255, 0.15);
+  margin-top: -30px;
+  margin-bottom: -5px;
 }
 
 .title {
