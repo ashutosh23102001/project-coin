@@ -180,8 +180,8 @@
 
 
 import React, { useEffect, useRef, useState } from "react";
-import "./Navbar.css";
 import logo from "../assets/coin.png";
+import "./Navbar.css";
 import { Link, useNavigate } from "react-router-dom";
 import { RiAccountCircleLine } from "react-icons/ri";
 import { useAuth } from "../../context/AuthContext";
@@ -343,7 +343,7 @@ const Navbar = () => {
 
                   <li>
 
-                    <Link to="/">
+                    <Link to="/shortner">
                       Link shortner
                     </Link>
 

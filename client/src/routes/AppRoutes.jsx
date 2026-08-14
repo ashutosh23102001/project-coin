@@ -61,6 +61,8 @@ import PrivacyPolicy from "../components/Footer/PrivacyPolicy";
 import TermsAndConditions from "../components/Footer/TermsAndConditions";
 
 import DashboardLayout from "../components/Dashboard/DashboardLayout";
+import Shortner from "../components/Shortner/Shortner";
+import LinkAd from "../components/Shortner/LinkAd";
 
 const AppRoutes = () => {
   return (
@@ -77,14 +79,17 @@ const AppRoutes = () => {
       <Route element={<DashboardLayout />}>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        
       </Route>
-
+      <Route path="/link-ad" element={<LinkAd />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
 
       {/* ================= PROTECTED ================= */}
       <Route element={<ProtectedRoute />}>
         <Route path="/coin" element={<Coin />} />
         <Route path="/account" element={<Account />} />
+            <Route path="/shortner" element={<Shortner />} />
+
       </Route>
     </Routes>
   );

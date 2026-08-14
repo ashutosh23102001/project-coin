@@ -72,6 +72,10 @@ app.use("/api", require("./routes/cover"));
 app.use("/api", require("./routes/profilePic"));
 app.use("/api", require("./routes/forgotPassword"));
 app.use("/api", require("./routes/testEmail"));
+app.use("/api", require("./routes/shortener"));
+app.use("/", require("./routes/shortener"));
+
+
 app.get("/", (req, res) => {
   res.json({
     success: true,

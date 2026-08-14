@@ -1,5 +1,4 @@
 
-
 /* --- Carousel.js Styles --- */
 .carousel-container {
     position: relative;
@@ -199,3 +198,4 @@
     .carousel-container { height: 200px; width: 100%; margin: 0; border-radius: 0;}
     .main-content { padding: 10px; }
 }
+
