@@ -9,6 +9,8 @@
   flex-direction: column;
   gap: 25px;
   padding-bottom: 30px;
+  margin-bottom: 120px;
+  height: 90%;
 }
 
 /* ===========================
