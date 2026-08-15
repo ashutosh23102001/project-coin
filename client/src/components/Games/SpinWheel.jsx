@@ -1,3 +1,105 @@
+// import "./SpinWheel.css";
+
+// const sections = [
+//   {
+//     id: 1,
+//     label: "10",
+//     color: "#2ECC71",
+//   },
+//   {
+//     id: 2,
+//     label: "Better Luck",
+//     color: "#E74C3C",
+//   },
+//   {
+//     id: 3,
+//     label: "30",
+//     color: "#F1C40F",
+//   },
+//   {
+//     id: 4,
+//     label: "Better Luck",
+//     color: "#3498DB",
+//   },
+//   {
+//     id: 5,
+//     label: "10",
+//     color: "#9B59B6",
+//   },
+//   {
+//     id: 6,
+//     label: "Better Luck",
+//     color: "#1ABC9C",
+//   },
+//   {
+//     id: 7,
+//     label: "10",
+//     color: "#FF9800",
+//   },
+//   {
+//     id: 8,
+//     label: "Better Luck",
+//     color: "#607D8B",
+//   },
+// ];
+// if (!selectedReward) {
+
+//     alert("Please choose 10 or 30 points first.");
+
+//     return;
+
+// }
+
+// const SpinWheel = ({
+//     rotation,
+//     onSpin,
+//     isSpinning
+// }) => {
+//   return (
+//     <div className="wheel-container">
+//       <div
+//         className="wheel"
+//         style={{
+//           transform: `rotate(${rotation}deg)`,
+//         }}
+//       >
+//         {sections.map((item, index) => {
+//           return (
+//             <div
+//               key={item.id}
+//               className="slice"
+//               style={{
+//                 transform: `rotate(${index * 45}deg) skewY(-45deg)`,
+//                 background: item.color,
+//               }}
+//             >
+//               <span
+//                 className="slice-text"
+//                 style={{
+//                   transform: "skewY(45deg) rotate(22.5deg)",
+//                 }}
+//               >
+//                 {item.label}
+//               </span>
+//             </div>
+//           );
+//         })}
+
+//         <div
+//     className={`wheel-center ${isSpinning ? "disabled" : ""}`}
+//     onClick={!isSpinning ? onSpin : undefined}
+// >
+
+//     {isSpinning ? "..." : "START"}
+
+// </div>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default SpinWheel;
+
 import "./SpinWheel.css";
 
 const sections = [
@@ -42,58 +144,57 @@ const sections = [
     color: "#607D8B",
   },
 ];
-if (!selectedReward) {
-
-    alert("Please choose 10 or 30 points first.");
-
-    return;
-
-}
 
 const SpinWheel = ({
-    rotation,
-    onSpin,
-    isSpinning
+  rotation,
+  onSpin,
+  isSpinning,
 }) => {
   return (
     <div className="wheel-container">
+
       <div
         className="wheel"
         style={{
           transform: `rotate(${rotation}deg)`,
         }}
       >
-        {sections.map((item, index) => {
-          return (
-            <div
-              key={item.id}
-              className="slice"
+
+        {sections.map((item, index) => (
+
+          <div
+            key={item.id}
+            className="slice"
+            style={{
+              transform: `rotate(${index * 45}deg) skewY(-45deg)`,
+              background: item.color,
+            }}
+          >
+
+            <span
+              className="slice-text"
               style={{
-                transform: `rotate(${index * 45}deg) skewY(-45deg)`,
-                background: item.color,
+                transform: "skewY(45deg) rotate(22.5deg)",
               }}
             >
-              <span
-                className="slice-text"
-                style={{
-                  transform: "skewY(45deg) rotate(22.5deg)",
-                }}
-              >
-                {item.label}
-              </span>
-            </div>
-          );
-        })}
+              {item.label}
+            </span>
+
+          </div>
+
+        ))}
 
         <div
-    className={`wheel-center ${isSpinning ? "disabled" : ""}`}
-    onClick={!isSpinning ? onSpin : undefined}
->
+          className={`wheel-center ${isSpinning ? "disabled" : ""}`}
+          onClick={!isSpinning ? onSpin : undefined}
+        >
 
-    {isSpinning ? "..." : "START"}
+          {isSpinning ? "..." : "START"}
 
-</div>
+        </div>
+
       </div>
+
     </div>
   );
 };
