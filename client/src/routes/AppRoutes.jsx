@@ -64,6 +64,7 @@ import DashboardLayout from "../components/Dashboard/DashboardLayout";
 import Shortner from "../components/Shortner/Shortner";
 import LinkAd from "../components/Shortner/LinkAd";
 import ShortRedirect from "../components/Shortner/ShortRedirect";
+import LuckySpin from "../components/LuckySpin/LuckySpin";
 
 const AppRoutes = () => {
   return (
@@ -91,6 +92,8 @@ const AppRoutes = () => {
         <Route path="/coin" element={<Coin />} />
         <Route path="/account" element={<Account />} />
             <Route path="/shortner" element={<Shortner />} />
+                <Route path="/lucky-spin" element={<LuckySpin />} />
+
 
       </Route>
     </Routes>

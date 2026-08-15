@@ -357,7 +357,49 @@ const Navbar = () => {
 
           </li>
 
-          <li>Games</li>
+          
+          <li
+            className="dropdown"
+            onMouseEnter={() => {
+
+              cancelCloseTimer(tasksTimer);
+
+              setTasksOpen(true);
+
+            }}
+            onMouseLeave={() =>
+              startCloseTimer(
+                setTasksOpen,
+                tasksTimer
+              )
+            }
+          >
+
+            Games ▾
+
+            {tasksOpen && (
+
+              <div className="account-dropdown menu-dropdown">
+
+                <span className="dropdown-arrow left" />
+
+                <ul>
+
+                  <li>
+
+                    <Link to="/coin">
+                      Spin Game
+                    </Link>
+
+                  </li>
+
+                </ul>
+
+              </div>
+
+            )}
+
+          </li>
 
           <li
             className="dropdown"

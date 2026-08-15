@@ -1,0 +1,207 @@
+/* ===========================
+        WHEEL CONTAINER
+=========================== */
+
+.wheel-container{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    margin:30px 0;
+}
+
+/* ===========================
+            WHEEL
+=========================== */
+
+.wheel{
+
+    position:relative;
+
+    width:420px;
+
+    height:420px;
+
+    border-radius:50%;
+
+    overflow:hidden;
+
+    border:12px solid #3d3d3d;
+
+    background:#181818;
+
+    box-shadow:
+        0 0 20px rgba(0,183,255,.25),
+        0 0 50px rgba(0,183,255,.15);
+
+    transition:transform 5s cubic-bezier(.17,.67,.18,1);
+
+}
+
+/* ===========================
+            SLICE
+=========================== */
+
+.slice{
+
+    position:absolute;
+
+    width:50%;
+
+    height:50%;
+
+    left:50%;
+
+    top:0;
+
+    transform-origin:0% 100%;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:flex-start;
+
+    border:2px solid rgba(255,255,255,.15);
+
+}
+
+/* ===========================
+        TEXT
+=========================== */
+
+.slice-text{
+
+    display:block;
+
+    width:110px;
+
+    text-align:center;
+
+    margin-top:20px;
+
+    font-size:15px;
+
+    font-weight:bold;
+
+    color:white;
+
+    pointer-events:none;
+
+    user-select:none;
+
+}
+
+/* ===========================
+        CENTER
+=========================== */
+
+.wheel-center{
+
+    position:absolute;
+
+    width:80px;
+
+    height:80px;
+
+    left:50%;
+
+    top:50%;
+
+    transform:translate(-50%,-50%);
+
+    border-radius:50%;
+
+    background:#111;
+
+    border:6px solid #00b7ff;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    font-size:34px;
+
+    color:white;
+
+    box-shadow:
+        0 0 20px rgba(0,183,255,.6);
+
+    z-index:50;
+
+}
+
+/* ===========================
+      OUTER RING
+=========================== */
+
+.wheel::before{
+
+    content:"";
+
+    position:absolute;
+
+    inset:-10px;
+
+    border-radius:50%;
+
+    border:8px solid #555;
+
+    z-index:100;
+
+}
+
+/* ===========================
+       INNER RING
+=========================== */
+
+.wheel::after{
+
+    content:"";
+
+    position:absolute;
+
+    inset:35px;
+
+    border-radius:50%;
+
+    border:2px solid rgba(255,255,255,.15);
+
+}
+
+/* ===========================
+        RESPONSIVE
+=========================== */
+
+@media(max-width:900px){
+
+    .wheel{
+
+        width:300px;
+
+        height:300px;
+
+    }
+
+    .wheel-center{
+
+        width:60px;
+
+        height:60px;
+
+        font-size:25px;
+
+    }
+
+    .slice-text{
+
+        width:70px;
+
+        margin-top:12px;
+
+        font-size:11px;
+
+    }
+
+}
