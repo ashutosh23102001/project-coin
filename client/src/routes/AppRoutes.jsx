@@ -64,7 +64,7 @@ import DashboardLayout from "../components/Dashboard/DashboardLayout";
 import Shortner from "../components/Shortner/Shortner";
 import LinkAd from "../components/Shortner/LinkAd";
 import ShortRedirect from "../components/Shortner/ShortRedirect";
-import LuckySpin from "../components/LuckySpin/LuckySpin";
+import LuckySpin from "../components/Games/LuckySpin";
 
 const AppRoutes = () => {
   return (
