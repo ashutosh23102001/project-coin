@@ -94,14 +94,13 @@
 /* ===========================
         CENTER
 =========================== */
-
 .wheel-center{
 
     position:absolute;
 
-    width:80px;
+    width:90px;
 
-    height:80px;
+    height:90px;
 
     left:50%;
 
@@ -121,14 +120,37 @@
 
     align-items:center;
 
-    font-size:34px;
+    color:#fff;
 
-    color:white;
+    font-size:18px;
 
-    box-shadow:
-        0 0 20px rgba(0,183,255,.6);
+    font-weight:bold;
 
-    z-index:50;
+    cursor:pointer;
+
+    user-select:none;
+
+    transition:.3s;
+
+    z-index:100;
+
+    box-shadow:0 0 20px rgba(0,183,255,.5);
+
+}
+
+.wheel-center:hover{
+
+    transform:translate(-50%,-50%) scale(1.08);
+
+    background:#0b84ff;
+
+}
+
+.wheel-center.disabled{
+
+    cursor:not-allowed;
+
+    opacity:.6;
 
 }
 

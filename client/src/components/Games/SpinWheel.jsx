@@ -42,8 +42,19 @@ const sections = [
     color: "#607D8B",
   },
 ];
+if (!selectedReward) {
 
-const SpinWheel = ({ rotation }) => {
+    alert("Please choose 10 or 30 points first.");
+
+    return;
+
+}
+
+const SpinWheel = ({
+    rotation,
+    onSpin,
+    isSpinning
+}) => {
   return (
     <div className="wheel-container">
       <div
@@ -74,9 +85,14 @@ const SpinWheel = ({ rotation }) => {
           );
         })}
 
-        <div className="wheel-center">
-          🎁
-        </div>
+        <div
+    className={`wheel-center ${isSpinning ? "disabled" : ""}`}
+    onClick={!isSpinning ? onSpin : undefined}
+>
+
+    {isSpinning ? "..." : "START"}
+
+</div>
       </div>
     </div>
   );

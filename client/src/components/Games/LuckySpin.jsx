@@ -310,7 +310,11 @@ const LuckySpin = () => {
 
             <Pointer />
 
-            <SpinWheel rotation={rotation} />
+            <SpinWheel
+    rotation={rotation}
+    onSpin={spinWheel}
+    isSpinning={isSpinning}
+/>
             <button
               className="spin-btn"
               onClick={spinWheel}
