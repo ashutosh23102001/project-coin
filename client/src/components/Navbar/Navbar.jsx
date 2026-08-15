@@ -387,7 +387,7 @@ const Navbar = () => {
 
                   <li>
 
-                    <Link to="/coin">
+                    <Link to="/spin">
                       Spin Game
                     </Link>
 
