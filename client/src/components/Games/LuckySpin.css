@@ -10,7 +10,8 @@
 }
 
 .spin-card {
-  width: 100%;
+  width: 50%;
+  height: 50%;
   background: #151515;
   border-radius: 15px;
   padding: 30px;
