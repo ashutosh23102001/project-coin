@@ -493,6 +493,9 @@ const Navbar = () => {
                   <li>
                     <Link to="/shortner">Link Shortner</Link>
                   </li>
+                  <li>
+                    <Link to="/ccalc">Money Calculator</Link>
+                  </li>
                 </ul>
               </div>
             )}

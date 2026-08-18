@@ -64,7 +64,9 @@ import DashboardLayout from "../components/Dashboard/DashboardLayout";
 import Shortner from "../components/Shortner/Shortner";
 import LinkAd from "../components/Shortner/LinkAd";
 import ShortRedirect from "../components/Shortner/ShortRedirect";
-import LuckySpin from "../components/Games/LuckySpin";
+// import LuckySpin from "../components/Games/LuckySpin";
+import MoneyCalculator from "../components/Services/MoneyCalculator";
+
 
 const AppRoutes = () => {
   return (
@@ -74,6 +76,9 @@ const AppRoutes = () => {
       <Route path="/privacy-policy" element={<PrivacyPolicy />} />
       <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
       <Route path="/s/:code" element={<ShortRedirect />} />
+      <Route path="/ccalc" element={<MoneyCalculator />} />
+
+
 
       {/* ================= NORMAL DASHBOARD ================= */}
       <Route path="/" element={<Dashboard />} />
@@ -92,7 +97,7 @@ const AppRoutes = () => {
         <Route path="/coin" element={<Coin />} />
         <Route path="/account" element={<Account />} />
             <Route path="/shortner" element={<Shortner />} />
-                <Route path="/spin" element={<LuckySpin />} />
+                {/* <Route path="/spin" element={<LuckySpin />} /> */}
 
 
       </Route>
