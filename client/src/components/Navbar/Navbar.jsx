@@ -1,5 +1,3 @@
-
-
 // import React, { useEffect, useRef, useState } from "react";
 // import logo from "../assets/coin.png";
 // import "./Navbar.css";
@@ -178,7 +176,6 @@
 
 //           </li>
 
-          
 //           <li
 //             className="dropdown"
 //             onMouseEnter={() => {
@@ -384,368 +381,229 @@ import { useAuth } from "../../context/AuthContext";
 import defaultProfile from "../../../assets/default_pic.webp";
 
 const Navbar = () => {
+  const navigate = useNavigate();
 
-    const navigate = useNavigate();
+  const { user, logout } = useAuth();
 
-    const { user, logout } = useAuth();
-
-    /* ============================
+  /* ============================
             STATES
     ============================ */
 
-    const [openMenu, setOpenMenu] = useState(null);
+  const [openMenu, setOpenMenu] = useState(null);
 
-    const [profilePic, setProfilePic] = useState(null);
+  const [profilePic, setProfilePic] = useState(null);
 
-    const timer = useRef(null);
+  const timer = useRef(null);
 
-    const IMAGE_BASE_URL =
-        import.meta.env.VITE_IMAGE_URL ||
-        "https://project-coin.onrender.com";
+  const IMAGE_BASE_URL =
+    import.meta.env.VITE_IMAGE_URL || "https://project-coin.onrender.com";
 
-    /* ============================
+  /* ============================
         COMMON DROPDOWN
     ============================ */
 
-    const openDropdown = (menu) => {
+  const openDropdown = (menu) => {
+    clearTimeout(timer.current);
 
-        clearTimeout(timer.current);
+    setOpenMenu(menu);
+  };
 
-        setOpenMenu(menu);
+  const closeDropdown = () => {
+    timer.current = setTimeout(() => {
+      setOpenMenu(null);
+    }, 250);
+  };
 
-    };
-
-    const closeDropdown = () => {
-
-        timer.current = setTimeout(() => {
-
-            setOpenMenu(null);
-
-        }, 250);
-
-    };
-
-    /* ============================
+  /* ============================
         FETCH PROFILE
     ============================ */
 
-    useEffect(() => {
+  useEffect(() => {
+    if (!user) {
+      setProfilePic(null);
 
-        if (!user) {
+      return;
+    }
 
-            setProfilePic(null);
+    const fetchProfile = async () => {
+      try {
+        const res = await api.get("/profile");
 
-            return;
-
+        if (res.data?.profile_pic_url) {
+          setProfilePic(IMAGE_BASE_URL + res.data.profile_pic_url);
+        } else {
+          setProfilePic(null);
         }
+      } catch (err) {
+        console.error(err);
 
-        const fetchProfile = async () => {
+        setProfilePic(null);
+      }
+    };
 
-            try {
+    fetchProfile();
+  }, [user]);
 
-                const res = await api.get("/profile");
-
-                if (res.data?.profile_pic_url) {
-
-                    setProfilePic(
-
-                        IMAGE_BASE_URL +
-
-                        res.data.profile_pic_url
-
-                    );
-
-                }
-
-                else {
-
-                    setProfilePic(null);
-
-                }
-
-            }
-
-            catch (err) {
-
-                console.error(err);
-
-                setProfilePic(null);
-
-            }
-
-        };
-
-        fetchProfile();
-
-    }, [user]);
-
-    /* ============================
+  /* ============================
             LOGOUT
     ============================ */
 
-    const logoutAndRedirect = async (path) => {
-
-        try {
-
-            await api.post("/logout");
-
-        }
-
-        catch (err) {
-
-            console.log(err);
-
-        }
-
-        finally {
-
-            logout();
-
-            navigate(path);
-
-        }
-
-    };
-        return (
-
-        <nav className="navbar">
-
-            <div className="nav-container">
-
-                {/* ================= LOGO ================= */}
-
-                <div className="logo">
-
-                    <Link to="/">
-
-                        <img
-                            src={logo}
-                            alt="Logo"
-                            className="logo-icon"
-                        />
-
-                    </Link>
-
-                </div>
-
-                {/* ================= MENU ================= */}
-
-                <ul className="nav-links">
-
-                    <li>
-
-                        <Link to="/">Home</Link>
-
-                    </li>
-
-                    {/* ================= SERVICES ================= */}
-
-                    <li
-                        className="dropdown"
-                        onMouseEnter={() => openDropdown("services")}
-                        onMouseLeave={closeDropdown}
-                    >
-
-                        Services ▾
-
-                        {openMenu === "services" && (
-
-                            <div className="account-dropdown menu-dropdown">
-
-                                <span className="dropdown-arrow left" />
-
-                                <ul>
-
-                                    <li>
-
-                                        <Link to="/shortner">
-
-                                            Link Shortner
-
-                                        </Link>
-
-                                    </li>
-
-                                </ul>
-
-                            </div>
-
-                        )}
-
-                    </li>
-
-                    {/* ================= GAMES ================= */}
-
-                    <li
-                        className="dropdown"
-                        onMouseEnter={() => openDropdown("games")}
-                        onMouseLeave={closeDropdown}
-                    >
-
-                        Games ▾
-
-                        {openMenu === "games" && (
-
-                            <div className="account-dropdown menu-dropdown">
-
-                                <span className="dropdown-arrow left" />
-
-                                <ul>
-
-                                    <li>
-
-                                        <Link to="/spin">
-
-                                            Spin Game
-
-                                        </Link>
-
-                                    </li>
-
-                                </ul>
-
-                            </div>
-
-                        )}
-
-                    </li>
-
-                    {/* ================= SIMPLE TASK ================= */}
-
-                    <li
-                        className="dropdown"
-                        onMouseEnter={() => openDropdown("tasks")}
-                        onMouseLeave={closeDropdown}
-                    >
-
-                        Simple Task ▾
-
-                        {openMenu === "tasks" && (
-
-                            <div className="account-dropdown menu-dropdown">
-
-                                <span className="dropdown-arrow left" />
-
-                                <ul>
-
-                                    <li>
-
-                                        <Link to="/coin">
-
-                                            Coin Game
-
-                                        </Link>
-
-                                    </li>
-
-                                </ul>
-
-                            </div>
-
-                        )}
-
-                    </li>
-
-                    {/* ================= SIGNUP ================= */}
-
-                    <li
-                        className="clickable"
-                        onClick={() => logoutAndRedirect("/register")}
-                    >
-
-                        Signup
-
-                    </li>
-
+  const logoutAndRedirect = async (path) => {
+    try {
+      await api.post("/logout");
+    } catch (err) {
+      console.log(err);
+    } finally {
+      logout();
+
+      navigate(path);
+    }
+  };
+  return (
+    <nav className="navbar">
+      <div className="nav-container">
+        {/* ================= LOGO ================= */}
+
+        <div className="logo">
+          <Link to="/">
+            <img src={logo} alt="Logo" className="logo-icon" />
+          </Link>
+        </div>
+
+        {/* ================= MENU ================= */}
+
+        <ul className="nav-links">
+          <li>
+            <Link to="/">Home</Link>
+          </li>
+
+          {/* ================= SERVICES ================= */}
+
+          <li
+            className="dropdown"
+            onMouseEnter={() => openDropdown("services")}
+            onMouseLeave={closeDropdown}
+          >
+            Services
+            {openMenu === "services" && (
+              <div className="account-dropdown menu-dropdown">
+                <span className="dropdown-arrow left" />
+
+                <ul>
+                  <li>
+                    <Link to="/shortner">Link Shortner</Link>
+                  </li>
                 </ul>
-                                {/* ================= ACCOUNT ================= */}
+              </div>
+            )}
+          </li>
 
-                <div
-                    className="account-area"
-                    onMouseEnter={() => openDropdown("account")}
-                    onMouseLeave={closeDropdown}
-                >
+          {/* ================= GAMES ================= */}
 
-                    {!user ? (
+          <li
+            className="dropdown"
+            onMouseEnter={() => openDropdown("games")}
+            onMouseLeave={closeDropdown}
+          >
+            Games
+            {openMenu === "games" && (
+              <div className="account-dropdown menu-dropdown">
+                <span className="dropdown-arrow left" />
 
-                        <Link to="/login">
+                <ul>
+                  <li>
+                    <Link to="/spin">Spin Game</Link>
+                  </li>
+                </ul>
+              </div>
+            )}
+          </li>
 
-                            <RiAccountCircleLine
-                                size={34}
-                                color="#fff"
-                            />
+          {/* ================= SIMPLE TASK ================= */}
 
-                        </Link>
+          <li
+            className="dropdown"
+            onMouseEnter={() => openDropdown("tasks")}
+            onMouseLeave={closeDropdown}
+          >
+            Simple Task
+            {openMenu === "tasks" && (
+              <div className="account-dropdown menu-dropdown">
+                <span className="dropdown-arrow left" />
 
-                    ) : (
+                <ul>
+                  <li>
+                    <Link to="/coin">Coin Game</Link>
+                  </li>
+                </ul>
+              </div>
+            )}
+          </li>
 
-                        <>
+          {/* ================= SIGNUP ================= */}
 
-                            <img
-                                src={
-                                    profilePic
-                                        ? profilePic
-                                        : defaultProfile
-                                }
-                                alt="Profile"
-                                className="profile-pic"
-                                onError={(e) => {
+          <li
+            className="clickable"
+            onClick={() => logoutAndRedirect("/register")}
+          >
+            Signup
+          </li>
+        </ul>
+        {/* ================= ACCOUNT ================= */}
 
-                                    e.target.src = defaultProfile;
+        <div
+          className="account-area"
+          onMouseEnter={() => openDropdown("account")}
+          onMouseLeave={closeDropdown}
+        >
+          {!user ? (
+            <Link to="/login">
+              <RiAccountCircleLine size={34} color="#fff" />
+            </Link>
+          ) : (
+            <>
+              <img
+                src={profilePic ? profilePic : defaultProfile}
+                alt="Profile"
+                className="profile-pic"
+                onError={(e) => {
+                  e.target.src = defaultProfile;
+                }}
+              />
 
-                                }}
-                            />
+              {openMenu === "account" && (
+                <div className="account-dropdown">
+                  <span className="dropdown-arrow" />
 
-                            {openMenu === "account" && (
+                  <ul>
+                    <li
+                      onClick={() => {
+                        navigate("/account");
 
-                                <div className="account-dropdown">
+                        setOpenMenu(null);
+                      }}
+                    >
+                      Account
+                    </li>
 
-                                    <span className="dropdown-arrow" />
+                    <li
+                      onClick={() => {
+                        logoutAndRedirect("/login");
 
-                                    <ul>
-
-                                        <li
-                                            onClick={() => {
-
-                                                navigate("/account");
-
-                                                setOpenMenu(null);
-
-                                            }}
-                                        >
-                                            Account
-                                        </li>
-
-                                        <li
-                                            onClick={() => {
-
-                                                logoutAndRedirect("/login");
-
-                                                setOpenMenu(null);
-
-                                            }}
-                                        >
-                                            Log Out
-                                        </li>
-
-                                    </ul>
-
-                                </div>
-
-                            )}
-
-                        </>
-
-                    )}
-
+                        setOpenMenu(null);
+                      }}
+                    >
+                      Log Out
+                    </li>
+                  </ul>
                 </div>
-
-            </div>
-
-        </nav>
-
-    );
-
+              )}
+            </>
+          )}
+        </div>
+      </div>
+    </nav>
+  );
 };
 
 export default Navbar;
