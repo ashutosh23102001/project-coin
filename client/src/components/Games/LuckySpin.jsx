@@ -1,4 +1,5 @@
 
+
 // import { useState } from "react";
 // import api from "../../API/axios";
 
@@ -14,118 +15,171 @@
 // import "./LuckySpin.css";
 
 // const LuckySpin = () => {
-//   const [selectedReward, setSelectedReward] = useState(null);
 
-//   const [rotation, setRotation] = useState(0);
+//     const [selectedReward, setSelectedReward] = useState(null);
 
-//   const [isSpinning, setIsSpinning] = useState(false);
+//     const [rotation, setRotation] = useState(0);
 
-//   const [result, setResult] = useState("");
+//     const [isSpinning, setIsSpinning] = useState(false);
 
-//   const [reward, setReward] = useState(0);
+//     const [result, setResult] = useState("");
 
-//   const spinWheel = async () => {
-//     if (isSpinning) return;
+//     const [reward, setReward] = useState(0);
 
-//     if (!selectedReward) {
-//       alert("Please select reward first.");
+//     const spinWheel = async () => {
 
-//       return;
-//     }
+//         if (isSpinning) return;
 
-//     setIsSpinning(true);
+//         if (!selectedReward) {
 
-//     setResult("");
+//             alert("Please select a reward first.");
 
-//     try {
-//       /*
-//                 Backend Response Example
+//             return;
 
-//                 {
-//                     won:true,
-//                     reward:30,
-//                     rotation:2340
-//                 }
-//             */
-
-//       const res = await api.post("/lucky-spin", {
-//         reward: selectedReward,
-//       });
-
-//       setRotation(res.data.rotation);
-
-//       setTimeout(() => {
-//         setReward(res.data.reward);
-
-//         if (res.data.won) {
-//           setResult(`🎉 Congratulations! You won ${res.data.reward} Points`);
-//         } else {
-//           setResult("😔 Better Luck Next Time");
 //         }
 
-//         setIsSpinning(false);
-//       }, 5000);
-//     } catch (err) {
-//       console.log(err);
+//         setIsSpinning(true);
 
-//       setIsSpinning(false);
-//     }
-//   };
+//         setResult("");
 
-//   return (
-//     <>
-//       <Navbar />
+//         try {
 
-//       <Left_ad />
+//             const res = await api.post("/lucky-spin", {
 
-//       <Right_ad />
+//                 selectedReward
 
-//       <div className="coin-page">
-//         <div className="spin-container">
-//           <div className="spin-card">
-//             <h1 className="spin-title">🎡 Lucky Spin</h1>
+//             });
 
-//             <p className="spin-subtitle">Select your expected reward.</p>
+//             setRotation(res.data.rotation);
 
-//             <RewardButtons
-//               selectedReward={selectedReward}
-//               setSelectedReward={setSelectedReward}
-//             />
+//             setTimeout(() => {
 
-//             <Pointer />
+//                 setReward(res.data.reward);
 
-//             <SpinWheel
-//     rotation={rotation}
-//     onSpin={spinWheel}
-//     isSpinning={isSpinning}
-// />
-//             <button
-//               className="spin-btn"
-//               onClick={spinWheel}
-//               disabled={isSpinning}
-//             >
-//               {isSpinning ? "🎡 Spinning..." : "🎯 Spin Now"}
-//             </button>
+//                 if (res.data.won) {
 
-//             {reward > 0 && (
-//               <div className="reward-box">
-//                 <h3>Selected Reward</h3>
+//                     setResult(
+//                         `🎉 Congratulations! You won ${res.data.reward} Points`
+//                     );
 
-//                 <span>{reward} Points</span>
-//               </div>
-//             )}
+//                 } else {
 
-//             {result && <div className="result-box">{result}</div>}
-//           </div>
+//                     setResult(
+//                         "😔 Better Luck Next Time"
+//                     );
 
-//           <Bottom_ad />
-//         </div>
-//       </div>
-//     </>
-//   );
+//                 }
+
+//                 setIsSpinning(false);
+
+//             }, 5000);
+
+//         }
+
+//         catch (err) {
+
+//             console.error(err);
+
+//             setResult("Something went wrong.");
+
+//             setIsSpinning(false);
+
+//         }
+
+//     };
+//         return (
+
+//         <>
+
+//             <Navbar />
+
+//             <Left_ad />
+
+//             <Right_ad />
+
+//             <div className="coin-page">
+
+//                 <div className="spin-container">
+
+//                     <div className="spin-card">
+
+//                         <h1 className="spin-title">
+
+//                             🎡 Lucky Spin
+
+//                         </h1>
+
+//                         <p className="spin-subtitle">
+
+//                             Choose your expected reward and spin the wheel.
+
+//                         </p>
+
+//                         <RewardButtons
+
+//                             selectedReward={selectedReward}
+
+//                             setSelectedReward={setSelectedReward}
+
+//                         />
+
+//                         <Pointer />
+
+//                         <SpinWheel
+
+//                             rotation={rotation}
+
+//                             onSpin={spinWheel}
+
+//                             isSpinning={isSpinning}
+
+//                         />
+
+//                         {reward > 0 && (
+
+//                             <div className="reward-box">
+
+//                                 <h3>
+
+//                                     Selected Reward
+
+//                                 </h3>
+
+//                                 <span>
+
+//                                     {reward} Points
+
+//                                 </span>
+
+//                             </div>
+
+//                         )}
+
+//                         {result && (
+
+//                             <div className="result-box">
+
+//                                 {result}
+
+//                             </div>
+
+//                         )}
+//                                             </div>
+
+//                     <Bottom_ad />
+
+//                 </div>
+
+//             </div>
+
+//         </>
+
+//     );
+
 // };
 
 // export default LuckySpin;
+
 
 
 import { useState } from "react";
@@ -150,9 +204,11 @@ const LuckySpin = () => {
 
     const [isSpinning, setIsSpinning] = useState(false);
 
+    const [reward, setReward] = useState(null);
+
     const [result, setResult] = useState("");
 
-    const [reward, setReward] = useState(0);
+    const [loading, setLoading] = useState(false);
 
     const spinWheel = async () => {
 
@@ -160,43 +216,74 @@ const LuckySpin = () => {
 
         if (!selectedReward) {
 
-            alert("Please select a reward first.");
+            alert("Please choose a reward.");
 
             return;
 
         }
 
+        setLoading(true);
+
         setIsSpinning(true);
 
+        setReward(null);
+
         setResult("");
+                try {
 
-        try {
-
-            const res = await api.post("/lucky-spin", {
+            const response = await api.post("/lucky-spin", {
 
                 selectedReward
 
             });
 
-            setRotation(res.data.rotation);
+            /*
+                Expected Response
+
+                {
+                    won:true,
+                    reward:10,
+                    rotation:2430
+                }
+            */
+
+            const {
+
+                won,
+
+                reward,
+
+                rotation
+
+            } = response.data;
+
+            setRotation(rotation);
 
             setTimeout(() => {
 
-                setReward(res.data.reward);
+                setReward(reward);
 
-                if (res.data.won) {
-
-                    setResult(
-                        `🎉 Congratulations! You won ${res.data.reward} Points`
-                    );
-
-                } else {
+                if (won) {
 
                     setResult(
-                        "😔 Better Luck Next Time"
+
+                        `🎉 Congratulations! You won ${reward} Points`
+
                     );
 
                 }
+
+                else {
+
+                    setResult(
+
+                        "😔 Better Luck Next Time"
+
+                    );
+
+                }
+
+                setLoading(false);
 
                 setIsSpinning(false);
 
@@ -208,9 +295,15 @@ const LuckySpin = () => {
 
             console.error(err);
 
-            setResult("Something went wrong.");
+            setLoading(false);
 
             setIsSpinning(false);
+
+            setResult(
+
+                "Server Error"
+
+            );
 
         }
 
@@ -263,19 +356,31 @@ const LuckySpin = () => {
 
                         />
 
-                        {reward > 0 && (
+                        {loading && (
+
+                            <div className="loading-box">
+
+                                Spinning...
+
+                            </div>
+
+                        )}
+
+                        {reward !== null && (
 
                             <div className="reward-box">
 
                                 <h3>
 
-                                    Selected Reward
+                                    Reward
 
                                 </h3>
 
                                 <span>
 
-                                    {reward} Points
+                                    {reward === 0
+                                        ? "Better Luck Next Time"
+                                        : `${reward} Points`}
 
                                 </span>
 
@@ -292,7 +397,8 @@ const LuckySpin = () => {
                             </div>
 
                         )}
-                                            </div>
+
+                    </div>
 
                     <Bottom_ad />
 

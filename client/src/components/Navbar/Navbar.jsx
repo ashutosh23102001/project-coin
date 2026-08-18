@@ -362,22 +362,22 @@ const Navbar = () => {
             className="dropdown"
             onMouseEnter={() => {
 
-              cancelCloseTimer(tasksTimer);
+              cancelCloseTimer(servicesTimer);
 
-              setTasksOpen(true);
+              setServicesOpen(true);
 
             }}
             onMouseLeave={() =>
               startCloseTimer(
-                setTasksOpen,
-                tasksTimer
+                setServicesOpen,
+                servicesTimer
               )
             }
           >
 
             Games ▾
 
-            {tasksOpen && (
+            {servicesOpen && (
 
               <div className="account-dropdown menu-dropdown">
 
