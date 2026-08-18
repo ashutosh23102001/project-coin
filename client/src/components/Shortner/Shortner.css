@@ -3,7 +3,6 @@
 =========================== */
 .coin-page{
   min-height: 100vh;
-  scale: 80%;
 }
 
 .shortner-container {
@@ -16,6 +15,8 @@
   margin-top: -10px;
 padding-top: 2px;
   height: 90%;
+    scale: 80%;
+
 }
 
 /* ===========================
