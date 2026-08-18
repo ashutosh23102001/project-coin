@@ -3,6 +3,7 @@
 =========================== */
 .coin-page{
   min-height: 100vh;
+  scale: 80%;
 }
 
 .shortner-container {
