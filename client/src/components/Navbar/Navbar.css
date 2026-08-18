@@ -1,163 +1,375 @@
+/* ===========================
+   RESET
+=========================== */
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: sans-serif;
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, Helvetica, sans-serif;
 }
 
-/* ================= NAVBAR ================= */
-
-.navbar {
-  width: 100%;
-  background: linear-gradient(90deg, #6a11cb, #b92bff);
-  padding: 0 40px;
-  height: 60px;
-  position: fixed;
-  top: 0;
-  z-index: 9999;
+a{
+    text-decoration:none;
+    color:inherit;
 }
 
-.nav-container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  height: 60px;
+li{
+    list-style:none;
 }
 
-/* ================= LOGO ================= */
+/* ===========================
+   NAVBAR
+=========================== */
 
-.logo {
-  display: flex;
-  align-items: center;
+.navbar{
+
+    position:fixed;
+
+    top:0;
+
+    left:0;
+
+    width:100%;
+
+    height:65px;
+
+    background:linear-gradient(90deg,#6A11CB,#B92BFF);
+
+    z-index:9999;
+
+    box-shadow:0 2px 10px rgba(0,0,0,.2);
+
 }
 
-.logo-icon {
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
-  object-fit: cover;
+.nav-container{
+
+    width:95%;
+
+    height:100%;
+
+    margin:auto;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
 }
 
-/* ================= NAV LINKS ================= */
+/* ===========================
+   LOGO
+=========================== */
 
-.nav-links {
-  list-style: none;
-  display: flex;
-  gap: 30px;
+.logo{
+
+    display:flex;
+
+    align-items:center;
+
 }
 
-.nav-links li {
-  color: white;
-  font-size: 15px;
-  cursor: pointer;
+.logo-icon{
+
+    width:70px;
+
+    height:70px;
+
+    object-fit:contain;
+
 }
 
-.nav-links li:hover {
-  opacity: 0.85;
+/* ===========================
+   NAV LINKS
+=========================== */
+
+.nav-links{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:35px;
+
 }
 
-a {
-  color: white;
-  text-decoration: none;
+.nav-links>li{
+
+    color:#fff;
+
+    font-size:15px;
+
+    font-weight:600;
+
+    cursor:pointer;
+
+    position:relative;
+
+    transition:.25s;
+
 }
 
-/* ================= DROPDOWNS ================= */
+.nav-links>li:hover{
 
-.dropdown {
-  position: relative;
-  cursor: pointer;
+    color:#FFE082;
+
 }
 
-/* ================= ACCOUNT + MENU DROPDOWN ================= */
+/* ===========================
+   DROPDOWN
+=========================== */
 
-.account-area {
-  position: relative;
-  cursor: pointer;
+.dropdown{
+
+    position:relative;
+
 }
 
-.account-dropdown {
-  position: absolute;
-  top: 52px;
-  right: 0;
-  background: #fff;
-  border-radius: 6px;
-  box-shadow: 0 8px 30px rgba(0,0,0,0.2);
-  min-width: 180px;
-  z-index: 99999;
-  animation: fadeIn 0.25s ease-out;
+.clickable{
+
+    cursor:pointer;
+
 }
 
-/* left aligned version (Services / Simple task) */
-.menu-dropdown {
-  left: 0;
-  right: auto;
-  margin-top: -20px;
+/* ===========================
+   ACCOUNT
+=========================== */
+
+.account-area{
+
+    position:relative;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    cursor:pointer;
+
 }
 
-/* ================= ARROW ================= */
+/* ===========================
+   PROFILE
+=========================== */
 
-.dropdown-arrow {
-  position: absolute;
+.profile-pic{
 
-  top: -7px;
-  right: 18px;
-  width: 14px;
-  height: 14px;
-  background: white;
-  transform: rotate(45deg);
+    width:42px;
+
+    height:42px;
+
+    border-radius:50%;
+
+    object-fit:cover;
+
+    border:2px solid #fff;
+
+    transition:.25s;
+
 }
 
-/* arrow for left dropdown */
-.dropdown-arrow.left {
-  left: 18px;
-  right: auto;
+.profile-pic:hover{
+
+    transform:scale(1.05);
+
 }
 
-/* ================= LIST ================= */
+/* ===========================
+   DROPDOWN BOX
+=========================== */
 
-.account-dropdown ul {
-  list-style: none;
-  padding: 8px 0;
-  margin: 0;
+.account-dropdown{
+
+    position:absolute;
+
+    top:55px;
+
+    right:0;
+
+    min-width:210px;
+
+    background:#fff;
+
+    border-radius:8px;
+
+    overflow:hidden;
+
+    box-shadow:0 10px 30px rgba(0,0,0,.2);
+
+    animation:dropdown .2s ease;
+
+    z-index:99999;
+
 }
 
-.account-dropdown li {
-  padding: 12px 20px;
-  font-size: 14px;
-  font-weight: 600;
-  color: #222;
-  cursor: pointer;
-  text-transform: uppercase;
+/* Menu Dropdown */
+
+.menu-dropdown{
+
+    left:0;
+
+    right:auto;
+
 }
 
-.account-dropdown li a {
-  color: #222;
+/* ===========================
+   DROPDOWN ARROW
+=========================== */
+
+.dropdown-arrow{
+
+    position:absolute;
+
+    width:14px;
+
+    height:14px;
+
+    background:#fff;
+
+    top:-7px;
+
+    right:18px;
+
+    transform:rotate(45deg);
+
 }
 
-.account-dropdown li:hover {
-  background: #f5f5f5;
+.dropdown-arrow.left{
+
+    left:18px;
+
+    right:auto;
+
 }
 
-/* ================= PROFILE PIC ================= */
+/* ===========================
+   MENU LIST
+=========================== */
 
-.profile-pic {
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 2px solid white;
+.account-dropdown ul{
+
+    padding:8px 0;
+
 }
 
-/* ================= ANIMATION ================= */
+.account-dropdown li{
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-6px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+    padding:14px 20px;
+
+    color:#333;
+
+    font-size:14px;
+
+    font-weight:600;
+
+    transition:.25s;
+
+    cursor:pointer;
+
+}
+
+.account-dropdown li a{
+
+    color:#333;
+
+    display:block;
+
+}
+
+.account-dropdown li:hover{
+
+    background:#f3f3f3;
+
+    color:#6A11CB;
+
+}
+
+/* ===========================
+   ANIMATION
+=========================== */
+
+@keyframes dropdown{
+
+    from{
+
+        opacity:0;
+
+        transform:translateY(-10px);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:translateY(0);
+
+    }
+
+}
+
+/* ===========================
+   RESPONSIVE
+=========================== */
+
+@media(max-width:992px){
+
+    .nav-container{
+
+        width:98%;
+
+    }
+
+    .nav-links{
+
+        gap:20px;
+
+    }
+
+}
+
+@media(max-width:768px){
+
+    .navbar{
+
+        padding:0 10px;
+
+    }
+
+    .logo-icon{
+
+        width:55px;
+
+        height:55px;
+
+    }
+
+    .nav-links{
+
+        gap:15px;
+
+    }
+
+    .nav-links>li{
+
+        font-size:13px;
+
+    }
+
+    .profile-pic{
+
+        width:36px;
+
+        height:36px;
+
+    }
+
+    .account-dropdown{
+
+        min-width:180px;
+
+    }
+
 }
