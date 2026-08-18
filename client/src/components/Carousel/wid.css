@@ -4,7 +4,7 @@
     position: relative;
     width: 73%;
     margin: 80px auto;
-
+    scale: 90%;
     height: 450px;
     border-radius: 16px;
     overflow: hidden;
@@ -84,6 +84,7 @@
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); 
     gap: 20px;
     row-gap: 40px;
+    scale: 80%;
 }
 
 .video-card {
