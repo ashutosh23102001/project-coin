@@ -17,6 +17,8 @@
   align-items: center;
   gap: 25px;
   z-index: 10;
+    scale: 80%;
+
 }
 
 /* Fixed side ads */
@@ -44,7 +46,7 @@
 
 /* COIN BUTTON (circle) */
 .card .btn {
-    margin-top: -30px;
+    margin-top: -50px;
     margin-left: 50px;
   width: 400px;
   height: 400px;
@@ -59,6 +61,7 @@
     0 0 60px rgba(0,183,255,0.2);
   cursor: pointer;
   transition: 0.2s ease-in-out;
+  scale:80%
 }
 
 .card .btn:hover:not([disabled]) {
@@ -149,4 +152,8 @@
      color: #fffdfdff;
      margin-left: 400px;
      margin-right: 20px;
+}
+.card{
+  scale: 80%;
+    margin-top: -60px;
 }
